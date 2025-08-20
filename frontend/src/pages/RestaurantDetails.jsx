@@ -78,30 +78,44 @@ export default function RestaurantDetails() {
             ))}
           </div>
         </div>
+
         {/* Restaurant details */}
         <div className="text-left">
           <h1 className="text-2xl font-bold mb-2">{restaurant.name}</h1>
           <div className="flex mb-3">
-            {"⭐".repeat(Math.floor(restaurant.rating))}
-            <span className="ml-2 text-gray-600">{restaurant.rating}</span>
+            {"$".repeat(Math.floor(restaurant.priceLevel))}
           </div>
 
+          {/* Tags */}
           <div className="flex gap-3 mb-4">
-            <span className="bg-green-100 text-green-800 px-5 py-2 rounded-full text-sm font-medium">
-              Top pick!
-            </span>
-            <span className="bg-gray-100 px-5 py-2 rounded-full text-sm font-medium">
-              {restaurant.cuisine}
-            </span>
-            <span className="bg-gray-100 px-5 py-2 rounded-full text-sm font-medium">
-              Dinner
-            </span>
+            {restaurant.tags?.length
+              ? restaurant.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-green-100 text-green-800 px-5 py-2 rounded-full text-sm font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))
+              : "No tags available"}
           </div>
 
           {/* Description */}
-          <p className="text-gray-700 leading-relaxed max-w-2xl mx-auto">
-            {restaurant.description}
-          </p>
+          <div className="mb-6">
+            <p className="text-gray-700 leading-relaxed max-w-2xl mx-auto mb-8">
+              {restaurant.description}
+            </p>
+          </div>
+
+          {/* Contact info */}
+          <div className="mt-16">
+            <h4 className="text-lg font-semibold mb-2">Contact Info</h4>
+            <p>{restaurant.address.street}</p>
+            <p>{restaurant.address.city}</p>
+            <p>{restaurant.address.postcode}</p>
+            <p>{restaurant.address.country}</p>
+            <p>{restaurant.phone}</p>
+          </div>
         </div>
       </div>
     </div>
