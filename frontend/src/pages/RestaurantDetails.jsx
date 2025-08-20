@@ -36,35 +36,30 @@ export default function RestaurantDetails() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="max-w-4xl w-full p-6">
-        {/* Go Back */}
         <Link to="/" className="text-green-700 mb-4 inline-block">
           ← Go back
         </Link>
 
-        {/* Lightbox */}
+        {/** Restaurant image gallery */}
         <Lightbox
           open={open}
           close={() => setOpen(false)}
           index={index}
           slides={images.map((src) => ({ src }))}
         />
-
-        {/* Image gallery */}
         <div className="grid grid-cols-3 gap-4 mb-6 items-start">
-          {/* Main image */}
           <div className="col-span-2">
             <img
-              src={restaurant.image}
+              src={restaurant.images?.[0] || restaurant.image}
               alt={restaurant.name}
-              className="w-full max-h-[400px] object-cover rounded-lg shadow-md cursor-pointer"
+              className="w-full max-h-[500px] object-cover rounded-lg shadow-md cursor-pointer"
               onClick={() => {
-                setIndex(0); // main image is first
+                setIndex(0);
                 setOpen(true);
               }}
             />
           </div>
 
-          {/* Thumbnails */}
           <div className="flex flex-col gap-4">
             {(restaurant.images?.length
               ? restaurant.images
@@ -74,31 +69,31 @@ export default function RestaurantDetails() {
                 key={idx}
                 src={img}
                 alt={`${restaurant.name} ${idx}`}
-                className="w-full max-h-[120px] object-cover rounded-lg shadow"
+                className="w-full max-h-[120px] object-cover rounded-lg shadow cursor-pointer"
+                onClick={() => {
+                  setIndex(idx);
+                  setOpen(true);
+                }}
               />
             ))}
           </div>
         </div>
-
-        {/* Restaurant info */}
-        <div className="text-center">
+        {/* Restaurant details */}
+        <div className="text-left">
           <h1 className="text-2xl font-bold mb-2">{restaurant.name}</h1>
-
-          {/* Rating */}
-          <div className="flex items-center justify-center mb-3">
+          <div className="flex mb-3">
             {"⭐".repeat(Math.floor(restaurant.rating))}
             <span className="ml-2 text-gray-600">{restaurant.rating}</span>
           </div>
 
-          {/* Tags */}
-          <div className="flex justify-center gap-2 mb-4">
-            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+          <div className="flex gap-3 mb-4">
+            <span className="bg-green-100 text-green-800 px-5 py-2 rounded-full text-sm font-medium">
               Top pick!
             </span>
-            <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+            <span className="bg-gray-100 px-5 py-2 rounded-full text-sm font-medium">
               {restaurant.cuisine}
             </span>
-            <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+            <span className="bg-gray-100 px-5 py-2 rounded-full text-sm font-medium">
               Dinner
             </span>
           </div>
