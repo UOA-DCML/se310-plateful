@@ -135,6 +135,7 @@ export default function Search() {
         const priceLevel = Math.max(1, Math.min(4, parseInt(r.priceLevel) || 1));
         const priceDisplay = '$'.repeat(priceLevel);
 
+        // Create a popup with restaurant details on click of map marker
         const popup = new tt.Popup({ offset: 30 }).setHTML(
           `<h3>${r.name || 'Restaurant'}</h3>
            <p>${r.description || 'No description available'}</p>
@@ -142,6 +143,7 @@ export default function Search() {
            <p><strong>Price Level:</strong> ${priceDisplay}</p>`
         );
 
+        // Create a marker with the custom element and add it to the map
         new tt.Marker({ element })
           .setLngLat([longitude, latitude])
           .setPopup(popup)
