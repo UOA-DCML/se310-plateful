@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/PlatefulBackgroundHome copy.png";
 import navLogo from "../assets/navlogo.png";
+import RadiusDropdown from "../components/RadiusDropdown";
 import RestaurantList from "../components/RestaurantList";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 import tt from "@tomtom-international/web-sdk-maps";
@@ -20,6 +21,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [radius, setRadius] = useState(5); // or any default value
 
   const MAX_ZOOM = 18;
 
@@ -150,7 +152,7 @@ export default function Home() {
   return (
     <div>
       {/* Search Bar Section */}
-      <section className="relative w-full overflow-hidden h-[40vh]">
+      <section className="relative w-full h-[40vh]">
         <img
           src={backgroundImage}
           alt="Background"
@@ -159,9 +161,11 @@ export default function Home() {
         <h1 className="absolute inset-x-0 top-1/3 transform -translate-y-1/2 text-4xl text-center z-10">
           Looking for something to eat?
         </h1>
+
+        {/* Search Bar */}
         <div
           className="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2
-                flex gap-2 bg-white/80 px-4 py-2 mt-4 rounded-[10px] w-[55%]"
+      flex gap-2 bg-white/80 px-4 py-2 mt-4 rounded-[10px] w-[55%] z-10"
         >
           <input
             type="text"
@@ -171,11 +175,18 @@ export default function Home() {
             onKeyPress={handleKeyPress}
             className="border-none p-2 outline-none w-full"
           />
-          <button className="border-none bg-[#333] text-white p-2 px-4 rounded-[5px] cursor-pointer relative ml-2">
+          <button className="border-none bg-[#333] text-white p-2 px-4 rounded-[5px] cursor-pointer ml-2">
             Go
           </button>
         </div>
+        <div
+          className="absolute top-[65%] z-20"
+          style={{ left: "calc(50% - 27.5%)" }}
+        >
+          <RadiusDropdown currentRadius={radius} onRadiusChange={setRadius} />
+        </div>
       </section>
+
       <div className="px-20 mx-20">
         {/* Popular Restaurants */}
         <section className="mt-10 py-8">
