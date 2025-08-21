@@ -172,7 +172,7 @@ export default function Home() {
 
       <section className="restaurant-section">
         <h3>Popular Restaurants</h3>
-        <RestaurantList restaurants={popularCards} />
+        <RestaurantList restaurants={popularCards} direction={"horizontal"} />
       </section>
 
       <section className="cuisine-section">
@@ -198,7 +198,7 @@ export default function Home() {
 
       <section className="restaurant-section">
         <h3>Local Favourites</h3>
-        <RestaurantList restaurants={localFavCards} />
+        <RestaurantList restaurants={localFavCards} direction={"horizontal"} />
       </section>
 
       <section className="map-section">

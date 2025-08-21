@@ -121,12 +121,16 @@ export default function RestaurantDetails() {
           </div>
 
           {/* Tags */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex flex-wrap gap-3 mb-6">
             {restaurant.tags?.length
               ? restaurant.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="bg-green-100 text-green-800 px-5 py-2 rounded-full text-sm font-medium"
+                    className="inline-block bg-green-100 text-green-800 px-6 py-2.5 rounded-full text-sm font-medium border border-green-400 mb-2"
+                    style={{
+                      padding: "0.25rem 0.5rem", // TO DO: change to tailwind class
+                      marginBottom: "0.25rem",
+                    }}
                   >
                     {tag}
                   </span>

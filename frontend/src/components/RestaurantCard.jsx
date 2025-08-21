@@ -18,10 +18,11 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
       )}`;
 
   return (
+    // Card container with dynamic styles based on direction (i.e. vertical in Home or horizontal in Search)
     <div
       className={`restaurant-card ${
         direction === "vertical"
-          ? "w-64 h-80 flex flex-col rounded-lg shadow-lg bg-white overflow-hidden"
+          ? "w-165 h-40 flex flex-row rounded-lg shadow-lg bg-white overflow-hidden"
           : "w-64 h-80 flex flex-col rounded-lg shadow-lg bg-white overflow-hidden"
       }`}
       onClick={() => {
@@ -34,7 +35,12 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
       <img
         src={imageUrl}
         alt={restaurant.name || "Restaurant"}
-        className="w-full h-40 object-cover rounded-t-lg"
+        className={
+          direction === "vertical"
+            ? "w-60 h-50 object-cover rounded-t-lg"
+            : "w-full h-48 object-cover rounded-t-lg"
+        }
+        style={{ marginRight: "20px" }} // TO DO: change to tailwind class
         onError={(e) => {
           e.target.src =
             "https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=";
