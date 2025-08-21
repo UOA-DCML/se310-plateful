@@ -40,13 +40,14 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
             ? "w-60 h-50 object-cover rounded-t-lg"
             : "w-full h-48 object-cover rounded-t-lg"
         }
-        style={{ marginRight: "20px" }} // TO DO: change to tailwind class
         onError={(e) => {
           e.target.src =
             "https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=";
         }}
       />
-      <div className="flex flex-col p-3 flex-grow">
+      {/* Content section with dynamic styles based on direction */}
+      {/* TO DO: change padding to tailwind class */}
+      <div className="flex flex-col p-3 flex-grow" style={{ padding: "1rem" }}>
         <h3 className="text-lg font-bold truncate">
           {restaurant.name || "Unnamed Restaurant"}
         </h3>
