@@ -54,7 +54,7 @@ export default function RestaurantDetails() {
             <img
               src={restaurant.images?.[0] || restaurant.image}
               alt={restaurant.name}
-              className="w-full max-h-[400px] object-cover rounded-lg shadow-md cursor-pointer"
+              className="w-full h-[400px] object-cover rounded-lg shadow-md cursor-pointer"
               onClick={() => {
                 setIndex(0);
                 setOpen(true);
@@ -115,7 +115,7 @@ export default function RestaurantDetails() {
 
         {/* Restaurant details */}
         <div className="text-left">
-          <h1 className="text-2xl font-bold mb-2">{restaurant.name}</h1>
+          <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
           <div className="flex mb-3">
             {"$".repeat(Math.floor(restaurant.priceLevel))}
           </div>
