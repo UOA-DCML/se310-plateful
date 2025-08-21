@@ -1,6 +1,30 @@
 @import url("https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
 
-a {
+@layer base {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Overpass", sans-serif;
+    line-height: 1.5;
+    color: #292d2a;
+  }
+}
+
+:root {
+  --Plateful-Green-Primary: #7b9300;
+  --Plateful-Blue-Primary: #8272ff;
+  --Plateful-Red-Primary: #ff4e02;
+  --Plateful-Yellow-Primary: #ffcc02;
+}
+
+/* a {
   color: inherit;
   text-decoration: none !important;
 }
@@ -21,7 +45,7 @@ a:active {
   --Plateful-Yellow-Primary: #ffcc02;
 
   /* Shades and tints (TO IMPROVE) */
-  --Plateful-Green-Dark: #142601;
+/* --Plateful-Green-Dark: #142601;
   --Plateful-Green-Medium: #7b9300;
   --Plateful-Green-Light: #9cd400;
   --Plateful-Green-Lightest: #d8ff99;
@@ -31,46 +55,46 @@ a:active {
   --Plateful-Red-Dark: #c02a01;
   --Plateful-Red-Light: #ffcab7;
   --Plateful-Yellow-Dark: #ff6d01;
-  --Plateful-Yellow-Light: #ffedb0;
+  --Plateful-Yellow-Light: #ffedb0; */
 
-  /* General text colors */
-  --text-dark: #292d2a;
+/* General text colors */
+/* --text-dark: #292d2a;
   --text-medium: #616562;
-  --text-light: #aab0ab;
+  --text-light: #aab0ab; */
 
-  /* Hovers and links (TBD)*/
-  --text-active: #669f73;
+/* Hovers and links (TBD)*/
+/* --text-active: #669f73; */
 
-  /* Font sizes */
-  --fontsize-h1: 3rem;
+/* Font sizes */
+/* --fontsize-h1: 3rem;
   --fontsize-h2: 2.5rem;
   --fontsize-h3: 2.1rem;
   --fontsize-h4: 1.75rem;
   --fontsize-h5: 1.44rem;
   --fontsize-lrg: 1.2rem;
   --fontsize-reg: 1rem;
-  --fontsize-sml: 0.8rem;
+  --fontsize-sml: 0.8rem; */
 
-  /* Rounded corners */
-  --common-radius: 15px;
-}
+/* Rounded corners */
+/* --common-radius: 15px; */
+/* } */
 
-* {
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Overpass", sans-serif;
-}
+} */
 
-body {
+/* body {
   margin: 0 auto;
   width: 100%;
   line-height: 1.5;
   color: var(--text-dark);
   font-family: "Overpass", sans-serif;
-}
+} */
 
-h1 {
+/* h1 {
   font-size: var(--fontsize-h1);
 }
 
@@ -125,6 +149,7 @@ section {
 }
 
 /* Some quick text color classes */
+/*
 .text-green-dark {
   color: var(--Plateful-Green-Dark);
 }
@@ -159,4 +184,4 @@ section {
 
 .text-light {
   color: var(--text-light);
-}
+} */

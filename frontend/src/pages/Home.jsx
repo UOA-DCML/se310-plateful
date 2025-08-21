@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/PlatefulBackgroundHome copy.png";
-import "../styles/home.css";
-import "../styles/global.css";
 import navLogo from "../assets/navlogo.png";
 import RestaurantList from "../components/RestaurantList";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
@@ -151,63 +149,76 @@ export default function Home() {
 
   return (
     <div>
-      <section className="search-wrapper">
+      <section className="relative w-full overflow-hidden h-[40vh]">
         <img
           src={backgroundImage}
           alt="Background"
-          className="background-image"
+          className="absolute top-0 left-0 w-full h-full object-cover z-0"
         />
-        <h1 className="search-title">Looking for something to eat?</h1>
-        <div className="search-bar">
+        <h1 className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 text-4xl text-center z-10">
+          Looking for something to eat?
+        </h1>
+        <div
+          className="absolute top-[70%] left-1/2 transform -translate-x-1/2 -translate-y-1/2
+                flex gap-2 bg-white/80 px-4 py-2 mt-4 rounded-[10px] w-[55%]"
+        >
           <input
             type="text"
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
+            className="border-none p-2 outline-none w-full"
           />
-          <button onClick={handleSearch}>Go</button>
+          <button className="border-none bg-[#333] text-white p-2 px-4 rounded-[5px] cursor-pointer relative ml-2">
+            Go
+          </button>
         </div>
       </section>
+      <div className="px-20">
+        <section className="mt-20 pt-8">
+          <h3 className="text-xl font-bold">Popular Restaurants</h3>
+          <RestaurantList restaurants={popularCards} />
+        </section>
 
-      <section className="restaurant-section">
-        <h3>Popular Restaurants</h3>
-        <RestaurantList restaurants={popularCards} direction={"horizontal"} />
-      </section>
+        <section className="relative mt-20">
+          <h3 className="text-xl font-bold">Explore Cuisines</h3>
+          <div className="flex flex-wrap justify-center gap-10 mt-4">
+            {cuisines.map((cuisine) => (
+              <div
+                key={cuisine.name}
+                className="flex flex-col items-center text-center"
+                onClick={() => handleCuisineClick(cuisine.name)}
+                style={{ cursor: 'pointer' }}
+              >
+                <img
+                  src={cuisine.image}
+                  alt={cuisine.name}
+                  className="w-24 h-24 rounded-full object-cover mb-2 shadow-md"
+                />
+                <div className="font-bold text-base">{cuisine.name}</div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <section className="cuisine-section">
-        <h3>Explore Cuisines</h3>
-        <div className="cuisine-list">
-          {cuisines.map((cuisine) => (
-            <div
-              key={cuisine.name}
-              className="cuisine-item"
-              onClick={() => handleCuisineClick(cuisine.name)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={cuisine.image}
-                alt={cuisine.name}
-                className="cuisine-image"
-              />
-              <div className="cuisine-label">{cuisine.name}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+        <section className="mt-20 pt-8">
+          <h3 className="text-xl font-bold">Local Favourites</h3>
+          <RestaurantList restaurants={localFavCards} />
+        </section>
+      </div>
 
-      <section className="restaurant-section">
-        <h3>Local Favourites</h3>
-        <RestaurantList restaurants={localFavCards} direction={"horizontal"} />
-      </section>
-
-      <section className="map-section">
-        <div ref={mapElement} className="mapDiv">
+      <section className="relative">
+        <div
+          ref={mapElement}
+          className="w-full h-[400px] rounded-lg overflow-hidden"
+        >
           <input
             type="text"
             name="longitude"
             value={mapLongitude}
             onChange={(e) => setMapLongitude(e.target.value)}
+            className="absolute top-2 right-2 p-2 bg-white border border-gray-300 rounded-md"
           />
         </div>
       </section>
