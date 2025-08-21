@@ -193,9 +193,23 @@ export default function About() {
             <h2 className="text-2xl font-bold">Built by people who love food</h2>
             <p className="mt-3 text-slate-600">
               We’re engineers, designers, and weekend eaters. We ship fast, listen to feedback, and care about the small
-              details—like accessibility, speed, and keeping dark mode crisp.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+              details like accessibility, speed, and keeping dark mode crisp.
+
+              <br />
+              <br />
+              <strong>Oorja Gandhi the visionary!</strong> — <em>“Food is the ingredient that binds us together!”</em>
+              <br />
+              <strong>Connie Ding the goat!</strong> — <em>“Every meal is a new adventure.”</em>
+              <br />
+              <strong>Chris Kang the legend!</strong> — <em>“Great food brings great people together.”</em>
+              <br />
+              <strong>Kimberley Zhu the creative!</strong> — <em>“A dash of creativity makes every dish memorable.”</em>
+              <br />
+              <strong>Shihoo Park the coder!</strong> — <em>“Coding is fun, but eating is better!”</em>
+              <br />
+              <strong>Richman Tan the strategist!</strong> — <em>“Strategy is about making choices, trade-offs; it’s about deliberately choosing to be different.”</em>
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
               {[
                 "Fast & accessible",
                 "Privacy-first",
