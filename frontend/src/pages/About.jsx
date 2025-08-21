@@ -197,17 +197,17 @@ export default function About() {
 
               <br />
               <br />
-              <strong>Oorja Gandhi the visionary!</strong> — <em>“Food is the ingredient that binds us together!”</em>
+              <strong>Oorja Gandhi</strong> — <em>“Food is the ingredient that binds us together!”</em>
               <br />
-              <strong>Connie Ding the goat!</strong> — <em>“Every meal is a new adventure.”</em>
+              <strong>Connie Ding</strong> — <em>“Every meal is a new adventure.”</em>
               <br />
-              <strong>Chris Kang the legend!</strong> — <em>“Great food brings great people together.”</em>
+              <strong>Chris Kang</strong> — <em>“Great food brings great people together.”</em>
               <br />
-              <strong>Kimberley Zhu the creative!</strong> — <em>“A dash of creativity makes every dish memorable.”</em>
+              <strong>Kimberley Zhu</strong> — <em>“A dash of creativity makes every dish memorable.”</em>
               <br />
-              <strong>Shihoo Park the coder!</strong> — <em>“Coding is fun, but eating is better!”</em>
+              <strong>Shihoo Park</strong> — <em>“Coding is fun, but eating is better!”</em>
               <br />
-              <strong>Richman Tan the strategist!</strong> — <em>“Strategy is about making choices, trade-offs; it’s about deliberately choosing to be different.”</em>
+              <strong>Richman Tan</strong> — <em>“Strategy is about making choices, trade-offs; it’s about deliberately choosing to be different.”</em>
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
               {[
