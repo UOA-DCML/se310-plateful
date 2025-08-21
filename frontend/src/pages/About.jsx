@@ -7,7 +7,7 @@ import { Utensils, Star, Users, Compass, Sparkles, Github, ArrowRight } from "lu
  */
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-800">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-800 pt-8 md:pt-8">
       {/* Top banner */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
