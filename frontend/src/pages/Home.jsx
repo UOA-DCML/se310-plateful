@@ -29,7 +29,7 @@ export default function Home() {
   useEffect(() => {
     setLoading(true);
     setErr("");
-    
+
     // Fetch restaurants
     const fetchRestaurants = fetch("http://localhost:8080/api/restaurants")
       .then((res) => {
@@ -39,17 +39,21 @@ export default function Home() {
       .then((data) => setRestaurantsRaw(Array.isArray(data) ? data : []));
 
     // Fetch cuisines
-    const fetchCuisines = fetch("http://localhost:8080/api/restaurants/cuisines")
+    const fetchCuisines = fetch(
+      "http://localhost:8080/api/restaurants/cuisines"
+    )
       .then((res) => {
         if (!res.ok) throw new Error(`Cuisines API ${res.status}`);
         return res.json();
       })
       .then((data) => {
         // Transform cuisine strings into objects with name and default image
-        const cuisineObjects = Array.isArray(data) ? data.map(cuisine => ({
-          name: cuisine,
-          image: navLogo // Using default image for now
-        })) : [];
+        const cuisineObjects = Array.isArray(data)
+          ? data.map((cuisine) => ({
+              name: cuisine,
+              image: navLogo, // Using default image for now
+            }))
+          : [];
         setCuisines(cuisineObjects);
       });
 
@@ -82,21 +86,25 @@ export default function Home() {
 
     try {
       // Perform the search and navigate to search page with results
-      const response = await fetch(`http://localhost:8080/api/restaurants/search?query=${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(
+        `http://localhost:8080/api/restaurants/search?query=${encodeURIComponent(
+          searchQuery
+        )}`
+      );
       if (response.ok) {
         const searchResults = await response.json();
         // Navigate to search page with query parameter
         navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
       } else {
-        console.error('Search failed:', response.status);
+        console.error("Search failed:", response.status);
       }
     } catch (error) {
-      console.error('Search error:', error);
+      console.error("Search error:", error);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSearch();
     }
   };
@@ -114,8 +122,10 @@ export default function Home() {
 
   // Map fetched data into card shape
   const toCard = (r) => ({
+    id: r.id,
     name: r.name,
     description: r.description,
+    priceLevel: r.priceLevel,
     rating: 5, // TODO: hardcoded for testing, should change later
     image:
       (Array.isArray(r.images) && r.images[0]) ||
@@ -129,7 +139,9 @@ export default function Home() {
   // filter local favourite
   const localFavDocs = restaurantsRaw.slice(0, 5);
 
-  const popularCards = (popularDocs.length ? popularDocs : restaurantsRaw.slice(0, 6)).map(toCard);
+  const popularCards = (
+    popularDocs.length ? popularDocs : restaurantsRaw.slice(0, 6)
+  ).map(toCard);
   const localFavCards = localFavDocs.map(toCard);
 
   // Handle cuisine click to search for restaurants of that cuisine
@@ -147,9 +159,9 @@ export default function Home() {
         />
         <h1 className="search-title">Looking for something to eat?</h1>
         <div className="search-bar">
-          <input 
-            type="text" 
-            placeholder="Search..." 
+          <input
+            type="text"
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -167,11 +179,11 @@ export default function Home() {
         <h3>Explore Cuisines</h3>
         <div className="cuisine-list">
           {cuisines.map((cuisine) => (
-            <div 
-              key={cuisine.name} 
+            <div
+              key={cuisine.name}
               className="cuisine-item"
               onClick={() => handleCuisineClick(cuisine.name)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             >
               <img
                 src={cuisine.image}

@@ -35,7 +35,7 @@ export default function RestaurantDetails() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="max-w-4xl w-full p-6">
+      <div className="max-w-6xl w-full p-6">
         <Link to="/" className="text-green-700 mb-4 inline-block">
           ← Go back
         </Link>
@@ -47,12 +47,14 @@ export default function RestaurantDetails() {
           index={index}
           slides={images.map((src) => ({ src }))}
         />
+
         <div className="grid grid-cols-3 gap-4 mb-6 items-start">
+          {/* Large image on the left */}
           <div className="col-span-2">
             <img
               src={restaurant.images?.[0] || restaurant.image}
               alt={restaurant.name}
-              className="w-full max-h-[500px] object-cover rounded-lg shadow-md cursor-pointer"
+              className="w-full max-h-[400px] object-cover rounded-lg shadow-md cursor-pointer"
               onClick={() => {
                 setIndex(0);
                 setOpen(true);
@@ -60,22 +62,54 @@ export default function RestaurantDetails() {
             />
           </div>
 
+          {/* Thumbnails on the right */}
           <div className="flex flex-col gap-4">
-            {(restaurant.images?.length
-              ? restaurant.images
-              : [restaurant.image, restaurant.image, restaurant.image]
-            ).map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`${restaurant.name} ${idx}`}
-                className="w-full max-h-[120px] object-cover rounded-lg shadow cursor-pointer"
-                onClick={() => {
-                  setIndex(idx);
-                  setOpen(true);
-                }}
-              />
-            ))}
+            {(restaurant.images?.slice(1, 3) || [restaurant.image]).map(
+              (img, idx, arr) => {
+                const displayIndex = idx + 1; // actual index in the gallery
+                const thumbCount = arr.length; // 1 or 2 thumbnails
+                const thumbHeight = (400 - (thumbCount - 1) * 16) / thumbCount; // left image height minus gap
+
+                const isLastVisible = idx === 1 && restaurant.images.length > 2; // overlay on second thumbnail if more than 2 images
+
+                return (
+                  <div key={displayIndex} className="relative">
+                    <img
+                      src={img}
+                      alt={`${restaurant.name} ${displayIndex}`}
+                      className="w-full object-cover rounded-lg shadow cursor-pointer"
+                      style={{ height: `${thumbHeight}px` }}
+                      onClick={() => {
+                        setIndex(displayIndex);
+                        setOpen(true);
+                      }}
+                    />
+
+                    {/* Overlay if there are more images */}
+                    {isLastVisible && (
+                      <div
+                        className="absolute inset-0 flex items-center justify-center rounded-lg cursor-pointer"
+                        style={{ background: "rgba(0,0,0,0.7)" }}
+                        onClick={() => {
+                          setIndex(displayIndex);
+                          setOpen(true);
+                        }}
+                      >
+                        <img
+                          src={img}
+                          alt={`${restaurant.name} ${displayIndex}`}
+                          className="w-full object-cover rounded-lg shadow cursor-pointer opacity-40 absolute inset-0"
+                          style={{ height: `${thumbHeight}px` }}
+                        />
+                        <span className="relative z-10 text-white text-2xl font-bold">
+                          +{restaurant.images.length - 2}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+            )}
           </div>
         </div>
 
