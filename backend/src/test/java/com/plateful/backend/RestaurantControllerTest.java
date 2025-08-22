@@ -1,6 +1,7 @@
 package com.plateful.backend;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -8,11 +9,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.plateful.backend.restaurant.Restaurant;
 import com.plateful.backend.restaurant.RestaurantController;
 import com.plateful.backend.restaurant.RestaurantRepository;
+import com.plateful.backend.restaurant.RestaurantSearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,6 +32,19 @@ class RestaurantControllerTest {
 
     @MockBean
     private RestaurantRepository repo;
+
+    @MockBean
+    private RestaurantSearchService searchService;
+
+    private static Restaurant r(String id, String name, String desc, String cuisine) {
+        Restaurant x = new Restaurant();
+        x.setId(id);
+        x.setName(name);
+        x.setDescription(desc);
+        x.setCuisine(cuisine);
+        return x;
+    }
+
 
     @Test
     void list_returnsRestaurants() throws Exception {
@@ -75,4 +94,88 @@ class RestaurantControllerTest {
                 .andExpect(jsonPath("$[1]").value("Italian"))
                 .andExpect(jsonPath("$.length()").value(2)); // Should be distinct
     }
+
+
+@Test
+void filter_withCuisineAndPriceAndReservation_passesParamsToService() throws Exception {
+
+    when(searchService.filter(any(), any(), any(), any(), any(), any()))
+            .thenReturn(List.of(r("x","X","d","Italian"))); 
+
+    mockMvc.perform(get("/api/restaurants/filter")
+                    .param("cuisine","Italian")
+                    .param("priceMin","2")
+                    .param("priceMax","4")
+                    .param("reservation","true"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith("application/json"))
+            .andExpect(jsonPath("$[0].cuisine").value("Italian"));
+
+    ArgumentCaptor<String> cuisine = ArgumentCaptor.forClass(String.class);
+    ArgumentCaptor<Integer> priceMin = ArgumentCaptor.forClass(Integer.class);
+    ArgumentCaptor<Integer> priceMax = ArgumentCaptor.forClass(Integer.class);
+    ArgumentCaptor<Boolean> reservation = ArgumentCaptor.forClass(Boolean.class);
+    ArgumentCaptor<Boolean> openNow = ArgumentCaptor.forClass(Boolean.class);
+    @SuppressWarnings("unchecked")
+    ArgumentCaptor<java.util.List<String>> cities = ArgumentCaptor.forClass((Class) java.util.List.class);
+
+    verify(searchService).filter(
+            cuisine.capture(),
+            priceMin.capture(),
+            priceMax.capture(),
+            reservation.capture(),
+            openNow.capture(),
+            cities.capture()
+    );
+
+    org.junit.jupiter.api.Assertions.assertEquals("Italian", cuisine.getValue());
+    org.junit.jupiter.api.Assertions.assertEquals(2, priceMin.getValue());
+    org.junit.jupiter.api.Assertions.assertEquals(4, priceMax.getValue());
+    org.junit.jupiter.api.Assertions.assertEquals(true, reservation.getValue());
+    org.junit.jupiter.api.Assertions.assertNull(openNow.getValue());   // not provided
+    org.junit.jupiter.api.Assertions.assertNull(cities.getValue());    // no ?city= -> null list
+}
+
+    @Test
+    void filter_withOpenNow_true_passesToService() throws Exception {
+        when(searchService.filter(any(), any(), any(), any(), any(), any()))
+                .thenReturn(List.of(r("o","Open","d","Cafe")));
+
+        mockMvc.perform(get("/api/restaurants/filter")
+                        .param("openNow","true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Open"));
+
+        verify(searchService).filter(null, null, null, null, true, null);
+    }
+
+    @Test
+    void filter_withQuery_appliesInMemoryKeywordFilter() throws Exception {
+        // Service returns a base list; controller should then apply keyword filtering on name/desc/cuisine
+        List<Restaurant> svc = List.of(
+                r("1","Sushi Place","Fresh nigiri and rolls","Japanese"),
+                r("2","Burger Town","Burgers & fries","American")
+        );
+        when(searchService.filter(null, null, null, null, null, null)).thenReturn(svc);
+
+        mockMvc.perform(get("/api/restaurants/filter").param("query","sushi"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].name").value("Sushi Place"));
+    }
+
+    @Test
+    void filter_withBlankQuery_returnsUnfilteredServiceList() throws Exception {
+        List<Restaurant> svc = List.of(
+                r("1","A","d","X"),
+                r("2","B","d","Y")
+        );
+        when(searchService.filter(null, null, null, null, null, null)).thenReturn(svc);
+
+        mockMvc.perform(get("/api/restaurants/filter").param("query","   "))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
 }
