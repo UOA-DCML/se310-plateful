@@ -7,8 +7,16 @@ package com.plateful.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = BackendApplication.class)
+@ActiveProfiles("test")
+@TestPropertySource(properties = {
+  "spring.autoconfigure.exclude=" +
+  "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration," +
+  "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration"
+})
 class BackendApplicationTests {
 
 	/**
