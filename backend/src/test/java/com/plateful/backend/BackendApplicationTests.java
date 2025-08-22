@@ -7,17 +7,29 @@ package com.plateful.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = BackendApplication.class)
+import com.plateful.backend.restaurant.RestaurantRepository;
+import com.plateful.backend.restaurant.RestaurantSearchService;
+
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.NONE,
+    classes = BackendApplication.class
+)
 @ActiveProfiles("test")
 @TestPropertySource(properties = {
-  "spring.autoconfigure.exclude=" +
-  "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration," +
-  "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration"
+    "spring.autoconfigure.exclude=" +
+    "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration," +
+    "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",
+    // also stop Spring Data from trying to create repo proxies
+    "spring.data.mongodb.repositories.enabled=false"
 })
+
 class BackendApplicationTests {
+	@MockBean private RestaurantRepository repo;
+    @MockBean private RestaurantSearchService searchService;
 
 	/**
 	 * Verifies that the Spring application context loads successfully.
