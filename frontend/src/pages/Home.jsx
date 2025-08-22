@@ -6,6 +6,7 @@ import MapContainer from "../components/MapContainer";
 import RestaurantMarkers from "../components/RestaurantMarkers";
 import RestaurantList from "../components/RestaurantList";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
+import DOMPurify from "dompurify";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -151,21 +152,28 @@ export default function Home() {
         <section className="relative py-8">
           <h3 className="text-xl font-bold">Explore Cuisines</h3>
           <div className="flex flex-wrap justify-center gap-10 mt-4">
-            {cuisines.map((cuisine) => (
-              <div
-                key={cuisine.name}
-                className="flex flex-col items-center text-center"
-                onClick={() => handleCuisineClick(cuisine.name)}
-                style={{ cursor: "pointer" }}
-              >
-                <img
-                  src={cuisine.image}
-                  alt={cuisine.name}
-                  className="w-24 h-24 rounded-full object-cover mb-2 shadow-md"
-                />
-                <div className="font-bold text-base">{cuisine.name}</div>
-              </div>
-            ))}
+            {cuisines.map((cuisine) => {
+              // Sanitize each cuisine.image inside the loop
+              const safeImage = DOMPurify.sanitize(cuisine.image, {
+                ALLOWED_URI_REGEXP: /^https?:\/\//,
+              });
+
+              return (
+                <div
+                  key={cuisine.name}
+                  className="flex flex-col items-center text-center"
+                  onClick={() => handleCuisineClick(cuisine.name)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <img
+                    src={safeImage || "/fallback.png"} // use fallback if invalid
+                    alt={cuisine.name}
+                    className="w-24 h-24 rounded-full object-cover mb-2 shadow-md"
+                  />
+                  <div className="font-bold text-base">{cuisine.name}</div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
