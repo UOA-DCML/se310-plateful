@@ -38,26 +38,6 @@ public class RestaurantController {
         query, query, query);
   }
 
-  // @GetMapping("/filter")
-  // public List<Restaurant> filter(
-  //         @RequestParam(required = false) String query,
-  //         @RequestParam(required = false) String cuisine,
-  //         @RequestParam(required = false) Integer priceMin,
-  //         @RequestParam(required = false) Integer priceMax,
-  //         @RequestParam(required = false) Boolean reservation,
-  //         @RequestParam(required = false) Boolean openNow
-  // ) {
-  //   // If keyword search is provided, run text search first
-  //   if (query != null && !query.isBlank()) {
-  //       return repo.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrCuisineContainingIgnoreCase(
-  //               query, query, query
-  //       );
-  //   }
-
-  //   // Otherwise run structured filter
-  //   return searchService.filter(cuisine, priceMin, priceMax, reservation, openNow);
-  // }
-
   @GetMapping("/filter")
   public List<Restaurant> filter(
       @RequestParam(required = false) String query,
