@@ -11,6 +11,7 @@ const NavBar = () => {
     setInputValue(e.target.value);
   };
 
+  // Handle form submission to update address
   const handleSubmit = (e) => {
     e.preventDefault();
     const trimmedValue = inputValue.trim();
