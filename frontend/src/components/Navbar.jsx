@@ -3,7 +3,7 @@ import navLogo from "../assets/navlogo.png";
 
 const NavBar = () => {
   return (
-    <nav className="fixed top-0 left-0 w-full h-[70px] flex items-center justify-between px-8 bg-white shadow-md z-[1000]">
+    <nav className="relative top-0 left-0 w-full h-[70px] flex items-center justify-between px-8 bg-white shadow-md z-[1000]">
       <div className="flex items-center">
         <a href="/" className="block">
           <img src={navLogo} alt="Logo" className="h-10" />

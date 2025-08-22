@@ -3,7 +3,7 @@ import "../styles/global.css";
 
 const RestaurantList = ({ restaurants, direction }) => {
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-visible">
       <div
         className={`flex p-2 ${
           direction === "vertical" ? "flex-col gap-4" : "flex-row gap-4"

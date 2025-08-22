@@ -215,3 +215,56 @@ All issues are encouraged to follow a consistent naming pattern:
 - If you need help, comment on the relevant issue or PR and tag teammates.
 
 ---
+
+## Search Filter API
+
+All filterable search is done via:
+GET /api/restaurants/filter
+
+**Query Parameters**
+All params are **optional** and **combinable**.
+
+| Param         | Type               | Example                         | Notes                                                                                                                  |
+| ------------- | ------------------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `query`       | `string`           | `query=pizza`                   | Keyword match on `name`, `description`, `cuisine` (case-insensitive). Applied **in-memory** after structured filters.  |
+| `cuisine`     | `string`           | `cuisine=Italian`               | Case-insensitive partial match.                                                                                        |
+| `priceMin`    | `number` (1–5)     | `priceMin=2`                    | Filters `price_level >= priceMin`.                                                                                     |
+| `priceMax`    | `number` (1–5)     | `priceMax=4`                    | Filters `price_level <= priceMax`. Swaps values if `priceMin > priceMax`.                                              |
+| `reservation` | `boolean`          | `reservation=true`              | Matches `reservation_required`.                                                                                        |
+| `openNow`     | `boolean`          | `openNow=true`                  | Uses **Pacific/Auckland** time; parses `hours[day]` like `11:00-22:00`, handles overnight spans (e.g., `18:00-02:00`). |
+| `city`        | `string[]` (multi) | `city=Auckland&city=Wellington` | Exact (case-insensitive) match on `address.city`. Pass multiple `city` params for OR matching.                         |
+
+> Pagination: **not implemented yet**. You’ll get the full filtered list.
+
+**Quick Examples**
+
+- Basic Keyword Search:
+  /api/restaurants/filter?query=sushi
+
+- By cuisine:
+  /api/restaurants/filter?cuisine=Italian
+
+- Price range:
+  /api/restaurants/filter?priceMin=2&priceMax=4
+
+- Reservation Required:
+  /api/restaurants/filter?reservation=true
+
+- Open Now (NZ time):
+  api/restaurants/filter?openNow=true
+
+- Filter by one city:
+  /api/restaurants/filter?city=Auckland
+
+- Filter by multiple cities:
+  /api/restaurants/filter?city=Auckland&city=Wellington
+
+- Combine filters:
+  /api/restaurants/filter?city=Auckland&cuisine=Japanese&priceMax=3&openNow=true
+  OR
+  /api/restaurants/filter?query=ramen&cuisine=Japanese&city=Auckland
+
+**How to test in browser**
+http://localhost:8080/api/restaurants/filter?city=Auckland&openNow=true
+
+---

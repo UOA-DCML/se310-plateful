@@ -27,7 +27,7 @@ export default function Home() {
   useEffect(() => {
     setLoading(true);
     setErr("");
-    
+
     // Fetch restaurants
     const fetchRestaurants = fetch("http://localhost:8080/api/restaurants")
       .then((res) => {
@@ -37,17 +37,21 @@ export default function Home() {
       .then((data) => setRestaurantsRaw(Array.isArray(data) ? data : []));
 
     // Fetch cuisines
-    const fetchCuisines = fetch("http://localhost:8080/api/restaurants/cuisines")
+    const fetchCuisines = fetch(
+      "http://localhost:8080/api/restaurants/cuisines"
+    )
       .then((res) => {
         if (!res.ok) throw new Error(`Cuisines API ${res.status}`);
         return res.json();
       })
       .then((data) => {
         // Transform cuisine strings into objects with name and default image
-        const cuisineObjects = Array.isArray(data) ? data.map(cuisine => ({
-          name: cuisine,
-          image: navLogo // Using default image for now
-        })) : [];
+        const cuisineObjects = Array.isArray(data)
+          ? data.map((cuisine) => ({
+              name: cuisine,
+              image: navLogo, // Using default image for now
+            }))
+          : [];
         setCuisines(cuisineObjects);
       });
 
@@ -116,8 +120,10 @@ export default function Home() {
 
   // Map fetched data into card shape
   const toCard = (r) => ({
+    id: r.id,
     name: r.name,
     description: r.description,
+    priceLevel: r.priceLevel,
     rating: 5, // TODO: hardcoded for testing, should change later
     image:
       (Array.isArray(r.images) && r.images[0]) ||
@@ -143,17 +149,18 @@ export default function Home() {
 
   return (
     <div>
+      {/* Search Bar Section */}
       <section className="relative w-full overflow-hidden h-[40vh]">
         <img
           src={backgroundImage}
           alt="Background"
           className="absolute top-0 left-0 w-full h-full object-cover z-0"
         />
-        <h1 className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 text-4xl text-center z-10">
+        <h1 className="absolute inset-x-0 top-1/3 transform -translate-y-1/2 text-4xl text-center z-10">
           Looking for something to eat?
         </h1>
         <div
-          className="absolute top-[70%] left-1/2 transform -translate-x-1/2 -translate-y-1/2
+          className="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2
                 flex gap-2 bg-white/80 px-4 py-2 mt-4 rounded-[10px] w-[55%]"
         >
           <input
@@ -169,13 +176,15 @@ export default function Home() {
           </button>
         </div>
       </section>
-      <div className="px-20">
-        <section className="mt-20 pt-8">
+      <div className="px-20 mx-20">
+        {/* Popular Restaurants */}
+        <section className="mt-10 py-8">
           <h3 className="text-xl font-bold">Popular Restaurants</h3>
-          <RestaurantList restaurants={popularCards} />
+          <RestaurantList restaurants={popularCards} direction="horizontal" />
         </section>
 
-        <section className="relative mt-20">
+        {/* Explore Cuisines */}
+        <section className="relative py-8">
           <h3 className="text-xl font-bold">Explore Cuisines</h3>
           <div className="flex flex-wrap justify-center gap-10 mt-4">
             {cuisines.map((cuisine) => (
@@ -183,7 +192,7 @@ export default function Home() {
                 key={cuisine.name}
                 className="flex flex-col items-center text-center"
                 onClick={() => handleCuisineClick(cuisine.name)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
               >
                 <img
                   src={cuisine.image}
@@ -196,12 +205,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mt-20 pt-8">
+        {/* Local Favourites */}
+        <section className="py-8 mb-10">
           <h3 className="text-xl font-bold">Local Favourites</h3>
-          <RestaurantList restaurants={localFavCards} />
+          <RestaurantList restaurants={localFavCards} direction="horizontal" />
         </section>
       </div>
 
+      {/* Map Section */}
       <section className="relative">
         <div
           ref={mapElement}
