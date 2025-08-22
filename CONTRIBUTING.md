@@ -237,33 +237,34 @@ All params are **optional** and **combinable**.
 > Pagination: **not implemented yet**. You’ll get the full filtered list.
 
 **Quick Examples**
-Basic Keyword Search:
-/api/restaurants/filter?query=sushi
 
-By cuisine:
-/api/restaurants/filter?cuisine=Italian
+- Basic Keyword Search:
+  /api/restaurants/filter?query=sushi
 
-Price range:
-/api/restaurants/filter?priceMin=2&priceMax=4
+- By cuisine:
+  /api/restaurants/filter?cuisine=Italian
 
-Reservation Required:
-/api/restaurants/filter?reservation=true
+- Price range:
+  /api/restaurants/filter?priceMin=2&priceMax=4
 
-Open Now (NZ time):
-api/restaurants/filter?openNow=true
+- Reservation Required:
+  /api/restaurants/filter?reservation=true
 
-Filter by one city:
-/api/restaurants/filter?city=Auckland
+- Open Now (NZ time):
+  api/restaurants/filter?openNow=true
 
-Filter by multiple cities:
-/api/restaurants/filter?city=Auckland&city=Wellington
+- Filter by one city:
+  /api/restaurants/filter?city=Auckland
 
-Combine filters:
-/api/restaurants/filter?city=Auckland&cuisine=Japanese&priceMax=3&openNow=true
-OR
-/api/restaurants/filter?query=ramen&cuisine=Japanese&city=Auckland
+- Filter by multiple cities:
+  /api/restaurants/filter?city=Auckland&city=Wellington
 
-** How to test in browser**
+- Combine filters:
+  /api/restaurants/filter?city=Auckland&cuisine=Japanese&priceMax=3&openNow=true
+  OR
+  /api/restaurants/filter?query=ramen&cuisine=Japanese&city=Auckland
+
+**How to test in browser**
 http://localhost:8080/api/restaurants/filter?city=Auckland&openNow=true
 
 ---
