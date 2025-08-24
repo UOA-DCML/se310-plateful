@@ -53,7 +53,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
         {Array.isArray(restaurant.tags) && restaurant.tags.length > 0 ? (
           <div className="flex flex-wrap gap-1 mt-1">
               {restaurant.tags.map((tag, idx) => (
-                <span key={idx} className="bg-gray-200 text-gray-700 text-[10px] px-1 py-0.5 rounded-full inline-block">
+                <span key={idx} className="bg-gray-200 text-gray-700 text-[10px] px-1.5 py-0.5 rounded-full inline-block">
                   {tag}
                 </span>
             ))}
