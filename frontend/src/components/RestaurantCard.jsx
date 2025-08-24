@@ -23,7 +23,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
       className={`restaurant-card ${
         direction === "vertical"
           ? "max-w-[100%] h-40 flex flex-row rounded-lg shadow-lg bg-white overflow-hidden"
-          : "w-64 h-80 flex flex-col rounded-lg shadow-lg bg-white overflow-hidden"
+          : "w-44 h-80 flex flex-col rounded-lg shadow-lg bg-white overflow-hidden"
       }`}
       onClick={() => {
         if (restaurant.id) {
