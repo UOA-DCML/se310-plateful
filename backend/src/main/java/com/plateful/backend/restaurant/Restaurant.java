@@ -10,6 +10,17 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a restaurant entity in the Plateful application.
+ * This class maps to documents in the MongoDB 'restaurants' collection and contains
+ * all relevant information about a restaurant including its details, location,
+ * operating hours, and features.
+ *
+ * The class uses various MongoDB-specific annotations for:
+ * - Document mapping (@Document)
+ * - Text indexing (@TextIndexed) for efficient text search
+ * - Geospatial indexing (@GeoSpatialIndexed) for location-based queries
+ */
 @Document(collection = "restaurants")
 public class Restaurant {
     @Id

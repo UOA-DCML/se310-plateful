@@ -1,3 +1,8 @@
+/**
+ * Unit tests for RestaurantController REST endpoints.
+ * Tests the web layer functionality of the restaurant API using MockMvc.
+ * Uses @WebMvcTest to load only web-related beans and mock other dependencies.
+ */
 package com.plateful.backend;
 
 import org.junit.jupiter.api.Test;
@@ -28,14 +33,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RestaurantControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mockMvc;            // Used to perform mock HTTP requests against the controller
 
     @MockBean
-    private RestaurantRepository repo;
+    private RestaurantRepository repo;  // Mocked repo dependency
 
     @MockBean
     private RestaurantSearchService searchService;
 
+    // Helper method for quickly creating Restaurant objects
+    /**
+     * Helper method to create a Restaurant instance for testing.
+     * 
+     * @param id Restaurant ID
+     * @param name Restaurant name
+     * @param desc Restaurant description
+     * @param cuisine Restaurant cuisine type
+     * @return A new Restaurant instance with the specified properties
+     */
     private static Restaurant r(String id, String name, String desc, String cuisine) {
         Restaurant x = new Restaurant();
         x.setId(id);
@@ -46,6 +61,11 @@ class RestaurantControllerTest {
     }
 
 
+    /**
+     * Tests the GET /api/restaurants endpoint.
+     * Verifies that the endpoint returns a list of restaurants in JSON format
+     * and that the response contains the expected restaurant data.
+     */
     @Test
     void list_returnsRestaurants() throws Exception {
         Restaurant r = new Restaurant();
@@ -63,6 +83,11 @@ class RestaurantControllerTest {
                 .andExpect(jsonPath("$[0].cuisine").value("Italian"));
     }
 
+    /**
+     * Tests the GET /api/restaurants/{id} endpoint.
+     * Verifies that the endpoint returns a single restaurant by ID
+     * and the response contains the expected restaurant data.
+     */
     @Test
     void get_returnsSingleRestaurant() throws Exception {
         Restaurant r = new Restaurant();
@@ -75,6 +100,11 @@ class RestaurantControllerTest {
                 .andExpect(jsonPath("$.name").value("One Restaurant"));
     }
 
+    /**
+     * Tests the GET /api/restaurants/cuisines endpoint.
+     * Verifies that the endpoint returns a distinct, sorted list of cuisines
+     * and handles duplicate cuisine types correctly.
+     */
     @Test
     void getCuisines_returnsDistinctCuisines() throws Exception {
         Restaurant r1 = new Restaurant();
@@ -96,6 +126,11 @@ class RestaurantControllerTest {
     }
 
 
+/**
+ * Tests the GET /api/restaurants/filter endpoint with multiple filter parameters.
+ * Verifies that cuisine, price range, and reservation parameters are correctly
+ * passed to the RestaurantSearchService and the response is as expected.
+ */
 @Test
 void filter_withCuisineAndPriceAndReservation_passesParamsToService() throws Exception {
 
@@ -136,6 +171,11 @@ void filter_withCuisineAndPriceAndReservation_passesParamsToService() throws Exc
     org.junit.jupiter.api.Assertions.assertNull(cities.getValue());    // no ?city= -> null list
 }
 
+    /**
+     * Tests the GET /api/restaurants/filter endpoint with openNow parameter.
+     * Verifies that the openNow parameter is correctly passed to the service
+     * and the response contains the expected restaurant data.
+     */
     @Test
     void filter_withOpenNow_true_passesToService() throws Exception {
         when(searchService.filter(any(), any(), any(), any(), any(), any()))
@@ -149,6 +189,11 @@ void filter_withCuisineAndPriceAndReservation_passesParamsToService() throws Exc
         verify(searchService).filter(null, null, null, null, true, null);
     }
 
+    /**
+     * Tests the GET /api/restaurants/filter endpoint with query parameter.
+     * Verifies that the endpoint correctly filters restaurants by keyword
+     * matching against name, description, and cuisine fields.
+     */
     @Test
     void filter_withQuery_appliesInMemoryKeywordFilter() throws Exception {
         // Service returns a base list; controller should then apply keyword filtering on name/desc/cuisine
@@ -165,6 +210,11 @@ void filter_withCuisineAndPriceAndReservation_passesParamsToService() throws Exc
                 .andExpect(jsonPath("$[0].name").value("Sushi Place"));
     }
 
+    /**
+     * Tests the GET /api/restaurants/filter endpoint with blank query parameter.
+     * Verifies that when a blank query is provided, the endpoint returns
+     * the complete unfiltered list of restaurants from the service.
+     */
     @Test
     void filter_withBlankQuery_returnsUnfilteredServiceList() throws Exception {
         List<Restaurant> svc = List.of(

@@ -11,6 +11,12 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service responsible for advanced restaurant filtering operations.
+ * Uses MongoTemplate for complex queries and post-processing for time-based filtering.
+ * Supports filtering by cuisine, price range, reservation requirements,
+ * current operating status, and location.
+ */
 @Service
 public class RestaurantSearchService {
 
@@ -20,6 +26,23 @@ public class RestaurantSearchService {
         this.mongoTemplate = mongoTemplate;
     }
 
+    /**
+     * Performs complex filtering of restaurants using both MongoDB queries and in-memory processing.
+     * Builds a dynamic MongoDB query for static criteria (cuisine, price, reservation, city)
+     * and applies post-processing for time-based filtering (openNow).
+     * 
+     * Price range is automatically normalized if min > max.
+     * City matching is case-insensitive and exact (no partial matches).
+     * Time-based filtering uses New Zealand timezone for all calculations.
+     *
+     * @param cuisine Case-insensitive partial match for cuisine type
+     * @param priceMin Lower bound for price level (inclusive)
+     * @param priceMax Upper bound for price level (inclusive)
+     * @param reservation Filter for reservation requirement
+     * @param openNow Filter for currently operating restaurants
+     * @param cities List of cities to match (case-insensitive, exact match)
+     * @return Filtered list of restaurants matching all criteria
+     */
     public List<Restaurant> filter(
             String cuisine,
             Integer priceMin,
@@ -82,13 +105,24 @@ public class RestaurantSearchService {
         return results;
     }
 
+    /**
+     * Converts current NZ day to the corresponding key in restaurant hours data.
+     * Maps ISO day-of-week (1-7) to lowercase day names used in the database.
+     *
+     * @param nz New Zealand timezone for accurate day determination
+     * @return Lowercase day name (monday, tuesday, etc.)
+     */
     private static String dayKeyNZ(ZoneId nz) {
         String[] keys = {"monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
         int idx = java.time.ZonedDateTime.now(nz).getDayOfWeek().getValue();
         return keys[idx - 1];
     }
 
-    //Check if the restaurant is open now - using nztimezone
+    /**
+     * Determines if a restaurant is currently open based on its operating hours.
+     * Handles both regular time windows (e.g., 9:00-17:00) and overnight windows
+     * (e.g., 22:00-02:00). Time comparisons use New Zealand timezone.
+     */
     private static boolean isOpenNow(Restaurant r, String dayKey, LocalTime now) {
         Map<String, String> hours = r.getHours();
         if (hours == null) return false;
