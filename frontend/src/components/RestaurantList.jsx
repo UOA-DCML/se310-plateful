@@ -5,7 +5,9 @@ const RestaurantList = ({ restaurants, direction }) => {
   return (
     <div
       className={`w-full ${
-        direction === "vertical" ? "" : "overflow-x-auto"
+        direction === "vertical"
+          ? ""
+          : "overflow-x-auto snap-x snap-mandatory"
       }`}
     >
       <div
@@ -16,7 +18,7 @@ const RestaurantList = ({ restaurants, direction }) => {
         }`}
       >
         {restaurants.map((restaurant, index) => (
-          <div key={index} className="shrink-0">
+          <div key={index} className={direction === "vertical" ? "shrink-0" : "shrink-0 snap-center"}>
             <RestaurantCard
               restaurant={restaurant}
               direction={direction}
