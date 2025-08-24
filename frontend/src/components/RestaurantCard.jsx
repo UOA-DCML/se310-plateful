@@ -50,9 +50,17 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
         <h3 className="text-lg font-bold truncate">
           {restaurant.name || "Unnamed Restaurant"}
         </h3>
-        <p className="text-gray-600 text-sm line-clamp-3">
-          {restaurant.description || "No description available"}
-        </p>
+        {Array.isArray(restaurant.tags) && restaurant.tags.length > 0 ? (
+          <div className="flex flex-wrap gap-1 mt-1">
+              {restaurant.tags.map((tag, idx) => (
+                <span key={idx} className="bg-gray-200 text-gray-700 text-[10px] px-1 py-0.5 rounded-full inline-block">
+                  {tag}
+                </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-600 text-sm">No tags available</p>
+        )}
         <p className="text-sm text-gray-500 mt-auto">{displayInfo}</p>
       </div>
     </div>

@@ -93,6 +93,7 @@ export default function Home() {
     image:
       (Array.isArray(r.images) && r.images[0]) ||
       "https://picsum.photos/seed/placeholder/600/400",
+    tags: r.tags,
   });
 
   // filter popular
