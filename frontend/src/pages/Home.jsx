@@ -1,14 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/PlatefulBackgroundHome copy.png";
-import navLogo from "../assets/navlogo.png";
 import MapContainer from "../components/MapContainer";
 import PriceSlider from "../components/Slider";
 import Dropdown from "../components/Dropdown";
 import RestaurantMarkers from "../components/RestaurantMarkers";
 import RestaurantList from "../components/RestaurantList";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
-import DOMPurify from "dompurify";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -48,11 +46,10 @@ export default function Home() {
         return res.json();
       })
       .then((data) => {
-        // Transform cuisine strings into objects with name and default image
+        // Transform cuisine strings into objects with name only
         const cuisineObjects = Array.isArray(data)
           ? data.map((cuisine) => ({
               name: cuisine,
-              image: navLogo, // Using default image for now
             }))
           : [];
         setCuisines(cuisineObjects);
@@ -241,27 +238,17 @@ export default function Home() {
         {/* Explore Cuisines */}
         <section className="relative py-8">
           <h3 className="text-xl font-bold">Explore Cuisines</h3>
-          <div className="flex flex-wrap justify-center gap-10 mt-4">
+          <div className="flex flex-wrap justify-center gap-4 mt-6">
             {cuisines.map((cuisine) => {
-              // Sanitize each cuisine.image inside the loop
-              const safeImage = DOMPurify.sanitize(cuisine.image, {
-                ALLOWED_URI_REGEXP: /^https?:\/\//,
-              });
-
               return (
-                <div
+                <button
                   key={cuisine.name}
-                  className="flex flex-col items-center text-center"
+                  className="group relative px-6 py-3 bg-lime-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-out hover:bg-lime-700 focus:outline-none focus:ring-4"
                   onClick={() => handleCuisineClick(cuisine.name)}
-                  style={{ cursor: "pointer" }}
                 >
-                  <img
-                    src={safeImage || "/fallback.png"} // use fallback if invalid
-                    alt={cuisine.name}
-                    className="w-24 h-24 rounded-full object-cover mb-2 shadow-md"
-                  />
-                  <div className="font-bold text-base">{cuisine.name}</div>
-                </div>
+                  <span className="relative z-10">{cuisine.name}</span>
+                  <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-lg transition-opacity duration-300"></div>
+                </button>
               );
             })}
           </div>
