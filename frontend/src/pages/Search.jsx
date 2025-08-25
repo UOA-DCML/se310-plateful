@@ -6,8 +6,6 @@ import MapContainer from "../components/MapContainer";
 import Dropdown from "../components/Dropdown";
 import PriceSlider from "../components/Slider";
 import RestaurantMarkers from "../components/RestaurantMarkers";
-import "../styles/search.css";
-import "../styles/global.css";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 
 export default function Search() {
