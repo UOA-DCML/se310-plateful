@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import DOMPurify from "dompurify";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -46,9 +47,19 @@ export default function RestaurantDetails() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="max-w-6xl w-full p-6">
-        <Link to="/" className="text-green-700 mb-4 inline-block">
+        <button
+          type="button"
+          className="text-green-700 mb-4 inline-block"
+          onClick={() => {
+            if (window.history.state && window.history.state.idx > 0) {
+              navigate(-1);
+            } else {
+              navigate("/", { replace: true });
+            }
+          }}
+        >
           ← Go back
-        </Link>
+        </button>
 
         {/** Restaurant image gallery */}
         <Lightbox
