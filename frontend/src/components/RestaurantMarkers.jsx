@@ -32,9 +32,15 @@ export default function RestaurantMarkers({ map, restaurants }) {
 
     restaurants.forEach((r) => {
       try {
-        const lng = r.location?.coordinates?.[0] ?? r.longitude;
-        const lat = r.location?.coordinates?.[1] ?? r.latitude;
+          // TODO: Remove this when Database Entries are fixed
+          let lng = Number(r.location?.coordinates?.[0] ?? r.longitude);
+          let lat = Number(r.location?.coordinates?.[1] ?? r.latitude);
+
         if (lng == null || lat == null) return;
+        // If it looks like [lat, lng] or ranges are invalid, swap them.
+        if ((Math.abs(lng) <= 90 && Math.abs(lat) > 90) || lng < -180 || lng > 180 || lat < -90 || lat > 90) {
+            [lng, lat] = [lat, lng];
+        }
 
         const el = document.createElement("div");
         el.className = "custom-marker";
