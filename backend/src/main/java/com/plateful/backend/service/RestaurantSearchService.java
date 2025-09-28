@@ -1,15 +1,15 @@
-package com.plateful.backend.restaurant;
+package com.plateful.backend.service;
+
+import com.plateful.backend.model.Restaurant;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Service;
 
 /**
  * Service responsible for advanced restaurant filtering operations.
@@ -51,12 +51,49 @@ public class RestaurantSearchService {
             Boolean openNow,
             List<String> cities
     ) {
+        Query query = buildFilterQuery(cuisine, priceMin, priceMax, reservation, cities);
+        List<Restaurant> results = mongoTemplate.find(query, Restaurant.class);
+
+        if (Boolean.TRUE.equals(openNow)) {
+            results = filterByOpenStatus(results);
+        }
+
+        return results;
+    }
+
+    /**
+     * Builds MongoDB query based on filter criteria.
+     */
+    private Query buildFilterQuery(String cuisine, Integer priceMin, Integer priceMax, 
+                                 Boolean reservation, List<String> cities) {
         List<Criteria> ands = new ArrayList<>();
 
+        addCuisineCriteria(ands, cuisine);
+        addPriceCriteria(ands, priceMin, priceMax);
+        addReservationCriteria(ands, reservation);
+        addCityCriteria(ands, cities);
+
+        Query query = new Query();
+        if (!ands.isEmpty()) {
+            query.addCriteria(new Criteria().andOperator(ands.toArray(Criteria[]::new)));
+        }
+        
+        return query;
+    }
+
+    /**
+     * Adds cuisine filtering criteria if specified.
+     */
+    private void addCuisineCriteria(List<Criteria> ands, String cuisine) {
         if (cuisine != null && !cuisine.isBlank()) {
             ands.add(Criteria.where("cuisine").regex(cuisine, "i"));
         }
+    }
 
+    /**
+     * Adds price range filtering criteria if specified.
+     */
+    private void addPriceCriteria(List<Criteria> ands, Integer priceMin, Integer priceMax) {
         if (priceMin != null || priceMax != null) {
             Criteria c = Criteria.where("price_level");
             if (priceMin != null && priceMax != null && priceMin > priceMax) {
@@ -66,43 +103,79 @@ public class RestaurantSearchService {
             if (priceMax != null) c = c.lte(priceMax);
             ands.add(c);
         }
+    }
 
+    /**
+     * Adds reservation requirement criteria if specified.
+     */
+    private void addReservationCriteria(List<Criteria> ands, Boolean reservation) {
         if (reservation != null) {
             ands.add(Criteria.where("reservation_required").is(reservation));
         }
+    }
 
+    /**
+     * Adds city filtering criteria if specified.
+     */
+    private void addCityCriteria(List<Criteria> ands, List<String> cities) {
         if (cities != null && !cities.isEmpty()) {
-            // Normalise and build case-insensitive OR over address.city
             List<Criteria> cityOr = new ArrayList<>();
             for (String city : cities) {
                 if (city != null && !city.isBlank()) {
-                    cityOr.add(Criteria.where("address.city").regex("^" + java.util.regex.Pattern.quote(city.trim()) + "$", "i"));
+                    cityOr.add(Criteria.where("address.city")
+                            .regex("^" + java.util.regex.Pattern.quote(city.trim()) + "$", "i"));
                 }
             }
             if (!cityOr.isEmpty()) {
-                ands.add(new Criteria().orOperator(cityOr.toArray(new Criteria[0])));
+                ands.add(new Criteria().orOperator(cityOr.toArray(Criteria[]::new)));
             }
         }
+    }
 
+    /**
+     * Filters restaurants by current open status using New Zealand timezone.
+     */
+    private List<Restaurant> filterByOpenStatus(List<Restaurant> restaurants) {
+        ZoneId nz = ZoneId.of("Pacific/Auckland");
+        LocalTime now = LocalTime.now(nz);
+        String dayKey = dayKeyNZ(nz);
 
-        Query query = new Query();
-        if (!ands.isEmpty()) {
-            query.addCriteria(new Criteria().andOperator(ands.toArray(new Criteria[0])));
+        return restaurants.stream()
+                .filter(r -> isOpenNow(r, dayKey, now))
+                .toList();
+    }
+
+    /**
+     * Filters restaurants by text query across name, description, and cuisine.
+     * @param restaurants List of restaurants to filter
+     * @param query Search query (case-insensitive)
+     * @return Filtered list of restaurants
+     */
+    public List<Restaurant> filterByTextQuery(List<Restaurant> restaurants, String query) {
+        if (query == null || query.isBlank()) {
+            return restaurants;
         }
 
-        List<Restaurant> results = mongoTemplate.find(query, Restaurant.class);
+        String q = query.trim().toLowerCase();
+        return restaurants.stream()
+                .filter(r ->
+                        containsIgnoreCase(r.getName(), q) ||
+                        containsIgnoreCase(r.getDescription(), q) ||
+                        containsIgnoreCase(r.getCuisine(), q)
+                )
+                .toList();
+    }
 
-        if (Boolean.TRUE.equals(openNow)) {
-            ZoneId nz = ZoneId.of("Pacific/Auckland");
-            LocalTime now = LocalTime.now(nz);
-            String dayKey = dayKeyNZ(nz);
-
-            results = results.stream()
-                    .filter(r -> isOpenNow(r, dayKey, now))
-                    .collect(Collectors.toList());
-        }
-
-        return results;
+    /**
+     * Helper method for case-insensitive string matching.
+     * Assumes the needle (search term) is already lowercase.
+     *
+     * @param s The source string to search within (may be null)
+     * @param needleLower The lowercase search term
+     * @return true if the lowercase version of s contains needleLower
+     */
+    private static boolean containsIgnoreCase(String s, String needleLower) {
+        return s != null && s.toLowerCase().contains(needleLower);
     }
 
     /**
