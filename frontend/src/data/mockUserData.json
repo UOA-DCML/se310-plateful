@@ -1,0 +1,143 @@
+{
+  "user": {
+    "id": "user123",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "+1 234 567 8900",
+    "avatar": null,
+    "preferences": {
+      "cuisine": "Italian",
+      "dietaryRestrictions": "None",
+      "notifications": true
+    },
+    "settings": {
+      "notifications": {
+        "email": true,
+        "push": false,
+        "sms": false,
+        "promotional": true
+      },
+      "privacy": {
+        "profileVisibility": "public",
+        "showEmail": false,
+        "showPhone": false
+      },
+      "preferences": {
+        "language": "English",
+        "theme": "light",
+        "currency": "USD",
+        "dateFormat": "MM/DD/YYYY"
+      }
+    }
+  },
+  "favorites": [
+    {
+      "id": "68a526b25eac893bcb9341f3",
+      "name": "MASU by Nic Watt",
+      "cuisine": "Japanese",
+      "rating": 4.6,
+      "address": "90 Federal St, Auckland",
+      "phone": "+64 9 363 6278",
+      "priceRange": "$$",
+      "image": "https://picsum.photos/seed/masu1/800/600",
+      "website": "https://www.masu.co.nz/",
+      "dateAdded": "2024-11-15T14:30:00Z"
+    },
+    {
+      "id": "68a5268c5eac893bcb9341ef",
+      "name": "Amano",
+      "cuisine": "Italian",
+      "rating": 4.4,
+      "address": "66-68 Tyler St, Britomart, Auckland",
+      "phone": "+64 9 394 1416",
+      "priceRange": "$$",
+      "image": "https://picsum.photos/seed/amano1/800/600",
+      "website": "https://www.amanorestaurant.co.nz/",
+      "dateAdded": "2024-11-20T09:15:00Z"
+    },
+    {
+      "id": "68a5268c5eac893bcb9341f0",
+      "name": "Depot Eatery",
+      "cuisine": "New Zealand",
+      "rating": 4.3,
+      "address": "86 Federal St, Auckland",
+      "phone": "+64 9 363 7048",
+      "priceRange": "$",
+      "image": "https://picsum.photos/seed/depot1/800/600",
+      "website": "https://depoteatery.co.nz/",
+      "dateAdded": "2024-11-22T16:45:00Z"
+    }
+  ],
+  "browseHistory": [
+    {
+      "restaurant": {
+        "id": "68a526b25eac893bcb9341f2",
+        "name": "The Grove",
+        "cuisine": "Fine Dining",
+        "rating": 4.8,
+        "address": "Saint Patrick's Square, Wyndham St, Auckland",
+        "priceRange": "$$$$$",
+        "image": "https://picsum.photos/seed/grove1/800/600",
+        "website": "https://thegroverestaurant.co.nz/"
+      },
+      "viewedAt": "2025-09-26T20:18:33.186Z",
+      "searchQuery": "fine dining Auckland"
+    },
+    {
+      "restaurant": {
+        "id": "68a526b25eac893bcb9341f4",
+        "name": "Sid at The French Café",
+        "cuisine": "Modern European",
+        "rating": 4.7,
+        "address": "210 Symonds St, Eden Terrace, Auckland",
+        "priceRange": "$$$$",
+        "image": "https://picsum.photos/seed/frenchcafe1/800/600",
+        "website": "https://sidatthefrenchcafe.co.nz/"
+      },
+      "viewedAt": "2025-09-23T20:18:33.186Z",
+      "searchQuery": "modern european cuisine"
+    },
+    {
+      "restaurant": {
+        "id": "68a526b25eac893bcb9341f6",
+        "name": "Hello Beasty",
+        "cuisine": "Asian Fusion",
+        "rating": 4.5,
+        "address": "95-97 Customs St West, Viaduct, Auckland",
+        "priceRange": "$$$",
+        "image": "https://picsum.photos/seed/beasty1/800/600",
+        "website": "https://www.hellobeasty.nz/"
+      },
+      "viewedAt": "2025-09-20T20:18:33.186Z",
+      "searchQuery": "asian fusion viaduct"
+    },
+    {
+      "restaurant": {
+        "id": "68a526b25eac893bcb9341f7",
+        "name": "Giapo",
+        "cuisine": "Dessert",
+        "rating": 4.6,
+        "address": "12 Gore St, Auckland",
+        "priceRange": "$$",
+        "image": "https://picsum.photos/seed/giapo1/800/600",
+        "website": "https://www.giapo.com/"
+      },
+      "viewedAt": "2025-09-16T20:18:33.186Z",
+      "searchQuery": "dessert place Auckland"
+    },
+    {
+      "restaurant": {
+        "id": "68a526b25eac893bcb9341f8",
+        "name": "Blue Breeze Inn",
+        "cuisine": "Chinese Fusion",
+        "rating": 4.4,
+        "address": "146 Ponsonby Rd, Ponsonby, Auckland",
+        "priceRange": "$$",
+        "image": "https://picsum.photos/seed/bluebreeze1/800/600",
+        "website": "https://thebluebreezeinn.co.nz/"
+      },
+      "viewedAt": "2025-09-10T20:18:33.186Z",
+      "searchQuery": "chinese food ponsonby"
+    }
+  ]
+}

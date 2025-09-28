@@ -1,19 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import userService from "../services/userService";
 
 const UserProfile = () => {
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 234 567 8900",
-    avatar: null,
-    preferences: {
-      cuisine: "Italian",
-      dietaryRestrictions: "None",
-      notifications: true
-    }
-  });
-
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  // Load user data on component mount
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        setLoading(true);
+        const userData = await userService.getCurrentUser();
+        setUser(userData);
+      } catch (err) {
+        setError("Failed to load user data");
+        console.error("Error loading user:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      setError("");
+      
+      // Update user profile
+      const updatedUser = await userService.updateUser({
+        name: user.name,
+        email: user.email,
+        phone: user.phone
+      });
+
+      // Update preferences
+      await userService.updateUserPreferences(user.preferences);
+      
+      setUser(updatedUser);
+      setIsEditing(false);
+    } catch (err) {
+      setError("Failed to save changes");
+      console.error("Error saving user:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      // Reload original user data
+      const userData = await userService.getCurrentUser();
+      setUser(userData);
+      setIsEditing(false);
+      setError("");
+    } catch (err) {
+      console.error("Error reloading user data:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading profile...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <p className="text-red-600">Failed to load user profile</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -99,17 +174,22 @@ const UserProfile = () => {
 
           {/* Action Buttons */}
           <div className="mt-6 flex gap-4">
+            {error && (
+              <p className="text-red-600 text-sm">{error}</p>
+            )}
             {isEditing ? (
               <>
                 <button
-                  onClick={() => setIsEditing(false)}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition disabled:opacity-50"
                 >
-                  Save Changes
+                  {saving ? "Saving..." : "Save Changes"}
                 </button>
                 <button
-                  onClick={() => setIsEditing(false)}
-                  className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+                  onClick={handleCancel}
+                  disabled={saving}
+                  className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition disabled:opacity-50"
                 >
                   Cancel
                 </button>

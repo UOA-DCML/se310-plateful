@@ -1,39 +1,77 @@
-const Favorites = () => {
-  // Mock favorite restaurants data - replace with actual data when backend is ready
-  const favorites = [
-    {
-      id: 1,
-      name: "Bella's Italian",
-      cuisine: "Italian",
-      rating: 4.8,
-      image: "/api/placeholder/300/200",
-      address: "123 Main St, Downtown",
-      priceRange: "$$"
-    },
-    {
-      id: 2,
-      name: "Tokyo Sushi Bar",
-      cuisine: "Japanese",
-      rating: 4.6,
-      image: "/api/placeholder/300/200",
-      address: "456 Oak Ave, Midtown",
-      priceRange: "$$$"
-    },
-    {
-      id: 3,
-      name: "The Garden Café",
-      cuisine: "Vegetarian",
-      rating: 4.7,
-      image: "/api/placeholder/300/200",
-      address: "789 Pine Rd, Uptown",
-      priceRange: "$"
-    }
-  ];
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { userService } from '../services/userService';
 
-  const removeFavorite = (id) => {
-    // TODO: Implement remove favorite logic when backend is ready
-    console.log(`Remove favorite restaurant with id: ${id}`);
+const Favorites = () => {
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    loadFavorites();
+  }, []);
+
+  const loadFavorites = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const userFavorites = await userService.getFavorites();
+      setFavorites(userFavorites);
+    } catch (err) {
+      setError('Failed to load favorites');
+      console.error('Error loading favorites:', err);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleRemoveFavorite = async (restaurantId) => {
+    try {
+      await userService.removeFromFavorites(restaurantId);
+      setFavorites(favorites.filter(fav => fav.id !== restaurantId));
+    } catch (err) {
+      setError('Failed to remove from favorites');
+      console.error('Error removing favorite:', err);
+    }
+  };
+
+  const handleViewRestaurant = (restaurantId) => {
+    if (restaurantId) {
+      navigate(`/restaurant/${restaurantId}`);
+    }
+  };
+
+  const handleVisitWebsite = (website) => {
+    if (website) {
+      window.open(website, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Your Favorites</h1>
+            <p className="text-gray-600 mt-2">Your saved restaurants for quick access</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="h-48 bg-gray-300 animate-pulse"></div>
+                <div className="p-4 space-y-3">
+                  <div className="h-4 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-3 bg-gray-300 rounded animate-pulse w-2/3"></div>
+                  <div className="h-3 bg-gray-300 rounded animate-pulse w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -44,6 +82,12 @@ const Favorites = () => {
           <p className="text-gray-600 mt-2">Your saved restaurants for quick access</p>
         </div>
 
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+            {error}
+          </div>
+        )}
+
         {/* Favorites Grid */}
         {favorites.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,13 +96,13 @@ const Favorites = () => {
                 {/* Restaurant Image */}
                 <div className="relative h-48 bg-gray-200">
                   <img 
-                    src={restaurant.image} 
+                    src={restaurant.image || "/api/placeholder/300/200"} 
                     alt={restaurant.name}
                     className="w-full h-full object-cover"
                   />
                   {/* Remove from favorites button */}
                   <button
-                    onClick={() => removeFavorite(restaurant.id)}
+                    onClick={() => handleRemoveFavorite(restaurant.id)}
                     className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
                     title="Remove from favorites"
                   >
@@ -72,7 +116,7 @@ const Favorites = () => {
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-lg font-semibold text-gray-900">{restaurant.name}</h3>
-                    <span className="text-sm text-gray-600">{restaurant.priceRange}</span>
+                    <span className="text-sm text-gray-600">${restaurant.priceRange}</span>
                   </div>
                   
                   <p className="text-gray-600 text-sm mb-2">{restaurant.cuisine}</p>
@@ -88,13 +132,30 @@ const Favorites = () => {
                   
                   <p className="text-gray-600 text-sm mb-4">{restaurant.address}</p>
                   
+                  {restaurant.phone && (
+                    <p className="text-gray-600 text-sm mb-4">📞 {restaurant.phone}</p>
+                  )}
+
+                  {restaurant.dateAdded && (
+                    <p className="text-xs text-gray-400 mb-4">
+                      Added on {new Date(restaurant.dateAdded).toLocaleDateString()}
+                    </p>
+                  )}
+                  
                   {/* Action Buttons */}
                   <div className="flex space-x-2">
-                    <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition text-sm">
-                      View Menu
+                    <button 
+                      onClick={() => handleViewRestaurant(restaurant.id)}
+                      className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition text-sm"
+                    >
+                      View Details
                     </button>
-                    <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition text-sm">
-                      Order Now
+                    <button 
+                      onClick={() => handleVisitWebsite(restaurant.website)}
+                      className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      disabled={!restaurant.website}
+                    >
+                      Visit Website
                     </button>
                   </div>
                 </div>

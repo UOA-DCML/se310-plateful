@@ -1,8 +1,30 @@
-import { Link } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { userService } from '../services/userService';
 
 const UserSidebar = ({ isOpen, onClose }) => {
   const sidebarRef = useRef(null);
+  const [userData, setUserData] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  // Load user data
+  React.useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        setLoading(true);
+        const user = await userService.getCurrentUser();
+        setUserData(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      loadUserData();
+    }
+  }, [isOpen]);
 
   // Mock user data - replace with actual user data when backend is ready
   const user = {
@@ -86,25 +108,32 @@ const UserSidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* User Info */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
-              {user.avatar ? (
-                <img src={user.avatar} alt="Profile" className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <svg className="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
-              )}
-            </div>
-            <div>
-              <div className="font-medium text-gray-900">{user.name}</div>
-              <div className="text-sm text-gray-600">{user.email}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Menu Items */}
+          {/* User Info */}
+          <div className="p-6 border-b border-gray-200">
+            {loading ? (
+              <div className="animate-pulse">
+                <div className="bg-gray-300 rounded-full h-16 w-16 mb-4"></div>
+                <div className="bg-gray-300 h-4 rounded mb-2"></div>
+                <div className="bg-gray-300 h-3 rounded w-2/3"></div>
+              </div>
+            ) : userData ? (
+              <div className="text-center">
+                <div className="bg-blue-500 text-white rounded-full h-16 w-16 flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                  {userData.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <h3 className="font-semibold text-gray-800">{userData.name || 'User'}</h3>
+                <p className="text-gray-600 text-sm">{userData.email || 'No email'}</p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <div className="bg-gray-500 text-white rounded-full h-16 w-16 flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                  U
+                </div>
+                <h3 className="font-semibold text-gray-800">User</h3>
+                <p className="text-gray-600 text-sm">No email</p>
+              </div>
+            )}
+          </div>        {/* Menu Items */}
         <nav className="p-4">
           <div className="space-y-2">
             <Link
