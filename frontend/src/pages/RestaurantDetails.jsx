@@ -3,6 +3,7 @@ import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
+import DirectionsButton from "../components/DirectionsButton";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
@@ -155,6 +156,11 @@ export default function RestaurantDetails() {
             <p>{restaurant.address.postcode}</p>
             <p>{restaurant.address.country}</p>
             <p>{restaurant.phone}</p>
+            <div className="mt-4">
+              <DirectionsButton
+                destinationAddress={`${restaurant.address.street}, ${restaurant.address.city} ${restaurant.address.postcode}, ${restaurant.address.country}`}
+              />
+            </div>
           </div>
         </div>
       </div>
