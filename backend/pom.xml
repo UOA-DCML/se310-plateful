@@ -30,10 +30,9 @@
     <tag/>
     <url/>
   </scm>
+	
   <properties>
-    <java.version>17</java.version>
-    <sonar.organization>uoa-dcml</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  	<sonar.organization>uoa-dcml</sonar.organization>
   </properties>
 
   <dependencies>
@@ -65,7 +64,8 @@
       <groupId>me.paulschwarz</groupId>
       <artifactId>spring-dotenv</artifactId>
       <version>3.0.0</version>
-    </dependency>
+    </dependency>v
+	  
   </dependencies>
 
   <build>
