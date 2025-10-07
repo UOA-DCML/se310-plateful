@@ -30,9 +30,8 @@
     <tag/>
     <url/>
   </scm>
-	
   <properties>
-  	<sonar.organization>uoa-dcml</sonar.organization>
+    <sonar.organization>uoa-dcml</sonar.organization>
   </properties>
 
   <dependencies>
@@ -64,8 +63,7 @@
       <groupId>me.paulschwarz</groupId>
       <artifactId>spring-dotenv</artifactId>
       <version>3.0.0</version>
-    </dependency>v
-	  
+    </dependency>
   </dependencies>
 
   <build>
