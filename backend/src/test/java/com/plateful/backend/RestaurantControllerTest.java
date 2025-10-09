@@ -22,11 +22,15 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 // Only load the web layer for this controller
 @WebMvcTest(RestaurantController.class)
+@Import(com.plateful.backend.config.SecurityConfig.class)
+@TestPropertySource(properties = {"app.frontend.origin=http://localhost:3000"})
 class RestaurantControllerTest {
 
   @Autowired private MockMvc mockMvc; // Used to perform mock HTTP requests against the controller
