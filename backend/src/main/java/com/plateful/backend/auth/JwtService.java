@@ -1,6 +1,6 @@
 package com.plateful.backend.auth;
 
-import com.plateful.backend.user.AppUser;
+import com.plateful.backend.model.AppUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,5 +1,5 @@
-package com.plateful.backend.user;
-
+package com.plateful.backend.repository;
+import com.plateful.backend.model.AppUser;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
