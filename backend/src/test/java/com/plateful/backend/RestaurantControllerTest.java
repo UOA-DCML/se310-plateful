@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.plateful.backend.config.SecurityConfig;
 import com.plateful.backend.controller.RestaurantController;
 import com.plateful.backend.model.Restaurant;
 import com.plateful.backend.service.RestaurantSearchService;
@@ -22,11 +23,13 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 // Only load the web layer for this controller
 @WebMvcTest(RestaurantController.class)
+@Import(SecurityConfig.class)
 class RestaurantControllerTest {
 
   @Autowired private MockMvc mockMvc; // Used to perform mock HTTP requests against the controller
