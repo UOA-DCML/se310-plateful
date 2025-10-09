@@ -32,7 +32,6 @@
   </scm>
   <properties>
     <sonar.organization>uoa-dcml</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
 
   <dependencies>
