@@ -14,8 +14,8 @@ import org.springframework.web.cors.CorsConfiguration;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${app.frontend.origin}")
-    private String frontendOrigin;
+    @Value("#{'${app.frontend.origins:http://localhost:5173}'.split(',')}")
+    private List<String> frontendOrigins;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,7 +24,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(req -> {
                 var c = new CorsConfiguration();
-                c.setAllowedOrigins(List.of(frontendOrigin));
+                c.setAllowedOriginPatterns(frontendOrigins);
                 c.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
                 c.setAllowedHeaders(List.of("Content-Type","Authorization"));
                 c.setAllowCredentials(true);
