@@ -6,6 +6,7 @@ import MapContainer from "../components/MapContainer";
 import Dropdown from "../components/Dropdown";
 import PriceSlider from "../components/Slider";
 import RestaurantMarkers from "../components/RestaurantMarkers";
+import { buildApiUrl } from "../lib/config";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 
 export default function Search() {
@@ -29,7 +30,7 @@ export default function Search() {
 
   // Fetch cuisines
   useEffect(() => {
-    fetch("http://localhost:8080/api/restaurants/cuisines")
+  fetch(buildApiUrl("/api/restaurants/cuisines"))
       .then((res) => res.json())
       .then((data) => {
         const cuisineObjects = Array.isArray(data)
@@ -67,8 +68,9 @@ export default function Search() {
       if (openNow !== null) params.append("openNow", openNow);
       if (city) params.append("city", city);
 
-      const url = `http://localhost:8080/api/restaurants/filter?${params.toString()}`;
-      const response = await fetch(url);
+      const response = await fetch(
+        buildApiUrl(`/api/restaurants/filter?${params.toString()}`)
+      );
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
 

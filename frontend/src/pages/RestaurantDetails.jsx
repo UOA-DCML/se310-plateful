@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
+import { buildApiUrl } from "../lib/config";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
@@ -13,7 +14,7 @@ export default function RestaurantDetails() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/restaurants/${id}`)
+    fetch(buildApiUrl(`/api/restaurants/${id}`))
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch restaurant");
         return res.json();

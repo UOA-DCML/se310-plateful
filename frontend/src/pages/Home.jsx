@@ -6,6 +6,7 @@ import PriceSlider from "../components/Slider";
 import Dropdown from "../components/Dropdown";
 import RestaurantMarkers from "../components/RestaurantMarkers";
 import RestaurantList from "../components/RestaurantList";
+import { buildApiUrl } from "../lib/config";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
     setErr("");
 
     // Fetch restaurants
-    const fetchRestaurants = fetch("http://localhost:8080/api/restaurants")
+  const fetchRestaurants = fetch(buildApiUrl("/api/restaurants"))
       .then((res) => {
         if (!res.ok) throw new Error(`API ${res.status}`);
         return res.json();
@@ -38,9 +39,7 @@ export default function Home() {
       .then((data) => setRestaurantsRaw(Array.isArray(data) ? data : []));
 
     // Fetch cuisines
-    const fetchCuisines = fetch(
-      "http://localhost:8080/api/restaurants/cuisines"
-    )
+    const fetchCuisines = fetch(buildApiUrl("/api/restaurants/cuisines"))
       .then((res) => {
         if (!res.ok) throw new Error(`Cuisines API ${res.status}`);
         return res.json();
@@ -73,7 +72,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/restaurants/filter?${params.toString()}`
+        buildApiUrl(`/api/restaurants/filter?${params.toString()}`)
       );
       if (!response.ok) throw new Error("Failed to fetch");
 
