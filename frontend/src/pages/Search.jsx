@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/PlatefulBackgroundHome copy.png";
 import RestaurantList from "../components/RestaurantList";
@@ -113,31 +113,30 @@ export default function Search() {
 
   return (
     <div>
-      <section className="relative w-full h-[40vh]">
+      <section className="relative w-full min-h-[420px] md:h-[40vh]">
         <img
           src={backgroundImage}
           alt="Background"
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <h1 className="absolute inset-x-0 top-1/3 transform -translate-y-1/2 text-4xl text-center z-10">
+        <h1 className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold text-black md:text-4xl">
           Looking for something to eat?
         </h1>
         <div
-          className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2
-         flex flex-col items-center gap-4 z-10 w-[60%]"
+          className="absolute top-[55%] left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4"
         >
           {/* Search Bar */}
-          <div className="flex w-full bg-white/80 px-4 py-2 rounded-[10px]">
+          <div className="flex w-full flex-col gap-3 rounded-[12px] bg-white/85 p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2">
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="border-none p-2 outline-none w-full"
+              className="w-full border-none p-3 text-base outline-none md:text-lg"
             />
             <button
-              className="bg-[#333] text-white p-2 px-4 rounded-[5px] ml-2"
+              className="w-full rounded-[6px] bg-[#333] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#222] md:w-auto"
               onClick={handleSearch}
             >
               Go
@@ -145,24 +144,24 @@ export default function Search() {
           </div>
 
           {/* Filters*/}
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="grid w-full gap-3 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap lg:justify-center">
             <Dropdown
               label="Cuisine"
               options={cuisines.map((c) => c.name)}
               value={selectedCuisine}
               onChange={setSelectedCuisine}
-              width="w-[150px]"
+              width="w-full sm:w-[150px]"
             />
             <div className="relative">
               <button
-                className="bg-white text-sm px-2 py-1 rounded-md outline-none w-[120px]"
+                className="w-full rounded-md bg-white px-3 py-2 text-sm outline-none sm:w-[140px]"
                 onClick={() => setShowSlider(!showSlider)}
               >
                 Price: {"$".repeat(priceRange[0])}–{"$".repeat(priceRange[1])}
               </button>
 
               {showSlider && (
-                <div className="absolute top-full mt-2 z-50">
+                <div className="absolute left-0 right-0 top-full z-50 mt-2 max-w-xs sm:max-w-none">
                   <PriceSlider
                     value={priceRange}
                     onChange={setPriceRange}
@@ -186,7 +185,7 @@ export default function Search() {
               onChange={(val) =>
                 setReservation(val === "" ? null : val === "true")
               }
-              width="w-[110px]"
+              width="w-full sm:w-[150px]"
             />
 
             <Dropdown
@@ -197,7 +196,7 @@ export default function Search() {
               ]}
               value={openNow !== null ? openNow.toString() : ""}
               onChange={(val) => setOpenNow(val === "" ? null : val === "true")}
-              width="w-[105px]"
+              width="w-full sm:w-[150px]"
             />
 
             <Dropdown
@@ -205,32 +204,44 @@ export default function Search() {
               options={["Auckland", "Wellington", "Christchurch"]}
               value={selectedCity}
               onChange={setSelectedCity}
-              width="w-[120px]"
+              width="w-full sm:w-[150px]"
             />
           </div>
         </div>
       </section>
 
-      <section className="flex justify-center gap-5 mx-auto mt-8">
-        {/* Restaurant List */}
-        <div className="flex-1 max-w-[55%] overflow-y-auto flex flex-col pl-60">
-          {loading ? (
-            <div className="text-center p-5">Loading restaurants...</div>
-          ) : restaurants.length > 0 ? (
-            <RestaurantList restaurants={restaurants} direction={"vertical"} />
-          ) : (
-            <div className="text-center p-5">
-              {searchQuery
-                ? "No restaurants found for your search."
-                : "No restaurants available."}
+      <section className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-8 lg:px-20">
+        <div className="flex flex-col gap-8 lg:flex-row">
+          {/* Restaurant List */}
+          <div className="flex-1 space-y-4">
+            {loading ? (
+              <div className="rounded-lg bg-white/60 p-5 text-center shadow-sm">
+                Loading restaurants...
+              </div>
+            ) : restaurants.length > 0 ? (
+              <RestaurantList
+                restaurants={restaurants}
+                direction={"vertical"}
+              />
+            ) : (
+              <div className="rounded-lg bg-white/60 p-5 text-center shadow-sm">
+                {searchQuery
+                  ? "No restaurants found for your search."
+                  : "No restaurants available."}
+              </div>
+            )}
+          </div>
+
+          {/* Map */}
+          <div className="flex-1 overflow-hidden rounded-lg bg-white/60 p-4 shadow-sm">
+            <div className="h-[260px] sm:h-[320px] lg:h-[520px] lg:sticky lg:top-28">
+              <MapContainer>
+                {(map) => (
+                  <RestaurantMarkers map={map} restaurants={restaurants} />
+                )}
+              </MapContainer>
             </div>
-          )}
-        </div>
-        {/* Map */}
-        <div className="flex-1 h-[80vh] sticky top-8 mt-8 mb-8 mx-8 pr-60">
-          <MapContainer>
-            {(map) => <RestaurantMarkers map={map} restaurants={restaurants} />}
-          </MapContainer>
+          </div>
         </div>
       </section>
     </div>
