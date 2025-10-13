@@ -17,8 +17,8 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
   const displayInfo = restaurant.rating
     ? `⭐ Rating: ${restaurant.rating}`
     : `${restaurant.cuisine || "Restaurant"} • ${"$".repeat(
-        Math.max(1, Math.min(4, restaurant.priceLevel || 1))
-      )}`;
+      Math.max(1, Math.min(4, restaurant.priceLevel || 1))
+    )}`;
 
   // Share URL for this restaurant
   const shareUrl = `${window.location.origin}/restaurant/${restaurant.id}`;
@@ -52,11 +52,10 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
       {/* Card container with dynamic styles based on direction (i.e. vertical in Home or horizontal in Search) */}
       <div className="relative">
         <div
-          className={`restaurant-card ${
-            direction === "vertical"
+          className={`restaurant-card ${direction === "vertical"
               ? "max-w-[100%] h-40 flex flex-row rounded-lg shadow-lg bg-white overflow-hidden"
               : "w-44 h-80 flex flex-col rounded-lg shadow-lg bg-white overflow-hidden"
-          }`}
+            }`}
           onClick={() => {
             if (restaurant.id) {
               navigate(`/restaurant/${restaurant.id}`);
