@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoClose, IoCheckmark, IoCopy } from 'react-icons/io5';
-import { FaWhatsapp, FaFacebookMessenger, FaTwitter, FaEnvelope, FaSms } from 'react-icons/fa';
+import { FaWhatsapp, FaFacebookMessenger, FaTwitter, FaEnvelope, FaSms, FaInstagram } from 'react-icons/fa';
 import QRCode from 'react-qr-code';
 import toast from 'react-hot-toast';
 
@@ -61,6 +61,13 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
       url: `https://wa.me/?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`,
     },
     {
+      name: 'Instagram',
+      icon: FaInstagram,
+      color: 'bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400',
+      url: shareUrl, // Instagram doesn't have a direct share URL, will copy link and show message
+      isInstagram: true,
+    },
+    {
       name: 'Messenger',
       icon: FaFacebookMessenger,
       color: 'bg-blue-600',
@@ -86,8 +93,21 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
     },
   ];
 
-  const handleShare = (url) => {
-    window.open(url, '_blank', 'width=600,height=400');
+  const handleShare = async (option) => {
+    if (option.isInstagram) {
+      // Instagram doesn't support direct URL sharing, copy link and show message
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Link copied! Paste it in your Instagram post or story', {
+          icon: '📋',
+          duration: 3000,
+        });
+      } catch (err) {
+        toast.error('Failed to copy link');
+      }
+    } else {
+      window.open(option.url, '_blank', 'width=600,height=400');
+    }
   };
 
   const backdropVariants = {
@@ -111,7 +131,7 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4"
+          className="fixed inset-0 z-[1100] flex items-end md:items-center justify-center p-4"
           initial="hidden"
           animate="visible"
           exit="hidden"
@@ -171,7 +191,7 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
                   {shareOptions.map((option) => (
                     <button
                       key={option.name}
-                      onClick={() => handleShare(option.url)}
+                      onClick={() => handleShare(option)}
                       className="flex flex-col items-center gap-2 p-4 hover:bg-gray-50 rounded-xl transition-all duration-200 hover:scale-105"
                     >
                       <div className={`${option.color} w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg`}>
