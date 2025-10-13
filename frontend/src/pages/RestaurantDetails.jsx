@@ -175,13 +175,13 @@ export default function RestaurantDetails() {
           <div className="flex flex-wrap gap-3 mb-6">
             {restaurant.tags?.length
               ? restaurant.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-400 mb-2"
-                  >
-                    {tag}
-                  </span>
-                ))
+                <span
+                  key={tag}
+                  className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-400 mb-2"
+                >
+                  {tag}
+                </span>
+              ))
               : "No tags available"}
           </div>
 
