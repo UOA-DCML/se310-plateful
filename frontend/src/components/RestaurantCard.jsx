@@ -27,8 +27,11 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
   const handleShare = async (e) => {
     e.stopPropagation(); // Prevent card click navigation
 
-    // Try to use native Web Share API first (mobile)
-    if (navigator.share) {
+    // Check if device is mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Only use native Web Share API on mobile devices
+    if (isMobile && navigator.share) {
       try {
         await navigator.share({
           title: restaurant.name,
@@ -42,7 +45,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
         }
       }
     } else {
-      // No native share API - show custom modal
+      // Desktop or no native share API - show custom modal
       setIsShareModalOpen(true);
     }
   };
@@ -53,8 +56,8 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
       <div className="relative">
         <div
           className={`restaurant-card ${direction === "vertical"
-              ? "max-w-[100%] h-40 flex flex-row rounded-lg shadow-lg bg-white overflow-hidden"
-              : "w-44 h-80 flex flex-col rounded-lg shadow-lg bg-white overflow-hidden"
+            ? "max-w-[100%] h-40 flex flex-row rounded-lg shadow-lg bg-white overflow-hidden"
+            : "w-44 h-80 flex flex-col rounded-lg shadow-lg bg-white overflow-hidden"
             }`}
           onClick={() => {
             if (restaurant.id) {
@@ -85,7 +88,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
               {/* Share Button */}
               <button
                 onClick={handleShare}
-                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 cursor-pointer"
                 aria-label="Share restaurant"
               >
                 <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

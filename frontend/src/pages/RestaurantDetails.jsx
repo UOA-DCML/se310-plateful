@@ -36,8 +36,11 @@ export default function RestaurantDetails() {
 
   // Handle share button click
   const handleShare = async () => {
-    // Try to use native Web Share API first (mobile)
-    if (navigator.share) {
+    // Check if device is mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Only use native Web Share API on mobile devices
+    if (isMobile && navigator.share) {
       try {
         await navigator.share({
           title: restaurant.name,
@@ -51,7 +54,7 @@ export default function RestaurantDetails() {
         }
       }
     } else {
-      // No native share API - show custom modal
+      // Desktop or no native share API - show custom modal
       setIsShareModalOpen(true);
     }
   };
