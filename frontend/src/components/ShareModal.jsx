@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
   const [copied, setCopied] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
@@ -29,6 +30,12 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
   const emailBody = `I found this amazing restaurant on Plateful!\n\n${restaurant.name}\n${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • ${restaurant.rating || 'N/A'}/5 stars\n\nCheck it out: ${shareUrl}`;
 
   const handleCopy = async () => {
+    // Prevent multiple calls while copying is in progress
+    if (isCopying || copied) {
+      return;
+    }
+
+    setIsCopying(true);
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
@@ -36,9 +43,13 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
         icon: '✓',
         duration: 2000,
       });
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => {
+        setCopied(false);
+        setIsCopying(false);
+      }, 2000);
     } catch (err) {
       toast.error('Failed to copy link');
+      setIsCopying(false);
     }
   };
 
@@ -184,9 +195,13 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
                   />
                   <button
                     onClick={handleCopy}
-                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${copied
+                    disabled={isCopying || copied}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
+                      copied
                         ? 'bg-green-500 text-white'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        : isCopying
+                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                        : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                       }`}
                   >
                     {copied ? (
