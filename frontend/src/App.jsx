@@ -8,12 +8,14 @@ import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import { AuthProvider } from "./auth/AuthContext";
 import { ToasterProvider } from "./components/Toaster";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <ToasterProvider>
+          <Toaster position="top-center" />
           <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
