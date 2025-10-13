@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoClose, IoCheckmark, IoCopy } from 'react-icons/io5';
-import { FaWhatsapp, FaFacebookMessenger, FaTwitter, FaEnvelope, FaSms, FaInstagram } from 'react-icons/fa';
+import { FaWhatsapp, FaFacebookMessenger, FaEnvelope, FaSms, FaInstagram } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 import QRCode from 'react-qr-code';
 import toast from 'react-hot-toast';
 
@@ -64,8 +65,7 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
       name: 'Instagram',
       icon: FaInstagram,
       color: 'bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400',
-      url: shareUrl, // Instagram doesn't have a direct share URL, will copy link and show message
-      isInstagram: true,
+      url: 'https://www.instagram.com/',
     },
     {
       name: 'Messenger',
@@ -74,9 +74,9 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
       url: `fb-messenger://share/?link=${encodeURIComponent(shareUrl)}`,
     },
     {
-      name: 'Twitter',
-      icon: FaTwitter,
-      color: 'bg-sky-500',
+      name: 'X',
+      icon: FaXTwitter,
+      color: 'bg-black',
       url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}&hashtags=Plateful,FoodReview`,
     },
     {
@@ -94,20 +94,7 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
   ];
 
   const handleShare = async (option) => {
-    if (option.isInstagram) {
-      // Instagram doesn't support direct URL sharing, copy link and show message
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        toast.success('Link copied! Paste it in your Instagram post or story', {
-          icon: '📋',
-          duration: 3000,
-        });
-      } catch (err) {
-        toast.error('Failed to copy link');
-      }
-    } else {
-      window.open(option.url, '_blank', 'width=600,height=400');
-    }
+    window.open(option.url, '_blank');
   };
 
   const backdropVariants = {

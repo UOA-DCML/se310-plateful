@@ -104,7 +104,7 @@ describe("ShareModal", () => {
 
     expect(screen.getByText("WhatsApp")).toBeInTheDocument();
     expect(screen.getByText("Messenger")).toBeInTheDocument();
-    expect(screen.getByText("Twitter")).toBeInTheDocument();
+    expect(screen.getByText("X")).toBeInTheDocument();
     expect(screen.getByText("Email")).toBeInTheDocument();
     expect(screen.getByText("SMS")).toBeInTheDocument();
   });
@@ -256,8 +256,7 @@ describe("ShareModal", () => {
 
     expect(mockWindowOpen).toHaveBeenCalledWith(
       expect.stringContaining("wa.me"),
-      "_blank",
-      "width=600,height=400"
+      "_blank"
     );
   });
 

@@ -85,7 +85,7 @@ describe("Sharing Feature Integration Tests", () => {
       // Step 3: Verify all sharing options are present
       expect(screen.getByText("WhatsApp")).toBeInTheDocument();
       expect(screen.getByText("Messenger")).toBeInTheDocument();
-      expect(screen.getByText("Twitter")).toBeInTheDocument();
+      expect(screen.getByText("X")).toBeInTheDocument();
       expect(screen.getByText("Email")).toBeInTheDocument();
       expect(screen.getByText("SMS")).toBeInTheDocument();
 
@@ -117,8 +117,7 @@ describe("Sharing Feature Integration Tests", () => {
 
       expect(mockWindowOpen).toHaveBeenCalledWith(
         expect.stringContaining("wa.me"),
-        "_blank",
-        "width=600,height=400"
+        "_blank"
       );
     });
 
