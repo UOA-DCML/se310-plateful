@@ -162,6 +162,13 @@ describe("RestaurantDetails sharing feature", () => {
       configurable: true,
     });
 
+    // Mock mobile user agent
+    Object.defineProperty(navigator, "userAgent", {
+      value: "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)",
+      writable: true,
+      configurable: true,
+    });
+
     render(<RestaurantDetails />);
 
     // Wait for restaurant data to load

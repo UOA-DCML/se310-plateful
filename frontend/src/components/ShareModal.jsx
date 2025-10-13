@@ -196,12 +196,11 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
                   <button
                     onClick={handleCopy}
                     disabled={isCopying || copied}
-                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
-                      copied
+                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${copied
                         ? 'bg-green-500 text-white'
                         : isCopying
-                        ? 'bg-gray-400 text-white cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                          ? 'bg-gray-400 text-white cursor-not-allowed'
+                          : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                       }`}
                   >
                     {copied ? (
