@@ -47,7 +47,7 @@ describe("Sharing Feature Integration Tests", () => {
 
   beforeEach(() => {
     mockNavigate.mockClear();
-    
+
     // Create a proper spy for clipboard
     writeTextSpy = vi.fn(() => Promise.resolve());
     Object.defineProperty(navigator, 'clipboard', {
@@ -250,7 +250,7 @@ describe("Sharing Feature Integration Tests", () => {
       await waitFor(() => {
         expect(screen.getByText("Share Restaurant")).toBeInTheDocument();
       });
-      
+
       // Should appear in both card and modal
       const restaurantNames = screen.getAllByText("Minimal Restaurant");
       expect(restaurantNames.length).toBeGreaterThan(0);

@@ -5,7 +5,7 @@ import ShareButton from "../ShareButton";
 
 describe("ShareButton", () => {
   it("renders share button with icon and text", () => {
-    render(<ShareButton onClick={() => {}} />);
+    render(<ShareButton onClick={() => { }} />);
 
     expect(screen.getByRole("button", { name: /share restaurant/i })).toBeInTheDocument();
     expect(screen.getByText("Share")).toBeInTheDocument();
@@ -25,7 +25,7 @@ describe("ShareButton", () => {
 
   it("applies custom className when provided", () => {
     const { container } = render(
-      <ShareButton onClick={() => {}} className="custom-class" />
+      <ShareButton onClick={() => { }} className="custom-class" />
     );
 
     const button = container.querySelector("button");
@@ -34,7 +34,7 @@ describe("ShareButton", () => {
 
   it("maintains hover state styling", async () => {
     const user = userEvent.setup();
-    const { container } = render(<ShareButton onClick={() => {}} />);
+    const { container } = render(<ShareButton onClick={() => { }} />);
 
     const button = container.querySelector("button");
     expect(button).toHaveClass("hover:bg-gray-50");

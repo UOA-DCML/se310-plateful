@@ -86,7 +86,7 @@ describe("RestaurantCard", () => {
 
   it("opens share modal when share button is clicked (no native API)", async () => {
     const user = userEvent.setup();
-    
+
     // Ensure no native share API
     delete navigator.share;
 
@@ -120,7 +120,7 @@ describe("RestaurantCard", () => {
   it("uses native share API when available", async () => {
     const user = userEvent.setup();
     const mockShare = vi.fn(() => Promise.resolve());
-    
+
     // Mock navigator.share
     Object.defineProperty(navigator, "share", {
       value: mockShare,

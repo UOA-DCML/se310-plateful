@@ -140,7 +140,7 @@ describe("ShareModal", () => {
     const copyButtons = screen.getAllByRole("button");
     const copyButton = copyButtons.find(btn => btn.textContent.includes("Copy"));
     expect(copyButton).toBeDefined();
-    
+
     // Verify the input field has the correct URL
     const urlInput = screen.getByDisplayValue(mockShareUrl);
     expect(urlInput).toBeInTheDocument();

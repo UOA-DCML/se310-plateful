@@ -87,7 +87,7 @@ describe("RestaurantDetails back navigation", () => {
     const goBackButton = await screen.findByRole("button", { name: /go back/i });
     await userEvent.click(goBackButton);
 
-  // Preserves the search context by delegating to browser history.
+    // Preserves the search context by delegating to browser history.
     expect(mockNavigate).toHaveBeenCalledWith(-1);
     expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
@@ -133,7 +133,7 @@ describe("RestaurantDetails sharing feature", () => {
 
   it("opens share modal when share button is clicked (no native API)", async () => {
     const user = userEvent.setup();
-    
+
     // Ensure no native share API
     delete navigator.share;
 
@@ -179,7 +179,7 @@ describe("RestaurantDetails sharing feature", () => {
 
   it("displays restaurant information in share modal", async () => {
     const user = userEvent.setup();
-    
+
     // Ensure no native share API
     delete navigator.share;
 
@@ -203,7 +203,7 @@ describe("RestaurantDetails sharing feature", () => {
 
   it("closes share modal when close button is clicked", async () => {
     const user = userEvent.setup();
-    
+
     // Ensure no native share API
     delete navigator.share;
 
