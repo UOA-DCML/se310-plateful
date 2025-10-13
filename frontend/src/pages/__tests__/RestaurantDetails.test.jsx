@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import RestaurantDetails from "../RestaurantDetails";
@@ -20,6 +20,29 @@ vi.mock("react-router-dom", async () => {
 
 vi.mock("yet-another-react-lightbox", () => ({
   Lightbox: () => null,
+}));
+
+// Mock react-hot-toast
+vi.mock("react-hot-toast", () => ({
+  default: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
+// Mock framer-motion - render children conditionally
+vi.mock("framer-motion", () => ({
+  motion: {
+    div: ({ children, onClick, initial, animate, exit, variants, ...props }) => (
+      <div onClick={onClick} {...props}>
+        {children}
+      </div>
+    ),
+  },
+  AnimatePresence: ({ children }) => {
+    // Render children if they exist (modal is open)
+    return <>{children}</>;
+  },
 }));
 
 // Mirrors the minimal payload returned by the backend for bug #42, so the regression is reproducible in isolation.
@@ -81,5 +104,129 @@ describe("RestaurantDetails back navigation", () => {
     // With no prior history, the UX requirement is to guide users back to the home landing page.
     expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
     expect(mockNavigate).toHaveBeenCalledTimes(1);
+  });
+});
+
+// Tests for the sharing feature on RestaurantDetails page
+describe("RestaurantDetails sharing feature", () => {
+  beforeEach(() => {
+    mockNavigate.mockReset();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(restaurantFixture),
+    });
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it("renders share button on restaurant details page", async () => {
+    render(<RestaurantDetails />);
+
+    // Wait for restaurant data to load
+    await screen.findByText("Back Button Bistro");
+
+    const shareButton = screen.getByRole("button", { name: /share restaurant/i });
+    expect(shareButton).toBeInTheDocument();
+  });
+
+  it("opens share modal when share button is clicked (no native API)", async () => {
+    const user = userEvent.setup();
+    
+    // Ensure no native share API
+    delete navigator.share;
+
+    render(<RestaurantDetails />);
+
+    // Wait for restaurant data to load
+    await screen.findByText("Back Button Bistro");
+
+    const shareButton = screen.getByRole("button", { name: /share restaurant/i });
+    await user.click(shareButton);
+
+    // Modal should appear - wait for it
+    await waitFor(() => {
+      expect(screen.getByText("Share Restaurant")).toBeInTheDocument();
+    }, { timeout: 2000 });
+  });
+
+  it("uses native share API when available on details page", async () => {
+    const user = userEvent.setup();
+    const mockShare = vi.fn(() => Promise.resolve());
+
+    // Mock navigator.share
+    Object.defineProperty(navigator, "share", {
+      value: mockShare,
+      writable: true,
+      configurable: true,
+    });
+
+    render(<RestaurantDetails />);
+
+    // Wait for restaurant data to load
+    await screen.findByText("Back Button Bistro");
+
+    const shareButton = screen.getByRole("button", { name: /share restaurant/i });
+    await user.click(shareButton);
+
+    expect(mockShare).toHaveBeenCalledWith({
+      title: "Back Button Bistro",
+      text: expect.stringContaining("Back Button Bistro"),
+      url: expect.any(String),
+    });
+  });
+
+  it("displays restaurant information in share modal", async () => {
+    const user = userEvent.setup();
+    
+    // Ensure no native share API
+    delete navigator.share;
+
+    render(<RestaurantDetails />);
+
+    // Wait for restaurant data to load
+    await screen.findByText("Back Button Bistro");
+
+    const shareButton = screen.getByRole("button", { name: /share restaurant/i });
+    await user.click(shareButton);
+
+    // Wait for modal to appear
+    await waitFor(() => {
+      expect(screen.getByText("Share Restaurant")).toBeInTheDocument();
+    }, { timeout: 2000 });
+
+    // Check if restaurant info appears in modal
+    const modalRestaurantName = screen.getAllByText("Back Button Bistro");
+    expect(modalRestaurantName.length).toBeGreaterThan(1); // Should appear in page and modal
+  });
+
+  it("closes share modal when close button is clicked", async () => {
+    const user = userEvent.setup();
+    
+    // Ensure no native share API
+    delete navigator.share;
+
+    render(<RestaurantDetails />);
+
+    // Wait for restaurant data to load
+    await screen.findByText("Back Button Bistro");
+
+    // Open modal
+    const shareButton = screen.getByRole("button", { name: /share restaurant/i });
+    await user.click(shareButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Share Restaurant")).toBeInTheDocument();
+    }, { timeout: 2000 });
+
+    // Close modal
+    const closeButton = screen.getByRole("button", { name: /close modal/i });
+    await user.click(closeButton);
+
+    // Modal should be removed
+    await waitFor(() => {
+      expect(screen.queryByText("Share Restaurant")).not.toBeInTheDocument();
+    }, { timeout: 2000 });
   });
 });
