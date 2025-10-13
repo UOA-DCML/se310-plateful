@@ -3,6 +3,8 @@ import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
+import ShareButton from "../components/ShareButton";
+import ShareModal from "../components/ShareModal";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
@@ -11,6 +13,7 @@ export default function RestaurantDetails() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/restaurants/${id}`)
@@ -27,6 +30,31 @@ export default function RestaurantDetails() {
         setLoading(false);
       });
   }, [id]);
+
+  // Share URL for this restaurant
+  const shareUrl = window.location.href;
+
+  // Handle share button click
+  const handleShare = async () => {
+    // Try to use native Web Share API first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: restaurant.name,
+          text: `Check out ${restaurant.name} - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • ⭐ ${restaurant.rating || 'N/A'}/5`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        // User cancelled or error - show modal as fallback
+        if (err.name !== 'AbortError') {
+          setIsShareModalOpen(true);
+        }
+      }
+    } else {
+      // No native share API - show custom modal
+      setIsShareModalOpen(true);
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (!restaurant) return <p>Restaurant not found</p>;
@@ -132,9 +160,15 @@ export default function RestaurantDetails() {
 
         {/* Restaurant details */}
         <div className="text-left">
-          <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
-          <div className="flex mb-3">
-            {"$".repeat(Math.floor(restaurant.priceLevel))}
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
+              <div className="flex mb-3">
+                {"$".repeat(Math.floor(restaurant.priceLevel))}
+              </div>
+            </div>
+            {/* Share Button */}
+            <ShareButton onClick={handleShare} />
           </div>
 
           {/* Tags */}
@@ -169,6 +203,14 @@ export default function RestaurantDetails() {
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        restaurant={restaurant}
+        shareUrl={shareUrl}
+      />
     </div>
   );
 }
