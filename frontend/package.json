@@ -8,7 +8,11 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "backend:dev": "cd ../backend && ./mvnw spring-boot:run",
+    "backend:build": "cd ../backend && ./mvnw clean package -DskipTests",
+    "dev:all": "concurrently \"npm run dev\" \"npm run backend:dev\" --names \"FRONTEND,BACKEND\" --prefix-colors \"cyan,magenta\"",
+    "build:all": "concurrently \"npm run build\" \"npm run backend:build\" --names \"FRONTEND,BACKEND\" --prefix-colors \"cyan,magenta\""
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
@@ -17,7 +21,9 @@
     "lucide-react": "^0.540.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
+    "react-qr-code": "^2.0.18",
     "react-router-dom": "^7.8.1",
     "tailwindcss": "^4.1.11"
   },
@@ -29,6 +35,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "concurrently": "^9.1.2",
     "dompurify": "^3.2.6",
     "eslint": "^9.30.1",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -37,7 +44,7 @@
     "jsdom": "^27.0.0",
     "rc-slider": "^11.1.8",
     "vite": "^7.0.4",
-    "vitest": "^2.1.4",
+    "vitest": "^3.2.4",
     "yet-another-react-lightbox": "^3.25.0"
   }
 }

@@ -1,16 +1,20 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
 import DirectionsButton from "../components/DirectionsButton";
+import ShareButton from "../components/ShareButton";
+import ShareModal from "../components/ShareModal";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/restaurants/${id}`)
@@ -27,6 +31,34 @@ export default function RestaurantDetails() {
         setLoading(false);
       });
   }, [id]);
+
+  // Share URL for this restaurant
+  const shareUrl = window.location.href;
+
+  // Handle share button click
+  const handleShare = async () => {
+    // Check if device is mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Only use native Web Share API on mobile devices
+    if (isMobile && navigator.share) {
+      try {
+        await navigator.share({
+          title: restaurant.name,
+          text: `Check out ${restaurant.name} - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • ⭐ ${restaurant.rating || 'N/A'}/5`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        // User cancelled or error - show modal as fallback
+        if (err.name !== 'AbortError') {
+          setIsShareModalOpen(true);
+        }
+      }
+    } else {
+      // Desktop or no native share API - show custom modal
+      setIsShareModalOpen(true);
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (!restaurant) return <p>Restaurant not found</p>;
@@ -47,9 +79,19 @@ export default function RestaurantDetails() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="max-w-6xl w-full p-6">
-        <Link to="/" className="text-green-700 mb-4 inline-block">
+        <button
+          type="button"
+          className="text-green-700 mb-4 inline-block"
+          onClick={() => {
+            if (window.history.state && window.history.state.idx > 0) {
+              navigate(-1);
+            } else {
+              navigate("/", { replace: true });
+            }
+          }}
+        >
           ← Go back
-        </Link>
+        </button>
 
         {/** Restaurant image gallery */}
         <Lightbox
@@ -122,22 +164,28 @@ export default function RestaurantDetails() {
 
         {/* Restaurant details */}
         <div className="text-left">
-          <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
-          <div className="flex mb-3">
-            {"$".repeat(Math.floor(restaurant.priceLevel))}
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
+              <div className="flex mb-3">
+                {"$".repeat(Math.floor(restaurant.priceLevel))}
+              </div>
+            </div>
+            {/* Share Button */}
+            <ShareButton onClick={handleShare} />
           </div>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-3 mb-6">
             {restaurant.tags?.length
               ? restaurant.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-400 mb-2"
-                  >
-                    {tag}
-                  </span>
-                ))
+                <span
+                  key={tag}
+                  className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-400 mb-2"
+                >
+                  {tag}
+                </span>
+              ))
               : "No tags available"}
           </div>
 
@@ -164,6 +212,14 @@ export default function RestaurantDetails() {
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        restaurant={restaurant}
+        shareUrl={shareUrl}
+      />
     </div>
   );
 }

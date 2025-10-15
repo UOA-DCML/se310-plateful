@@ -10,8 +10,6 @@ This project is associated with the University of Auckland SOFTENG 310.
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -25,8 +23,6 @@ This project is associated with the University of Auckland SOFTENG 310.
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -48,8 +44,6 @@ This project is associated with the University of Auckland SOFTENG 310.
     <a href="https://github.com/UOA-DCML/se310-plateful/issues/new?template=feature_request.md">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -77,18 +71,16 @@ This project is associated with the University of Auckland SOFTENG 310.
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
 <img width="2940" height="1458" alt="image" src="https://github.com/user-attachments/assets/24ceb135-54c4-4885-a62e-e0b346e7e95c" />
 
-
 **Plateful** is a full-stack web app for discovering restaurants with search, filter, and favorites functionality.  
 Built with a modern tech stack, it connects a React frontend, Spring Boot backend, and MongoDB database to deliver a smooth and responsive user experience.
 
 **Key Features:**
+
 - 🍽️ Search & filter restaurants by cuisine, tags, or name  
 - ⭐ Save favorites for quick access  
 - 🗺️ Map integration for location-based search  
@@ -96,21 +88,17 @@ Built with a modern tech stack, it connects a React frontend, Spring Boot backen
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 ### Built With
 
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
-* [![React][React.js]][React-url]
-* [![Vite][Vite.js]][Vite-url]
-* [![Spring Boot][SpringBoot]][SpringBoot-url]
-* [![MongoDB][MongoDB]][MongoDB-url]
-* [![TomTom][TomTom]][TomTom-url]
+- [![React][React.js]][React-url]
+- [![Vite][Vite.js]][Vite-url]
+- [![Spring Boot][SpringBoot]][SpringBoot-url]
+- [![MongoDB][MongoDB]][MongoDB-url]
+- [![TomTom][TomTom]][TomTom-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -121,28 +109,36 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* Node.js & npm
+
+- Node.js & npm
 
   Download from [Node.js official site](https://nodejs.org/en) (v18+ recommended). Verify installation:
+
   ```sh
   node -v
   npm -v
   ```
-* Java 17
+
+- Java 17
 
   Install from [Oracle JDK](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html). Verify installation:
+
   ```sh
   java -version
   ```
-* Maven 3.8+
+
+- Maven 3.8+
 
   Download from [Maven official site](https://maven.apache.org/download.cgi). Verify installation:
+
   ```sh
   mvn -v
   ```
-* MongoDB
+
+- MongoDB
 
   We use a MongoDB Atlas cluster to store user data. Contact a team member to get the connection string. Add it to your .env as:
+
   ```sh
   MONGODB_URI=<connection string>
   ```
@@ -151,30 +147,124 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
+#### Quick Start (Recommended)
+
 1. Clone the repo
+
+   ```sh
+   git clone https://github.com/UOA-DCML/se310-plateful
+   cd se310-plateful
+   ```
+
+2. Install dependencies
+
+   ```sh
+   npm run install:all
+   ```
+
+3. Start both frontend and backend
+
+   ```sh
+   npm start
+   ```
+
+4. Open your browser to <http://localhost:5173/>
+
+That's it! Both services are now running. See [ROOT_COMMANDS.md](ROOT_COMMANDS.md) for all available commands.
+
+#### Manual Installation (Alternative)
+
+If you prefer to run services separately:
+
+1. Clone the repo
+
    ```sh
    git clone https://github.com/UOA-DCML/se310-plateful
    ```
+
 2. Navigate to the frontend folder and install npm packages
+
    ```sh
    cd frontend
    npm install
    ```
+
 3. Now, make a new terminal and navigate to the backend folder and run SpringBoot
+
    ```sh
    cd backend
    mvn spring-boot:run
    ```
+
 4. Go back to the frontend terminal, and start the application
+
    ```sh
    npm run dev
    ```
-6. You can click the link on the terminal or can type http://localhost:5173/ in your own browser
+
+5. You can click the link on the terminal or can type <http://localhost:5173/> in your own browser
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Available Commands
+
+All commands can be run from the project root directory.
+
+#### Installation
+
+| Command | Description |
+|---------|-------------|
+| `npm run install:frontend` | Install frontend dependencies |
+| `npm run install:all` | Install all project dependencies |
+
+#### Development
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start both frontend & backend |
+| `npm run dev:all` | Start both services (same as start) |
+| `npm run dev:frontend` | Start frontend only |
+| `npm run dev:backend` | Start backend only |
+
+#### Building
+
+| Command | Description |
+|---------|-------------|
+| `npm run build:all` | Build both (parallel) |
+| `npm run build:sequential` | Build both (one after another) |
+| `npm run build:frontend` | Build frontend only |
+| `npm run build:backend` | Build backend only |
+
+#### Testing
+
+| Command | Description |
+|---------|-------------|
+| `npm run test:all` | Run all tests (parallel) |
+| `npm run test:frontend` | Run frontend tests |
+| `npm run test:backend` | Run backend tests |
+
+#### Cleaning
+
+| Command | Description |
+|---------|-------------|
+| `npm run clean:all` | Clean all build artefacts |
+| `npm run clean:frontend` | Clean frontend (dist, node_modules) |
+| `npm run clean:backend` | Clean backend (Maven clean) |
+
+#### Other
+
+| Command | Description |
+|---------|-------------|
+| `npm run lint:frontend` | Run ESLint on frontend |
+| `npm run preview:frontend` | Preview production build |
+
+For more detailed information, see [ROOT_COMMANDS.md](ROOT_COMMANDS.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### .env File
-In order for Sonar to work, a .env file containing the API key must be placed in the backend folder. Please contact us (jkan172@aucklanduni.ac.nz) in order to get this .env file.
+
+In order for Sonar to work, a .env file containing the API key must be placed in the backend folder. Please contact us (<jkan172@aucklanduni.ac.nz>) in order to get this .env file.
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -182,14 +272,12 @@ In order for Sonar to work, a .env file containing the API key must be placed in
 - [x] A1 Feature
 - [x] A1 Feature
 - [ ] A2 Feature
-    - [ ] Feature
-    - [ ] Feature
+  - [ ] Feature
+  - [ ] Feature
 
 See the [open issues](https://github.com/UOA-DCML/se310-plateful/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -205,15 +293,13 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-### Top contributors:
+### Top contributors
 
 <a href="https://github.com/UOA-DCML/se310-plateful/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=UOA-DCML/se310-plateful" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- LICENSE -->
 ## License
@@ -222,16 +308,13 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Best-README_Template](https://github.com/UOA-DCML/se310-plateful?tab=readme-ov-file)
-* Kelly Blincoe the GOAT!!! 🐐
+- [Best-README_Template](https://github.com/UOA-DCML/se310-plateful?tab=readme-ov-file)
+- Kelly Blincoe the GOAT!!! 🐐
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -245,7 +328,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [issues-url]: https://github.com/UOA-DCML/se310-plateful/issues
 [license-shield]: https://img.shields.io/github/license/UOA-DCML/se310-plateful.svg?style=for-the-badge
 [license-url]: https://github.com/UOA-DCML/se310-plateful/blob/master/LICENSE.txt
-[product-screenshot]: images/screenshot.png
 [Vite.js]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
 [Vite-url]: https://vitejs.dev/
 
@@ -258,19 +340,5 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [TomTom]: https://img.shields.io/badge/TomTom-FF0033?style=for-the-badge&logo=tomtom&logoColor=white
 [TomTom-url]: https://developer.tomtom.com/
 
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
