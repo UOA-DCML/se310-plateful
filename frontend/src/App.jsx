@@ -8,22 +8,34 @@ import UserProfile from "./pages/UserProfile";
 import Settings from "./pages/Settings";
 import BrowseHistory from "./pages/BrowseHistory";
 import Favorites from "./pages/Favorites";
+import SigninPage from "./pages/SigninPage";
+import SignupPage from "./pages/SignupPage";
+import { AuthProvider } from "./auth/AuthContext";
+import { ToasterProvider } from "./components/Toaster";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/restaurant/:id" element={<RestaurantDetails />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/history" element={<BrowseHistory />} />
-          <Route path="/favorites" element={<Favorites />} />
-        </Routes>
-      </Layout>
+      <AuthProvider>
+        <ToasterProvider>
+          <Toaster position="top-center" />
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/restaurant/:id" element={<RestaurantDetails />} />
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/history" element={<BrowseHistory />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/signin" element={<SigninPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+            </Routes>
+          </Layout>
+        </ToasterProvider>
+      </AuthProvider>
     </Router>
   );
 }
