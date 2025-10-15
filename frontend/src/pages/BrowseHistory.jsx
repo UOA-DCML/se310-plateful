@@ -140,7 +140,9 @@ const BrowseHistory = () => {
                     <span className="ml-2 text-sm text-gray-500">${item.restaurant?.priceRange || "N/A"}</span>
                   </div>
                   <p className="text-sm text-gray-500">
-                    {item.viewedAt ? new Date(item.viewedAt).toLocaleDateString() : "Recently"}
+                    {item.visitedDate || item.viewedAt
+                      ? new Date(item.visitedDate || item.viewedAt).toLocaleDateString()
+                      : "Recently"}
                   </p>
                 </div>
               </div>

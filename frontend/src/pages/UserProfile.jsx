@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import userService from "../services/userService";
+import { useAuth } from "../auth/AuthContext";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -7,6 +8,7 @@ const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const { updateUserProfile, user: authUser } = useAuth() ?? {};
 
   // Load user data on component mount
   useEffect(() => {
@@ -39,9 +41,15 @@ const UserProfile = () => {
       });
 
       // Update preferences
-      await userService.updateUserPreferences(user.preferences);
-      
-      setUser(updatedUser);
+      const userWithPrefs = await userService.updateUserPreferences(user.preferences);
+
+      setUser(userWithPrefs);
+      updateUserProfile?.({
+        name: userWithPrefs.name,
+        email: userWithPrefs.email,
+        phone: userWithPrefs.phone,
+        username: userWithPrefs.name || (userWithPrefs.email ? userWithPrefs.email.split("@")[0] : undefined),
+      });
       setIsEditing(false);
     } catch (err) {
       setError("Failed to save changes");

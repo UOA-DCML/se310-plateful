@@ -1,19 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { userService } from '../services/userService';
+import { useAuth } from '../auth/AuthContext';
 
 const UserSidebar = ({ isOpen, onClose }) => {
   const sidebarRef = useRef(null);
   const [userData, setUserData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
+  const navigate = useNavigate();
+  const { user: authUser, signOut } = useAuth() ?? {};
 
   // Load user data
   React.useEffect(() => {
     const loadUserData = async () => {
       try {
         setLoading(true);
-        const user = await userService.getCurrentUser();
-        setUserData(user);
+        const profile = await userService.getCurrentUser();
+        setUserData(profile);
       } catch (error) {
         console.error('Failed to load user data:', error);
       } finally {
@@ -23,15 +26,10 @@ const UserSidebar = ({ isOpen, onClose }) => {
 
     if (isOpen) {
       loadUserData();
+    } else {
+      setLoading(false);
     }
   }, [isOpen]);
-
-  // Mock user data - replace with actual user data when backend is ready
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: null
-  };
 
   // Close sidebar when clicking outside
   useEffect(() => {
@@ -68,10 +66,21 @@ const UserSidebar = ({ isOpen, onClose }) => {
   }, [isOpen, onClose]);
 
   const handleLogout = () => {
-    // TODO: Implement logout logic when backend is ready
-    console.log("Logout clicked");
-    onClose();
+    (async () => {
+      try {
+        await signOut?.();
+      } catch (err) {
+        console.error('Failed to sign out', err);
+      } finally {
+        onClose();
+        navigate('/');
+      }
+    })();
   };
+
+  const displayName = userData?.name || authUser?.name || authUser?.username || (authUser?.email ? authUser.email.split('@')[0] : 'User');
+  const displayEmail = userData?.email || authUser?.email || 'No email';
+  const avatarLetter = displayName ? displayName.charAt(0).toUpperCase() : 'U';
 
   return (
     <>
@@ -116,13 +125,13 @@ const UserSidebar = ({ isOpen, onClose }) => {
                 <div className="bg-gray-300 h-4 rounded mb-2"></div>
                 <div className="bg-gray-300 h-3 rounded w-2/3"></div>
               </div>
-            ) : userData ? (
+            ) : userData || authUser ? (
               <div className="text-center">
                 <div className="bg-blue-500 text-white rounded-full h-16 w-16 flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                  {userData.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                  {avatarLetter}
                 </div>
-                <h3 className="font-semibold text-gray-800">{userData.name || 'User'}</h3>
-                <p className="text-gray-600 text-sm">{userData.email || 'No email'}</p>
+                <h3 className="font-semibold text-gray-800">{displayName}</h3>
+                <p className="text-gray-600 text-sm">{displayEmail}</p>
               </div>
             ) : (
               <div className="text-center">
