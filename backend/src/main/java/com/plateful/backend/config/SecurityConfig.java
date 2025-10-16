@@ -18,8 +18,8 @@ import com.plateful.backend.auth.JwtAuthenticationFilter;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${app.frontend.origin}")
-    private String frontendOrigin;
+    @Value("#{'${app.frontend.origins:http://localhost:5173}'.split(',')}")
+    private List<String> frontendOrigins;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -31,7 +31,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(req -> {
                 var c = new CorsConfiguration();
-                c.setAllowedOrigins(List.of(frontendOrigin));
+                c.setAllowedOrigins(frontendOrigins);
                 c.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
                 c.setAllowedHeaders(List.of("Content-Type","Authorization"));
                 c.setAllowCredentials(true);

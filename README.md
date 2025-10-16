@@ -204,6 +204,11 @@ If you prefer to run services separately:
 
 5. You can click the link on the terminal or can type <http://localhost:5173/> in your own browser
 
+6. To test on other devices and host website
+
+    ```sh
+    npm run dev -- --host
+    ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Available Commands

@@ -6,6 +6,7 @@ import PriceSlider from "../components/Slider";
 import Dropdown from "../components/Dropdown";
 import RestaurantMarkers from "../components/RestaurantMarkers";
 import RestaurantList from "../components/RestaurantList";
+import { buildApiUrl } from "../lib/config";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
     setErr("");
 
     // Fetch restaurants
-    const fetchRestaurants = fetch("http://localhost:8080/api/restaurants")
+    const fetchRestaurants = fetch(buildApiUrl("/api/restaurants"))
       .then((res) => {
         if (!res.ok) throw new Error(`API ${res.status}`);
         return res.json();
@@ -38,9 +39,7 @@ export default function Home() {
       .then((data) => setRestaurantsRaw(Array.isArray(data) ? data : []));
 
     // Fetch cuisines
-    const fetchCuisines = fetch(
-      "http://localhost:8080/api/restaurants/cuisines"
-    )
+    const fetchCuisines = fetch(buildApiUrl("/api/restaurants/cuisines"))
       .then((res) => {
         if (!res.ok) throw new Error(`Cuisines API ${res.status}`);
         return res.json();
@@ -49,8 +48,8 @@ export default function Home() {
         // Transform cuisine strings into objects with name only
         const cuisineObjects = Array.isArray(data)
           ? data.map((cuisine) => ({
-              name: cuisine,
-            }))
+            name: cuisine,
+          }))
           : [];
         setCuisines(cuisineObjects);
       });
@@ -63,9 +62,9 @@ export default function Home() {
   const handleSearch = async () => {
     const params = new URLSearchParams();
 
-    if (searchQuery.trim()) params.append("query", searchQuery);
-    if (priceMin) params.append("priceMin", priceMin);
-    if (priceMax) params.append("priceMax", priceMax);
+    if (searchQuery.trim()) params.append("query", searchQuery.trim());
+    if (priceMin !== null) params.append("priceMin", priceMin);
+    if (priceMax !== null) params.append("priceMax", priceMax);
     if (reservation !== null) params.append("reservation", reservation);
     if (openNow !== null) params.append("openNow", openNow);
     if (selectedCity) params.append("city", selectedCity);
@@ -73,7 +72,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/restaurants/filter?${params.toString()}`
+        buildApiUrl(`/api/restaurants/filter?${params.toString()}`)
       );
       if (!response.ok) throw new Error("Failed to fetch");
 
@@ -123,39 +122,34 @@ export default function Home() {
     navigate(`/search?query=${encodeURIComponent(cuisineName)}`);
   };
 
-  const boolOptions = [
-    { value: true, label: "Yes" },
-    { value: false, label: "No" },
-  ];
-
   return (
-    <div>
+    <div className="flex flex-col gap-12 pb-12">
       {/* Search Bar Section */}
-      <section className="relative w-full h-[40vh]">
+      <section className="relative w-full min-h-[420px] md:h-[40vh]">
         <img
           src={backgroundImage}
           alt="Background"
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <h1 className="absolute inset-x-0 top-1/3 transform -translate-y-1/2 text-4xl text-center z-10">
+        <h1 className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold text-black md:text-4xl">
           Looking for something to eat?
         </h1>
         <div
-          className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2
-    flex flex-col items-center gap-4 z-10 w-[60%]"
+          className="absolute top-[55%] left-1/2 w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2
+    flex flex-col items-center gap-4"
         >
           {/* Search Bar */}
-          <div className="flex w-full bg-white/80 px-4 py-2 rounded-[10px]">
+          <div className="flex w-full flex-col gap-3 rounded-[12px] bg-white/85 p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2">
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="border-none p-2 outline-none w-full"
+              className="w-full border-none p-3 text-base outline-none md:text-lg"
             />
             <button
-              className="bg-[#333] text-white p-2 px-4 rounded-[5px] ml-2"
+              className="w-full rounded-[6px] bg-[#333] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#222] md:w-auto cursor-pointer"
               onClick={handleSearch}
             >
               Go
@@ -163,36 +157,39 @@ export default function Home() {
           </div>
 
           {/* Filters*/}
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="grid w-full gap-3 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap lg:justify-center">
             <Dropdown
               label="Cuisine"
               options={cuisines.map((c) => c.name)}
               value={selectedCuisine}
               onChange={setSelectedCuisine}
-              width="w-[150px]"
+              width="w-full sm:w-[150px]"
             />
-            <div className="relative">
-              <button
-                className="bg-white text-sm px-2 py-1 rounded-md outline-none w-[120px]"
-                onClick={() => setShowSlider(!showSlider)}
-              >
-                Price: {"$".repeat(priceRange[0])}–{"$".repeat(priceRange[1])}
-              </button>
-
-              {showSlider && (
-                <div className="absolute top-full mt-2 z-50">
-                  <PriceSlider
-                    value={priceRange}
-                    onChange={setPriceRange}
-                    onApply={() => {
-                      setPriceMin(priceRange[0]);
-                      setPriceMax(priceRange[1]);
-                      setShowSlider(false);
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+            <Dropdown
+              label="Price Range"
+              options={[
+                { value: "1-5", label: "Any Price" },
+                { value: "1-1", label: "$ - Budget" },
+                { value: "2-2", label: "$$ - Moderate" },
+                { value: "3-3", label: "$$$ - Pricey" },
+                { value: "4-4", label: "$$$$ - Upscale" },
+                { value: "5-5", label: "$$$$$ - Luxury" },
+                { value: "1-2", label: "$ to $$" },
+                { value: "1-3", label: "$ to $$$" },
+                { value: "2-3", label: "$$ to $$$" },
+                { value: "3-5", label: "$$$ to $$$$$" },
+              ]}
+              value={`${priceRange[0]}-${priceRange[1]}`}
+              onChange={(val) => {
+                if (val) {
+                  const [min, max] = val.split("-").map(Number);
+                  setPriceRange([min, max]);
+                  setPriceMin(min);
+                  setPriceMax(max);
+                }
+              }}
+              width="w-full sm:w-[180px]"
+            />
 
             <Dropdown
               label="Reservation"
@@ -204,7 +201,7 @@ export default function Home() {
               onChange={(val) =>
                 setReservation(val === "" ? null : val === "true")
               }
-              width="w-[110px]"
+              width="w-full sm:w-[150px]"
             />
 
             <Dropdown
@@ -215,7 +212,7 @@ export default function Home() {
               ]}
               value={openNow !== null ? openNow.toString() : ""}
               onChange={(val) => setOpenNow(val === "" ? null : val === "true")}
-              width="w-[105px]"
+              width="w-full sm:w-[150px]"
             />
 
             <Dropdown
@@ -223,27 +220,40 @@ export default function Home() {
               options={["Auckland", "Wellington", "Christchurch"]}
               value={selectedCity}
               onChange={setSelectedCity}
-              width="w-[120px]"
+              width="w-full sm:w-[150px]"
             />
           </div>
         </div>
       </section>
-      <div className="px-20 mx-20">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-20">
         {/* Popular Restaurants */}
-        <section className="mt-10 py-8">
-          <h3 className="text-xl font-bold">Popular Restaurants</h3>
+        <section className="relative mt-6 py-8 z-0">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Popular Restaurants
+            </h3>
+            <button
+              type="button"
+              className="rounded-full px-4 py-2 text-sm font-medium text-lime-700 transition hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-lime-400 sm:hidden cursor-pointer"
+              onClick={() => navigate("/search?sort=popular")}
+            >
+              View all
+            </button>
+          </div>
           <RestaurantList restaurants={popularCards} direction="horizontal" />
         </section>
 
         {/* Explore Cuisines */}
-        <section className="relative py-8">
-          <h3 className="text-xl font-bold">Explore Cuisines</h3>
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
+        <section className="relative py-8 z-0">
+          <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
+            Explore Cuisines
+          </h3>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:flex lg:flex-wrap lg:justify-center lg:gap-4">
             {cuisines.map((cuisine) => {
               return (
                 <button
                   key={cuisine.name}
-                  className="group relative px-6 py-3 bg-lime-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-out hover:bg-lime-700 focus:outline-none focus:ring-4"
+                  className="group relative flex items-center justify-center rounded-lg bg-lime-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-lime-700 focus:outline-none focus:ring-4 focus:ring-lime-300 sm:text-base cursor-pointer"
                   onClick={() => handleCuisineClick(cuisine.name)}
                 >
                   <span className="relative z-10">{cuisine.name}</span>
@@ -255,22 +265,41 @@ export default function Home() {
         </section>
 
         {/* Local Favourites */}
-        <section className="py-8 mb-10">
-          <h3 className="text-xl font-bold">Local Favourites</h3>
+        <section className="relative py-8 mb-10 z-0">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Local Favourites
+            </h3>
+            <button
+              type="button"
+              className="rounded-full px-4 py-2 text-sm font-medium text-lime-700 transition hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-lime-400 sm:hidden cursor-pointer"
+              onClick={() => navigate("/search?filter=local")}
+            >
+              View all
+            </button>
+          </div>
           <RestaurantList restaurants={localFavCards} direction="horizontal" />
         </section>
       </div>
 
       {/* Map Section */}
-      <section className="relative">
-        <div className="w-full h-[400px] rounded-lg overflow-hidden">
-          <MapContainer>
-            {(map) => (
-              <RestaurantMarkers map={map} restaurants={restaurantsRaw} />
-            )}
-          </MapContainer>
+      <section className="relative z-0">
+        <div className="mx-auto w-full max-w-7xl overflow-hidden rounded-lg px-4 sm:px-8 lg:px-20">
+          <div className="h-[280px] w-full rounded-lg sm:h-[340px] lg:h-[420px]">
+            <MapContainer>
+              {(map) => (
+                <RestaurantMarkers map={map} restaurants={restaurantsRaw} />
+              )}
+            </MapContainer>
+          </div>
         </div>
       </section>
+
+      {(loading || err) && (
+        <div className="px-4 text-center text-sm text-gray-600 sm:px-8 lg:px-20">
+          {loading ? "Loading fresh recommendations..." : `Error: ${err}`}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
 import toast from "react-hot-toast";
+import { buildApiUrl } from "../lib/config";
+import DirectionsButton from "../components/DirectionsButton";
 import ShareButton from "../components/ShareButton";
 import ShareModal from "../components/ShareModal";
 import { useAuth } from "../auth/AuthContext";
@@ -29,7 +31,7 @@ export default function RestaurantDetails() {
   const [voteLoading, setVoteLoading] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/restaurants/${id}`)
+    fetch(buildApiUrl(`/api/restaurants/${id}`))
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch restaurant");
         return res.json();
@@ -40,7 +42,7 @@ export default function RestaurantDetails() {
         
         // Add to browse history
         if (user?.id) {
-          fetch(`http://localhost:8080/api/user/history`, {
+          fetch(buildApiUrl(`/api/user/history`), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -61,7 +63,7 @@ export default function RestaurantDetails() {
   // Check if restaurant is in favorites
   useEffect(() => {
     if (user?.id && id) {
-      fetch(`http://localhost:8080/api/user/favorites?userId=${user.id}`)
+      fetch(buildApiUrl(`/api/user/favorites?userId=${user.id}`))
         .then(res => res.json())
         .then(favorites => {
           setIsFavorite(favorites.includes(id));
@@ -76,7 +78,7 @@ export default function RestaurantDetails() {
       const token = localStorage.getItem('accessToken');
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       
-      fetch(`http://localhost:8080/api/restaurants/${id}/vote-status`, { headers })
+      fetch(buildApiUrl(`/api/restaurants/${id}/vote-status`), { headers })
         .then(res => res.json())
         .then(data => {
           setVoteStatus({
@@ -106,7 +108,7 @@ export default function RestaurantDetails() {
     try {
       if (isFavorite) {
         // Remove from favorites
-        await fetch(`http://localhost:8080/api/user/favorites`, {
+        await fetch(buildApiUrl(`/api/user/favorites`), {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -118,7 +120,7 @@ export default function RestaurantDetails() {
         toast.success('Removed from favorites');
       } else {
         // Add to favorites
-        await fetch(`http://localhost:8080/api/user/favorites`, {
+        await fetch(buildApiUrl(`/api/user/favorites`), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -179,7 +181,7 @@ export default function RestaurantDetails() {
 
     setVoteLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/restaurants/${id}/upvote`, {
+      const response = await fetch(buildApiUrl(`/api/restaurants/${id}/upvote`), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -222,7 +224,7 @@ export default function RestaurantDetails() {
 
     setVoteLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/restaurants/${id}/downvote`, {
+      const response = await fetch(buildApiUrl(`/api/restaurants/${id}/downvote`), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -254,7 +256,7 @@ export default function RestaurantDetails() {
 
     setVoteLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/restaurants/${id}/vote`, {
+      const response = await fetch(buildApiUrl(`/api/restaurants/${id}/vote`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -300,7 +302,7 @@ export default function RestaurantDetails() {
       <div className="max-w-6xl w-full p-6">
         <button
           type="button"
-          className="text-green-700 mb-4 inline-block"
+          className="text-green-700 mb-4 inline-block cursor-pointer hover:text-green-800 transition-colors"
           onClick={() => {
             if (window.history.state && window.history.state.idx > 0) {
               navigate(-1);
@@ -485,6 +487,11 @@ export default function RestaurantDetails() {
             <p>{restaurant.address.postcode}</p>
             <p>{restaurant.address.country}</p>
             <p>{restaurant.phone}</p>
+            <div className="mt-4">
+              <DirectionsButton
+                destinationAddress={`${restaurant.address.street}, ${restaurant.address.city} ${restaurant.address.postcode}, ${restaurant.address.country}`}
+              />
+            </div>
           </div>
         </div>
       </div>

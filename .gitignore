@@ -5,9 +5,8 @@ yarn-debug.log*
 yarn-error.log*
 dist/
 build/
-.env
-.env.local
-.env.*.local
+
+# Environment variables - DO NOT COMMIT
 
 # macOS
 .DS_Store

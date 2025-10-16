@@ -1,8 +1,8 @@
 // src/lib/api.js
-const BASE_URL = "http://localhost:8080";
+import { buildApiUrl } from "./config";
 
 async function request(path, { method = "GET", body, headers = {} } = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetch(buildApiUrl(path), {
     method,
     headers: { "Content-Type": "application/json", ...headers },
     body: body ? JSON.stringify(body) : undefined,
