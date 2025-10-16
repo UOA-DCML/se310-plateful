@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { useToast } from "../components/Toaster";
+import toast from "react-hot-toast";
 
 export default function SigninPage() {
   const navigate = useNavigate();
-  const toast = useToast();
   const { user, signIn, signOut } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -21,15 +20,11 @@ export default function SigninPage() {
     setSubmitting(true);
     try {
       await signIn({ email: email.trim(), password });
-      toast({
-        title: "Signed in",
-        description: `Welcome back, ${email.split("@")[0]}!`,
-        type: "success",
-      });
+      toast.success(`Welcome back, ${email.split("@")[0]}!`);
       navigate("/", { replace: true });
     } catch (err) {
       setError(err.message || "Sign in failed");
-      toast({ title: "Sign in failed", description: err.message, type: "error" });
+      toast.error(err.message || "Sign in failed");
     } finally {
       setSubmitting(false);
     }
@@ -50,7 +45,14 @@ export default function SigninPage() {
                 Go home
               </button>
               <button
-                onClick={() => { signOut(); toast({ title: "Signed out", type: "success" }); }}
+                onClick={async () => { 
+                  try {
+                    await signOut();
+                    toast.success("Signed out successfully!");
+                  } catch (err) {
+                    toast.error("Failed to sign out. Please try again.");
+                  }
+                }}
                 className="flex-1 rounded-xl bg-slate-100 text-slate-900 font-semibold py-2.5 hover:bg-slate-200 transition"
               >
                 Sign out

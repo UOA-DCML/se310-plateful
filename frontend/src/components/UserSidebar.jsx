@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { userService } from '../services/userService';
 import { useAuth } from '../auth/AuthContext';
 
@@ -69,8 +70,10 @@ const UserSidebar = ({ isOpen, onClose }) => {
     (async () => {
       try {
         await signOut?.();
+        toast.success('Signed out successfully!');
       } catch (err) {
         console.error('Failed to sign out', err);
+        toast.error('Failed to sign out. Please try again.');
       } finally {
         onClose();
         navigate('/');
