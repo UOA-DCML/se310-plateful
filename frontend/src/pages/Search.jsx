@@ -134,7 +134,7 @@ export default function Search() {
               className="w-full border-none p-3 text-base outline-none md:text-lg"
             />
             <button
-              className="w-full rounded-[6px] bg-[#333] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#222] md:w-auto"
+              className="w-full rounded-[6px] bg-[#333] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#222] md:w-auto cursor-pointer"
               onClick={handleSearch}
             >
               Go

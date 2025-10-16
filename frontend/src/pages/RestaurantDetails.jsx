@@ -82,7 +82,7 @@ export default function RestaurantDetails() {
       <div className="max-w-6xl w-full p-6">
         <button
           type="button"
-          className="text-green-700 mb-4 inline-block"
+          className="text-green-700 mb-4 inline-block cursor-pointer hover:text-green-800 transition-colors"
           onClick={() => {
             if (window.history.state && window.history.state.idx > 0) {
               navigate(-1);

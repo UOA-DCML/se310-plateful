@@ -149,7 +149,7 @@ export default function Home() {
               className="w-full border-none p-3 text-base outline-none md:text-lg"
             />
             <button
-              className="w-full rounded-[6px] bg-[#333] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#222] md:w-auto"
+              className="w-full rounded-[6px] bg-[#333] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#222] md:w-auto cursor-pointer"
               onClick={handleSearch}
             >
               Go
@@ -234,7 +234,7 @@ export default function Home() {
             </h3>
             <button
               type="button"
-              className="rounded-full px-4 py-2 text-sm font-medium text-lime-700 transition hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-lime-400 sm:hidden"
+              className="rounded-full px-4 py-2 text-sm font-medium text-lime-700 transition hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-lime-400 sm:hidden cursor-pointer"
               onClick={() => navigate("/search?sort=popular")}
             >
               View all
@@ -253,7 +253,7 @@ export default function Home() {
               return (
                 <button
                   key={cuisine.name}
-                  className="group relative flex items-center justify-center rounded-lg bg-lime-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-lime-700 focus:outline-none focus:ring-4 focus:ring-lime-300 sm:text-base"
+                  className="group relative flex items-center justify-center rounded-lg bg-lime-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-lime-700 focus:outline-none focus:ring-4 focus:ring-lime-300 sm:text-base cursor-pointer"
                   onClick={() => handleCuisineClick(cuisine.name)}
                 >
                   <span className="relative z-10">{cuisine.name}</span>
@@ -272,7 +272,7 @@ export default function Home() {
             </h3>
             <button
               type="button"
-              className="rounded-full px-4 py-2 text-sm font-medium text-lime-700 transition hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-lime-400 sm:hidden"
+              className="rounded-full px-4 py-2 text-sm font-medium text-lime-700 transition hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-lime-400 sm:hidden cursor-pointer"
               onClick={() => navigate("/search?filter=local")}
             >
               View all

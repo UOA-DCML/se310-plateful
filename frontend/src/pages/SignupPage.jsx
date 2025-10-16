@@ -60,7 +60,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-emerald-600 text-white font-semibold py-2.5 disabled:opacity-70 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-100 transition"
+              className="w-full rounded-xl bg-emerald-600 text-white font-semibold py-2.5 disabled:opacity-70 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-100 transition cursor-pointer disabled:cursor-not-allowed"
             >
               {submitting ? "Creating…" : "Sign up"}
             </button>

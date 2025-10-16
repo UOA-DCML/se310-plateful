@@ -45,13 +45,13 @@ export default function SigninPage() {
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => navigate("/")}
-                className="flex-1 rounded-xl bg-slate-900 text-white font-semibold py-2.5 hover:bg-black transition"
+                className="flex-1 rounded-xl bg-slate-900 text-white font-semibold py-2.5 hover:bg-black transition cursor-pointer"
               >
                 Go home
               </button>
               <button
                 onClick={() => { signOut(); toast({ title: "Signed out", type: "success" }); }}
-                className="flex-1 rounded-xl bg-slate-100 text-slate-900 font-semibold py-2.5 hover:bg-slate-200 transition"
+                className="flex-1 rounded-xl bg-slate-100 text-slate-900 font-semibold py-2.5 hover:bg-slate-200 transition cursor-pointer"
               >
                 Sign out
               </button>
@@ -96,7 +96,7 @@ export default function SigninPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-emerald-600 text-white font-semibold py-2.5 disabled:opacity-70 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-100 transition"
+              className="w-full rounded-xl bg-emerald-600 text-white font-semibold py-2.5 disabled:opacity-70 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-100 transition cursor-pointer disabled:cursor-not-allowed"
             >
               {submitting ? "Signing in…" : "Sign in"}
             </button>

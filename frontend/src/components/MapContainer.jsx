@@ -49,13 +49,13 @@ export default function MapContainer({ children }) {
       <div className="absolute top-5 right-5 flex flex-col space-y-2">
         <button
           onClick={increaseZoom}
-          className="bg-white shadow p-2 rounded hover:bg-gray-100"
+          className="bg-white shadow p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors"
         >
           +
         </button>
         <button
           onClick={decreaseZoom}
-          className="bg-white shadow p-2 rounded hover:bg-gray-100"
+          className="bg-white shadow p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors"
         >
           -
         </button>
