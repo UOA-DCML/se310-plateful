@@ -72,8 +72,11 @@ export default function RestaurantDetails() {
 
   // Fetch vote status
   useEffect(() => {
-    if (user?.id && id) {
-      fetch(`http://localhost:8080/api/restaurants/${id}/vote-status?userId=${user.id}`)
+    if (id) {
+      const token = localStorage.getItem('accessToken');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      
+      fetch(`http://localhost:8080/api/restaurants/${id}/vote-status`, { headers })
         .then(res => res.json())
         .then(data => {
           setVoteStatus({
@@ -167,14 +170,20 @@ export default function RestaurantDetails() {
       return;
     }
 
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      toast.error('Please sign in to vote');
+      navigate('/signin');
+      return;
+    }
+
     setVoteLoading(true);
     try {
       const response = await fetch(`http://localhost:8080/api/restaurants/${id}/upvote`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId: user.id })
+          'Authorization': `Bearer ${token}`
+        }
       });
       const data = await response.json();
       console.log('Upvote response:', data);
@@ -204,14 +213,20 @@ export default function RestaurantDetails() {
       return;
     }
 
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      toast.error('Please sign in to vote');
+      navigate('/signin');
+      return;
+    }
+
     setVoteLoading(true);
     try {
       const response = await fetch(`http://localhost:8080/api/restaurants/${id}/downvote`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId: user.id })
+          'Authorization': `Bearer ${token}`
+        }
       });
       const data = await response.json();
       setVoteStatus({
@@ -234,14 +249,16 @@ export default function RestaurantDetails() {
   const handleRemoveVote = async () => {
     if (!user) return;
 
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+
     setVoteLoading(true);
     try {
       const response = await fetch(`http://localhost:8080/api/restaurants/${id}/vote`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId: user.id })
+          'Authorization': `Bearer ${token}`
+        }
       });
       const data = await response.json();
       setVoteStatus({

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /** REST controller for handling restaurant voting operations. */
@@ -17,20 +18,16 @@ public class VotingController {
   @Autowired private VotingService votingService;
 
   /**
-   * Upvote a restaurant.
-   * Request body: { "userId": "123" }
+   * Upvote a restaurant. User is identified via JWT token.
    *
    * @param restaurantId the restaurant ID
-   * @param request the request body containing userId
+   * @param authentication the authenticated user
    * @return the vote counts and status
    */
   @PostMapping("/{restaurantId}/upvote")
   public ResponseEntity<Map<String, Object>> upvote(
-      @PathVariable String restaurantId, @RequestBody Map<String, String> request) {
-    String userId = request.get("userId");
-    if (userId == null || userId.trim().isEmpty()) {
-      return ResponseEntity.badRequest().body(Map.of("error", "userId is required"));
-    }
+      @PathVariable String restaurantId, Authentication authentication) {
+    String userId = authentication.getName(); // Extract userId from JWT token
     
     Restaurant restaurant = votingService.upvote(restaurantId, userId);
 
@@ -44,20 +41,16 @@ public class VotingController {
   }
 
   /**
-   * Downvote a restaurant.
-   * Request body: { "userId": "123" }
+   * Downvote a restaurant. User is identified via JWT token.
    *
    * @param restaurantId the restaurant ID
-   * @param request the request body containing userId
+   * @param authentication the authenticated user
    * @return the vote counts and status
    */
   @PostMapping("/{restaurantId}/downvote")
   public ResponseEntity<Map<String, Object>> downvote(
-      @PathVariable String restaurantId, @RequestBody Map<String, String> request) {
-    String userId = request.get("userId");
-    if (userId == null || userId.trim().isEmpty()) {
-      return ResponseEntity.badRequest().body(Map.of("error", "userId is required"));
-    }
+      @PathVariable String restaurantId, Authentication authentication) {
+    String userId = authentication.getName(); // Extract userId from JWT token
     
     Restaurant restaurant = votingService.downvote(restaurantId, userId);
 
@@ -71,20 +64,16 @@ public class VotingController {
   }
 
   /**
-   * Remove a user's vote from a restaurant.
-   * Request body: { "userId": "123" }
+   * Remove a user's vote from a restaurant. User is identified via JWT token.
    *
    * @param restaurantId the restaurant ID
-   * @param request the request body containing userId
+   * @param authentication the authenticated user
    * @return the vote counts and status
    */
   @DeleteMapping("/{restaurantId}/vote")
   public ResponseEntity<Map<String, Object>> removeVote(
-      @PathVariable String restaurantId, @RequestBody Map<String, String> request) {
-    String userId = request.get("userId");
-    if (userId == null || userId.trim().isEmpty()) {
-      return ResponseEntity.badRequest().body(Map.of("error", "userId is required"));
-    }
+      @PathVariable String restaurantId, Authentication authentication) {
+    String userId = authentication.getName(); // Extract userId from JWT token
     
     Restaurant restaurant = votingService.removeVote(restaurantId, userId);
 
@@ -98,18 +87,18 @@ public class VotingController {
   }
 
   /**
-   * Get the vote status for a restaurant for the current user.
+   * Get the vote status for a restaurant for the current user. User is identified via JWT token.
+   * If no token is provided, returns vote counts with hasUpvoted/hasDownvoted as false.
    *
    * @param restaurantId the restaurant ID
-   * @param userId the user ID (query parameter)
+   * @param authentication the authenticated user (optional)
    * @return the vote status including whether user has voted and vote counts
    */
   @GetMapping("/{restaurantId}/vote-status")
   public ResponseEntity<Map<String, Object>> getVoteStatus(
-      @PathVariable String restaurantId, @RequestParam String userId) {
-    if (userId == null || userId.trim().isEmpty()) {
-      return ResponseEntity.badRequest().body(Map.of("error", "userId is required"));
-    }
+      @PathVariable String restaurantId, Authentication authentication) {
+    // If user is authenticated, get their specific vote status
+    String userId = (authentication != null) ? authentication.getName() : null;
     
     Map<String, Object> status = votingService.getVoteStatus(restaurantId, userId);
 

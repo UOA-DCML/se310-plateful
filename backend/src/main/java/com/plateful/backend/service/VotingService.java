@@ -104,9 +104,10 @@ public class VotingService {
 
   /**
    * Get the vote status for a user and restaurant.
+   * If userId is null (anonymous user), returns false for hasUpvoted/hasDownvoted.
    *
    * @param restaurantId the restaurant ID
-   * @param userId the user ID
+   * @param userId the user ID (can be null for anonymous users)
    * @return a map containing vote status and counts
    */
   public Map<String, Object> getVoteStatus(String restaurantId, String userId) {
@@ -124,8 +125,9 @@ public class VotingService {
     }
 
     Map<String, Object> status = new HashMap<>();
-    status.put("hasUpvoted", restaurant.hasUserUpvoted(userId));
-    status.put("hasDownvoted", restaurant.hasUserDownvoted(userId));
+    // If userId is null (anonymous), user hasn't voted
+    status.put("hasUpvoted", userId != null && restaurant.hasUserUpvoted(userId));
+    status.put("hasDownvoted", userId != null && restaurant.hasUserDownvoted(userId));
     status.put("upvoteCount", restaurant.getUpvoteCount());
     status.put("downvoteCount", restaurant.getDownvoteCount());
     status.put("voteCount", restaurant.getVoteCount());
