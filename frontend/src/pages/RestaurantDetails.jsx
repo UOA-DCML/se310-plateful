@@ -19,6 +19,14 @@ export default function RestaurantDetails() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [voteStatus, setVoteStatus] = useState({
+    hasUpvoted: false,
+    hasDownvoted: false,
+    upvoteCount: 0,
+    downvoteCount: 0,
+    voteCount: 0
+  });
+  const [voteLoading, setVoteLoading] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/restaurants/${id}`)
@@ -59,6 +67,24 @@ export default function RestaurantDetails() {
           setIsFavorite(favorites.includes(id));
         })
         .catch(err => console.error('Failed to check favorites:', err));
+    }
+  }, [user, id]);
+
+  // Fetch vote status
+  useEffect(() => {
+    if (user?.id && id) {
+      fetch(`http://localhost:8080/api/restaurants/${id}/vote-status?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          setVoteStatus({
+            hasUpvoted: data.hasUpvoted || false,
+            hasDownvoted: data.hasDownvoted || false,
+            upvoteCount: data.upvoteCount || 0,
+            downvoteCount: data.downvoteCount || 0,
+            voteCount: data.voteCount || 0
+          });
+        })
+        .catch(err => console.error('Failed to fetch vote status:', err));
     }
   }, [user, id]);
 
@@ -133,8 +159,111 @@ export default function RestaurantDetails() {
     }
   };
 
+  // Handle upvote
+  const handleUpvote = async () => {
+    if (!user) {
+      toast.error('Please sign in to vote');
+      navigate('/signin');
+      return;
+    }
+
+    setVoteLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8080/api/restaurants/${id}/upvote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: user.id })
+      });
+      const data = await response.json();
+      console.log('Upvote response:', data);
+      const newVoteStatus = {
+        hasUpvoted: true,
+        hasDownvoted: false,
+        upvoteCount: data.upvoteCount || 0,
+        downvoteCount: data.downvoteCount || 0,
+        voteCount: data.voteCount || 0
+      };
+      console.log('Setting new vote status:', newVoteStatus);
+      setVoteStatus(newVoteStatus);
+      toast.success('Upvoted!');
+    } catch (err) {
+      console.error('Failed to upvote:', err);
+      toast.error('Failed to upvote');
+    } finally {
+      setVoteLoading(false);
+    }
+  };
+
+  // Handle downvote
+  const handleDownvote = async () => {
+    if (!user) {
+      toast.error('Please sign in to vote');
+      navigate('/signin');
+      return;
+    }
+
+    setVoteLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8080/api/restaurants/${id}/downvote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: user.id })
+      });
+      const data = await response.json();
+      setVoteStatus({
+        hasUpvoted: false,
+        hasDownvoted: true,
+        upvoteCount: data.upvoteCount || 0,
+        downvoteCount: data.downvoteCount || 0,
+        voteCount: data.voteCount || 0
+      });
+      toast.success('Downvoted!');
+    } catch (err) {
+      console.error('Failed to downvote:', err);
+      toast.error('Failed to downvote');
+    } finally {
+      setVoteLoading(false);
+    }
+  };
+
+  // Handle remove vote
+  const handleRemoveVote = async () => {
+    if (!user) return;
+
+    setVoteLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8080/api/restaurants/${id}/vote`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: user.id })
+      });
+      const data = await response.json();
+      setVoteStatus({
+        hasUpvoted: false,
+        hasDownvoted: false,
+        upvoteCount: data.upvoteCount || 0,
+        downvoteCount: data.downvoteCount || 0,
+        voteCount: data.voteCount || 0
+      });
+      toast.success('Vote removed');
+    } catch (err) {
+      console.error('Failed to remove vote:', err);
+      toast.error('Failed to remove vote');
+    } finally {
+      setVoteLoading(false);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (!restaurant) return <p>Restaurant not found</p>;
+
+  console.log('Current voteStatus:', voteStatus);
 
   const images = restaurant.images?.length
     ? restaurant.images
@@ -246,6 +375,39 @@ export default function RestaurantDetails() {
             </div>
             {/* Action Buttons */}
             <div className="flex gap-2">
+              {/* Voting Buttons with Counts */}
+              <div className="flex gap-1 bg-gray-100 rounded-full p-1">
+                <button
+                  onClick={() => voteStatus.hasUpvoted ? handleRemoveVote() : handleUpvote()}
+                  disabled={voteLoading}
+                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${
+                    voteStatus.hasUpvoted
+                      ? 'bg-green-600 text-white'
+                      : 'bg-white text-gray-600 hover:bg-green-50 hover:text-green-600'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  title={voteStatus.hasUpvoted ? 'Remove upvote' : 'Upvote'}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                  </svg>
+                  <span className="text-sm font-medium">{voteStatus.upvoteCount}</span>
+                </button>
+                <button
+                  onClick={() => voteStatus.hasDownvoted ? handleRemoveVote() : handleDownvote()}
+                  disabled={voteLoading}
+                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${
+                    voteStatus.hasDownvoted
+                      ? 'bg-red-600 text-white'
+                      : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-600'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  title={voteStatus.hasDownvoted ? 'Remove downvote' : 'Downvote'}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
+                  </svg>
+                  <span className="text-sm font-medium">{voteStatus.downvoteCount}</span>
+                </button>
+              </div>
               {/* Favorite Button */}
               <button
                 onClick={handleFavoriteToggle}
