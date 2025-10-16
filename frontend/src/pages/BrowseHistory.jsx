@@ -1,24 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userService } from '../services/userService';
+import { useAuth } from '../auth/AuthContext';
+import toast from 'react-hot-toast';
 
 const BrowseHistory = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const auth = useAuth();
+  const user = auth?.user;
 
-  // Load browse history from user service
+  // Load browse history from backend API
   useEffect(() => {
     const loadHistory = async () => {
+      console.log('[History] User:', user);
+      if (!user?.id) {
+        console.log('[History] No user ID, skipping load');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError("");
         
-        const browseHistory = await userService.getBrowseHistory();
-        setHistory(browseHistory);
+        // Get browse history from backend
+        console.log('[History] Fetching history for user:', user.id);
+        const response = await fetch(`http://localhost:8080/api/user/history?userId=${user.id}`);
+        console.log('[History] Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error('Failed to load history');
+        }
+        
+        const historyEntries = await response.json();
+        console.log('[History] Received history entries:', historyEntries);
+        
+        // Fetch full restaurant details for each history entry
+        const historyWithDetails = await Promise.all(historyEntries.map(async (entry) => {
+          try {
+            const res = await fetch(`http://localhost:8080/api/restaurants/${entry.restaurantId}`);
+            if (res.ok) {
+              const restaurant = await res.json();
+              return {
+                ...entry,
+                restaurant: restaurant
+              };
+            }
+            return {
+              ...entry,
+              restaurant: { id: entry.restaurantId, name: entry.restaurantName }
+            };
+          } catch (err) {
+            console.error('[History] Error fetching restaurant:', entry.restaurantId, err);
+            return {
+              ...entry,
+              restaurant: { id: entry.restaurantId, name: entry.restaurantName }
+            };
+          }
+        }));
+        
+        console.log('[History] Final history:', historyWithDetails);
+        setHistory(historyWithDetails);
       } catch (err) {
-        console.error("Error loading browse history:", err);
+        console.error("[History] Error loading browse history:", err);
         setError("Failed to load browsing history");
         setHistory([]);
       } finally {
@@ -27,7 +73,7 @@ const BrowseHistory = () => {
     };
 
     loadHistory();
-  }, []);
+  }, [user]);
 
   const handleViewRestaurant = (restaurantId) => {
     if (restaurantId) {
@@ -36,22 +82,49 @@ const BrowseHistory = () => {
   };
 
   const handleAddToFavorites = async (restaurant) => {
+    if (!user?.id || !restaurant?.id) return;
+
     try {
-      await userService.addToFavorites(restaurant);
-      // Show success message or update UI
-      console.log(`Added ${restaurant.name} to favorites`);
+      const response = await fetch('http://localhost:8080/api/user/favorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          restaurantId: restaurant.id
+        })
+      });
+
+      if (response.ok) {
+        toast.success(`Added ${restaurant.name} to favorites`);
+      } else {
+        throw new Error('Failed to add favorite');
+      }
     } catch (err) {
       setError('Failed to add to favorites');
+      toast.error('Failed to add to favorites');
       console.error('Error adding to favorites:', err);
     }
   };
 
   const handleClearHistory = async () => {
+    if (!user?.id) return;
+
     try {
-      await userService.clearBrowseHistory();
-      setHistory([]);
+      const response = await fetch(`http://localhost:8080/api/user/history?userId=${user.id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setHistory([]);
+        toast.success('History cleared');
+      } else {
+        throw new Error('Failed to clear history');
+      }
     } catch (err) {
       setError('Failed to clear history');
+      toast.error('Failed to clear history');
       console.error('Error clearing history:', err);
     }
   };
@@ -116,7 +189,7 @@ const BrowseHistory = () => {
                 <div className="flex items-start space-x-4">
                   {/* Restaurant Image */}
                   <img 
-                    src={item.restaurant?.image || "https://picsum.photos/seed/restaurant/300/200"} 
+                    src={(item.restaurant?.images && item.restaurant.images[0]) || item.restaurant?.image || "https://picsum.photos/seed/restaurant/300/200"} 
                     alt={item.restaurant?.name || "Restaurant"}
                     className="w-16 h-16 object-cover rounded-lg"
                     onError={(e) => {
@@ -125,7 +198,9 @@ const BrowseHistory = () => {
                   />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">{item.restaurant?.name || "Unknown Restaurant"}</h3>
-                    <p className="text-gray-600">{item.restaurant?.cuisine || "Restaurant"} • {item.restaurant?.address || "Unknown Location"}</p>
+                    <p className="text-gray-600">
+                      {item.restaurant?.cuisine || "Restaurant"} • {item.restaurant?.address?.street || item.restaurant?.address || "Unknown Location"}
+                    </p>
                     {item.searchQuery && (
                       <p className="text-sm text-gray-500">Searched: "{item.searchQuery}"</p>
                     )}
@@ -137,7 +212,9 @@ const BrowseHistory = () => {
                       <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
                     </svg>
                     <span className="ml-1 text-sm text-gray-700">{item.restaurant?.rating || "N/A"}</span>
-                    <span className="ml-2 text-sm text-gray-500">${item.restaurant?.priceRange || "N/A"}</span>
+                    <span className="ml-2 text-sm text-gray-500">
+                      {item.restaurant?.priceLevel ? '$'.repeat(item.restaurant.priceLevel) : (item.restaurant?.priceRange ? '$' + item.restaurant.priceRange : "N/A")}
+                    </span>
                   </div>
                   <p className="text-sm text-gray-500">
                     {item.visitedDate || item.viewedAt

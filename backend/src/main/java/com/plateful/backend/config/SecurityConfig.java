@@ -33,8 +33,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
-                      .requestMatchers("/auth/**").permitAll()
-      .requestMatchers("/api/restaurants/**").permitAll()   // ← public
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/restaurants/**").permitAll()   // ← public
+                .requestMatchers("/api/user/**").permitAll()   // ← temporary: make user endpoints public for testing
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults()); // not used for signup; fine to keep

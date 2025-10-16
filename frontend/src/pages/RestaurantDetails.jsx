@@ -3,17 +3,22 @@ import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
+import toast from "react-hot-toast";
 import ShareButton from "../components/ShareButton";
 import ShareModal from "../components/ShareModal";
+import { useAuth } from "../auth/AuthContext";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/restaurants/${id}`)
@@ -24,15 +29,84 @@ export default function RestaurantDetails() {
       .then((data) => {
         setRestaurant(data);
         setLoading(false);
+        
+        // Add to browse history
+        if (user?.id) {
+          fetch(`http://localhost:8080/api/user/history`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: user.id,
+              restaurantId: data.id,
+              restaurantName: data.name,
+              viewType: 'Details viewed'
+            })
+          }).catch(err => console.error('Failed to add to history:', err));
+        }
       })
       .catch((err) => {
         console.error(err);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, user]);
+
+  // Check if restaurant is in favorites
+  useEffect(() => {
+    if (user?.id && id) {
+      fetch(`http://localhost:8080/api/user/favorites?userId=${user.id}`)
+        .then(res => res.json())
+        .then(favorites => {
+          setIsFavorite(favorites.includes(id));
+        })
+        .catch(err => console.error('Failed to check favorites:', err));
+    }
+  }, [user, id]);
 
   // Share URL for this restaurant
   const shareUrl = window.location.href;
+
+  // Handle favorite toggle
+  const handleFavoriteToggle = async () => {
+    if (!user) {
+      toast.error('Please sign in to add favorites');
+      navigate('/signin');
+      return;
+    }
+
+    setFavoriteLoading(true);
+    try {
+      if (isFavorite) {
+        // Remove from favorites
+        await fetch(`http://localhost:8080/api/user/favorites`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.id,
+            restaurantId: id
+          })
+        });
+        setIsFavorite(false);
+        toast.success('Removed from favorites');
+      } else {
+        // Add to favorites
+        await fetch(`http://localhost:8080/api/user/favorites`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.id,
+            restaurantId: id
+          })
+        });
+        setIsFavorite(true);
+        toast.success('Added to favorites!');
+      }
+    } catch (err) {
+      console.error('Failed to toggle favorite:', err);
+      toast.error('Failed to update favorites');
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
 
   // Handle share button click
   const handleShare = async () => {
@@ -170,8 +244,37 @@ export default function RestaurantDetails() {
                 {"$".repeat(Math.floor(restaurant.priceLevel))}
               </div>
             </div>
-            {/* Share Button */}
-            <ShareButton onClick={handleShare} />
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              {/* Favorite Button */}
+              <button
+                onClick={handleFavoriteToggle}
+                disabled={favoriteLoading}
+                className={`p-3 rounded-full transition-all duration-200 ${
+                  isFavorite
+                    ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill={isFavorite ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+              </button>
+              {/* Share Button */}
+              <ShareButton onClick={handleShare} />
+            </div>
           </div>
 
           {/* Tags */}

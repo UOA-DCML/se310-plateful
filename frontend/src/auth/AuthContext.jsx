@@ -69,10 +69,22 @@ export function AuthProvider({ children }) {
         if (data?.accessToken) storage.setItem("accessToken", data.accessToken);
         if (data?.refreshToken) storage.setItem("refreshToken", data.refreshToken);
 
+        // Decode JWT to get user ID
+        let userId = null;
+        if (data?.accessToken) {
+          try {
+            const payload = JSON.parse(atob(data.accessToken.split('.')[1]));
+            userId = payload.sub; // JWT subject is the user ID
+          } catch (err) {
+            console.error('Failed to decode JWT:', err);
+          }
+        }
+
         // Prefer user object from backend; otherwise derive from email
         const nextUser = data?.user
-          ? data.user
+          ? { ...data.user, id: userId }
           : {
+              id: userId,
               email: (data?.email ?? email).trim(),
               name: data?.user?.name ?? (data?.email ?? email).split("@")[0],
               username: (data?.email ?? email).split("@")[0],

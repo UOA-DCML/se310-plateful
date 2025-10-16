@@ -1,37 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userService } from '../services/userService';
+import { useAuth } from '../auth/AuthContext';
+import toast from 'react-hot-toast';
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const auth = useAuth();
+  const user = auth?.user;
 
   useEffect(() => {
     loadFavorites();
-  }, []);
+  }, [user]);
 
   const loadFavorites = async () => {
+    console.log('[Favorites] User:', user);
+    if (!user?.id) {
+      console.log('[Favorites] No user ID, skipping load');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');
-      const userFavorites = await userService.getFavorites();
-      setFavorites(userFavorites);
+      
+      // Get favorite restaurant IDs from backend
+      console.log('[Favorites] Fetching favorites for user:', user.id);
+      const response = await fetch(`http://localhost:8080/api/user/favorites?userId=${user.id}`);
+      console.log('[Favorites] Response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error('Failed to load favorites');
+      }
+      
+      const favoriteIds = await response.json();
+      console.log('[Favorites] Received favorite IDs:', favoriteIds);
+      
+      // Fetch full restaurant details for each ID
+      const restaurantPromises = favoriteIds.map(async (id) => {
+        try {
+          console.log('[Favorites] Fetching restaurant:', id);
+          const res = await fetch(`http://localhost:8080/api/restaurants/${id}`);
+          if (res.ok) {
+            const restaurant = await res.json();
+            console.log('[Favorites] Got restaurant:', restaurant);
+            return restaurant;
+          }
+          console.log('[Favorites] Failed to fetch restaurant:', id, res.status);
+          return null;
+        } catch (err) {
+          console.error('[Favorites] Error fetching restaurant:', id, err);
+          return null;
+        }
+      });
+      
+      const restaurants = await Promise.all(restaurantPromises);
+      const filtered = restaurants.filter(r => r !== null);
+      console.log('[Favorites] Final restaurants:', filtered);
+      setFavorites(filtered);
     } catch (err) {
       setError('Failed to load favorites');
-      console.error('Error loading favorites:', err);
+      console.error('[Favorites] Error loading favorites:', err);
     } finally {
       setLoading(false);
     }
   };
 
   const handleRemoveFavorite = async (restaurantId) => {
+    if (!user?.id) return;
+
     try {
-      await userService.removeFromFavorites(restaurantId);
-      setFavorites(favorites.filter(fav => fav.id !== restaurantId));
+      const response = await fetch('http://localhost:8080/api/user/favorites', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          restaurantId: restaurantId
+        })
+      });
+
+      if (response.ok) {
+        setFavorites(favorites.filter(fav => fav.id !== restaurantId));
+        toast.success('Removed from favorites');
+      } else {
+        throw new Error('Failed to remove favorite');
+      }
     } catch (err) {
       setError('Failed to remove from favorites');
+      toast.error('Failed to remove from favorites');
       console.error('Error removing favorite:', err);
     }
   };
@@ -96,9 +157,12 @@ const Favorites = () => {
                 {/* Restaurant Image */}
                 <div className="relative h-48 bg-gray-200">
                   <img 
-                    src={restaurant.image || "/api/placeholder/300/200"} 
+                    src={(restaurant.images && restaurant.images[0]) || restaurant.image || "/api/placeholder/300/200"} 
                     alt={restaurant.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = "/api/placeholder/300/200";
+                    }}
                   />
                   {/* Remove from favorites button */}
                   <button
@@ -116,7 +180,9 @@ const Favorites = () => {
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-lg font-semibold text-gray-900">{restaurant.name}</h3>
-                    <span className="text-sm text-gray-600">${restaurant.priceRange}</span>
+                    <span className="text-sm text-gray-600">
+                      {'$'.repeat(restaurant.priceLevel || restaurant.priceRange || 2)}
+                    </span>
                   </div>
                   
                   <p className="text-gray-600 text-sm mb-2">{restaurant.cuisine}</p>
@@ -126,11 +192,13 @@ const Favorites = () => {
                       <svg className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
                         <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
                       </svg>
-                      <span className="ml-1 text-sm text-gray-700">{restaurant.rating}</span>
+                      <span className="ml-1 text-sm text-gray-700">{restaurant.rating || 'N/A'}</span>
                     </div>
                   </div>
                   
-                  <p className="text-gray-600 text-sm mb-4">{restaurant.address}</p>
+                  <p className="text-gray-600 text-sm mb-4">
+                    {restaurant.address?.street || restaurant.address}, {restaurant.address?.city || ''}
+                  </p>
                   
                   {restaurant.phone && (
                     <p className="text-gray-600 text-sm mb-4">📞 {restaurant.phone}</p>
