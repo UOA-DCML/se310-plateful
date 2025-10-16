@@ -1,7 +1,9 @@
 package com.plateful.backend.model;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
@@ -41,6 +43,13 @@ public class Restaurant {
 
   @Field("reservation_required")
   private Boolean reservationRequired;
+
+  // Voting system - stores user IDs who have upvoted/downvoted
+  @Field("upvote_user_ids")
+  private Set<String> upvoteUserIds = new HashSet<>();
+
+  @Field("downvote_user_ids")
+  private Set<String> downvoteUserIds = new HashSet<>();
 
   public static class Address {
     private String street;
@@ -184,5 +193,69 @@ public class Restaurant {
 
   public void setReservationRequired(Boolean reservationRequired) {
     this.reservationRequired = reservationRequired;
+  }
+
+  public Set<String> getUpvoteUserIds() {
+    return upvoteUserIds;
+  }
+
+  public void setUpvoteUserIds(Set<String> upvoteUserIds) {
+    this.upvoteUserIds = upvoteUserIds;
+  }
+
+  public Set<String> getDownvoteUserIds() {
+    return downvoteUserIds;
+  }
+
+  public void setDownvoteUserIds(Set<String> downvoteUserIds) {
+    this.downvoteUserIds = downvoteUserIds;
+  }
+
+  /**
+   * Get the net vote count (upvotes - downvotes).
+   *
+   * @return the net vote count
+   */
+  public int getVoteCount() {
+    return (upvoteUserIds != null ? upvoteUserIds.size() : 0)
+        - (downvoteUserIds != null ? downvoteUserIds.size() : 0);
+  }
+
+  /**
+   * Get the total number of upvotes.
+   *
+   * @return the upvote count
+   */
+  public int getUpvoteCount() {
+    return upvoteUserIds != null ? upvoteUserIds.size() : 0;
+  }
+
+  /**
+   * Get the total number of downvotes.
+   *
+   * @return the downvote count
+   */
+  public int getDownvoteCount() {
+    return downvoteUserIds != null ? downvoteUserIds.size() : 0;
+  }
+
+  /**
+   * Check if a user has upvoted this restaurant.
+   *
+   * @param userId the user ID to check
+   * @return true if the user has upvoted, false otherwise
+   */
+  public boolean hasUserUpvoted(String userId) {
+    return upvoteUserIds != null && upvoteUserIds.contains(userId);
+  }
+
+  /**
+   * Check if a user has downvoted this restaurant.
+   *
+   * @param userId the user ID to check
+   * @return true if the user has downvoted, false otherwise
+   */
+  public boolean hasUserDownvoted(String userId) {
+    return downvoteUserIds != null && downvoteUserIds.contains(userId);
   }
 }
