@@ -23,13 +23,6 @@ const NavBar = () => {
   const navLinks = (
     <>
       <Link
-        to="/location"
-        className="rounded-full px-3 py-2 text-sm font-medium text-gray-800 transition hover:bg-lime-50 hover:text-lime-700 sm:text-base"
-        onClick={closeMenu}
-      >
-        Location
-      </Link>
-      <Link
         to="/about"
         className="rounded-full px-3 py-2 text-sm font-medium text-gray-800 transition hover:bg-lime-50 hover:text-lime-700 sm:text-base"
         onClick={closeMenu}

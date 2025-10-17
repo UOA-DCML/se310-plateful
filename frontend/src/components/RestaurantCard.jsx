@@ -16,7 +16,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
     "https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=";
 
   // Share URL for this restaurant
-  const shareUrl = `${window.location.origin}/restaurant/${restaurant.id}`;
+  const shareUrl = `${window.location.origin}${import.meta.env.BASE_URL}restaurant/${restaurant.id}`.replace(/\/\//g, '/');
 
   // Helper function to render star rating
   const renderStars = (rating) => {

@@ -29,10 +29,10 @@ public class JwtService {
     public String generateAccessToken(AppUser user) {
         Instant now = Instant.now();
         return Jwts.builder()
-                .setSubject(user.getId() != null ? user.getId() : user.getEmail())
+                .subject(user.getId() != null ? user.getId() : user.getEmail())
                 .claim("email", user.getEmail())
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(accessTtlSec)))
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(accessTtlSec)))
                 .signWith(Keys.hmacShaKeyFor(secret))
                 .compact();
     }
@@ -40,10 +40,10 @@ public class JwtService {
     public String generateRefreshToken(AppUser user) {
         Instant now = Instant.now();
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .subject(user.getEmail())
                 .claim("type", "refresh")
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(refreshTtlSec)))
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(refreshTtlSec)))
                 .signWith(Keys.hmacShaKeyFor(secret))
                 .compact();
     }

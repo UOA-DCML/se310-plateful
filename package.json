@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "install:frontend": "cd frontend && npm install",
-    "install:all": "npm run install:frontend && npm install concurrently && cd backend && (./mvnw install -DskipTests || mvnw.cmd install -DskipTests)",
+    "install:all": "npm run install:frontend && npm install && cd backend && (./mvnw install -DskipTests || mvnw.cmd install -DskipTests)",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && (./mvnw spring-boot:run || mvnw.cmd spring-boot:run)",
     "dev:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\" --names \"FRONTEND,BACKEND\" --prefix-colors \"cyan,magenta\"",

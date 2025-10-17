@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ["openjdk17", "maven"]
+
+[phases.build]
+cmds = [
+  "cd backend",
+  "chmod +x mvnw",
+  "./mvnw clean package -DskipTests"
+]
+
+[start]
+cmd = "cd backend && java -Dserver.port=${PORT:-8080} -jar target/*.jar"
