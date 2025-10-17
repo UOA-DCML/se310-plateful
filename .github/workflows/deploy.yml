@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - deployV0.02  # Trigger deployment on push to main branch
+      - main  # Trigger deployment on push to main branch
   workflow_dispatch:  # Allow manual deployment
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
