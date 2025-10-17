@@ -4,7 +4,7 @@ import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import DOMPurify from "dompurify";
 import toast from "react-hot-toast";
-import { buildApiUrl } from "../lib/config";
+import { buildApiUrl, buildFrontendUrl } from "../lib/config";
 import DirectionsButton from "../components/DirectionsButton";
 import ShareButton from "../components/ShareButton";
 import ShareModal from "../components/ShareModal";
@@ -93,8 +93,8 @@ export default function RestaurantDetails() {
     }
   }, [user, id]);
 
-  // Share URL for this restaurant
-  const shareUrl = window.location.href;
+  // Share URL for this restaurant - use canonical frontend URL
+  const shareUrl = buildFrontendUrl(`/restaurant/${id}`);
 
   // Handle favorite toggle
   const handleFavoriteToggle = async () => {

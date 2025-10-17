@@ -4,6 +4,7 @@ import { useState } from "react";
 import ShareButton from "./ShareButton";
 import ShareModal from "./ShareModal";
 import { FaStar, FaStarHalfAlt, FaRegStar, FaDollarSign } from "react-icons/fa";
+import { buildFrontendUrl } from "../lib/config";
 
 const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
   const navigate = useNavigate();
@@ -15,8 +16,8 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
     restaurant.image ||
     "https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=";
 
-  // Share URL for this restaurant
-  const shareUrl = `${window.location.origin}${import.meta.env.BASE_URL}restaurant/${restaurant.id}`.replace(/\/\//g, '/');
+  // Share URL for this restaurant - use canonical frontend URL
+  const shareUrl = buildFrontendUrl(`/restaurant/${restaurant.id}`);
 
   // Helper function to render star rating
   const renderStars = (rating) => {

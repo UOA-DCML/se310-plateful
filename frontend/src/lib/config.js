@@ -21,3 +21,11 @@ export const buildApiUrl = (path = "") => {
   const normalisedPath = path.startsWith("/") ? path : `/${path}`;
   return `${API_BASE_URL}${normalisedPath}`;
 };
+
+// Frontend base URL for sharing and redirects
+export const FRONTEND_BASE_URL = "https://uoa-dcml.github.io/se310-plateful";
+
+export const buildFrontendUrl = (path = "") => {
+  const normalisedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${FRONTEND_BASE_URL}${normalisedPath}`;
+};
