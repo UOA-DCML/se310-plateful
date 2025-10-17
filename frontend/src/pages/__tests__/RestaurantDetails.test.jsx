@@ -18,6 +18,16 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+vi.mock("../../auth/AuthContext", () => ({
+  useAuth: () => ({
+    user: {
+      id: "user-1",
+      email: "tester@example.com",
+    },
+    isAuthed: true,
+  }),
+}));
+
 vi.mock("yet-another-react-lightbox", () => ({
   Lightbox: () => null,
 }));

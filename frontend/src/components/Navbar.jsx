@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import navLogo from "../assets/navlogo.png";
 import UserSidebar from "./UserSidebar";
 import { useAuth } from "../auth/AuthContext";
+import TextSizeSlider from "./TextSizeSlider";
 
 const NavBar = () => {
   const { user, isAuthed } = useAuth() ?? {};
@@ -64,11 +65,14 @@ const NavBar = () => {
     <>
       <nav className="sticky top-0 z-[1000] w-full border-b border-lime-50 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-[68px] w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-10">
-          <a href="https://uoa-dcml.github.io/se310-plateful/" className="block">
+          <Link to="/" className="block" onClick={closeMenu}>
             <img src={navLogo} alt="Logo" className="h-9 sm:h-10" />
-          </a>
+          </Link>
 
-          <div className="hidden items-center gap-2 md:flex md:gap-4">{navLinks}</div>
+          <div className="hidden items-center gap-4 md:flex">
+            {navLinks}
+            <TextSizeSlider />
+          </div>
 
           <button
             type="button"
@@ -96,7 +100,10 @@ const NavBar = () => {
 
         {isMenuOpen && (
           <div className="border-t border-lime-100 bg-white/95 px-4 py-4 shadow-inner md:hidden">
-            <div className="flex flex-col gap-2">{navLinks}</div>
+            <div className="flex flex-col gap-3">
+              {navLinks}
+              <TextSizeSlider className="mt-2" />
+            </div>
           </div>
         )}
       </nav>
