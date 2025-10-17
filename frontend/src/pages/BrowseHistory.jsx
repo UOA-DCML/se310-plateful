@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import toast from 'react-hot-toast';
+import { buildApiUrl } from '../lib/config';
 
 const BrowseHistory = () => {
   const [history, setHistory] = useState([]);
@@ -27,7 +28,7 @@ const BrowseHistory = () => {
         
         // Get browse history from backend
         console.log('[History] Fetching history for user:', user.id);
-        const response = await fetch(`http://localhost:8080/api/user/history?userId=${user.id}`);
+        const response = await fetch(buildApiUrl(`/api/user/history?userId=${user.id}`));
         console.log('[History] Response status:', response.status);
         
         if (!response.ok) {
@@ -37,20 +38,23 @@ const BrowseHistory = () => {
         const historyEntries = await response.json();
         console.log('[History] Received history entries:', historyEntries);
         
+        // Limit to most recent 20 entries
+        const recentEntries = historyEntries.slice(0, 20);
+        
         // Fetch full restaurant details for each history entry
-        const historyWithDetails = await Promise.all(historyEntries.map(async (entry) => {
+        const historyWithDetails = await Promise.all(recentEntries.map(async (entry) => {
           try {
-            const res = await fetch(`http://localhost:8080/api/restaurants/${entry.restaurantId}`);
-            if (res.ok) {
-              const restaurant = await res.json();
+            const res = await fetch(buildApiUrl(`/api/restaurants/${entry.restaurantId}`));
+            if (!res.ok) {
               return {
                 ...entry,
-                restaurant: restaurant
+                restaurant: { id: entry.restaurantId, name: entry.restaurantName }
               };
             }
+            const restaurant = await res.json();
             return {
               ...entry,
-              restaurant: { id: entry.restaurantId, name: entry.restaurantName }
+              restaurant: restaurant
             };
           } catch (err) {
             console.error('[History] Error fetching restaurant:', entry.restaurantId, err);
@@ -81,39 +85,16 @@ const BrowseHistory = () => {
     }
   };
 
-  const handleAddToFavorites = async (restaurant) => {
-    if (!user?.id || !restaurant?.id) return;
-
-    try {
-      const response = await fetch('http://localhost:8080/api/user/favorites', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          restaurantId: restaurant.id
-        })
-      });
-
-      if (response.ok) {
-        toast.success(`Added ${restaurant.name} to favorites`);
-      } else {
-        throw new Error('Failed to add favorite');
-      }
-    } catch (err) {
-      setError('Failed to add to favorites');
-      toast.error('Failed to add to favorites');
-      console.error('Error adding to favorites:', err);
-    }
-  };
-
   const handleClearHistory = async () => {
     if (!user?.id) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/user/history?userId=${user.id}`, {
-        method: 'DELETE'
+      const response = await fetch(buildApiUrl('/api/user/history'), {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id }),
       });
 
       if (response.ok) {
@@ -169,7 +150,11 @@ const BrowseHistory = () => {
         <div className="mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Browse History</h1>
-            <p className="text-gray-600 mt-2">Restaurants you've recently viewed and explored</p>
+            <p className="text-gray-600 mt-2">
+              {history.length > 0 
+                ? `Your ${history.length} most recently viewed restaurant${history.length !== 1 ? 's' : ''} (up to 20)`
+                : 'Restaurants you\'ve recently viewed and explored'}
+            </p>
           </div>
           {history.length > 0 && (
             <button
@@ -236,12 +221,6 @@ const BrowseHistory = () => {
                       className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-sm"
                     >
                       View Details
-                    </button>
-                    <button 
-                      onClick={() => handleAddToFavorites(item.restaurant)}
-                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition text-sm"
-                    >
-                      Add to Favorites
                     </button>
                     <button 
                       onClick={() => handleVisitWebsite(item.restaurant?.website)}
