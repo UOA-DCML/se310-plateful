@@ -111,18 +111,16 @@ export default function Search() {
 
   return (
     <div>
-      <section className="relative w-full min-h-[420px] md:h-[40vh]">
+      <section className="relative w-full min-h-[420px] overflow-hidden md:min-h-[420px]">
         <img
           src={backgroundImage}
           alt="Background"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <h1 className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold text-black md:text-4xl">
-          Looking for something to eat?
-        </h1>
-        <div
-          className="absolute top-[55%] left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4"
-        >
+        <div className="relative z-10 mx-auto flex h-full w-[90%] max-w-5xl flex-col items-center gap-6 px-4 py-16 sm:py-20">
+          <h1 className="text-center text-3xl font-semibold text-gray-900 md:text-4xl">
+            Looking for something to eat?
+          </h1>
           {/* Search Bar */}
           <div className="flex w-full flex-col gap-3 rounded-[12px] bg-white/85 p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2">
             <input
