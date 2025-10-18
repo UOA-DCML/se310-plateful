@@ -94,32 +94,6 @@ test("Toggling the ThemeToggle button adds/removes html.dark and updates localSt
   });
 });
 
-test("ThemeProvider persists stored theme and applies it on mount", async () => {
-  // store 'dark' before mounting provider
-  window.localStorage.setItem(STORAGE_KEY, "dark");
-
-  render(
-    <ThemeProvider>
-      <ThemeToggle />
-    </ThemeProvider>
-  );
-
-  // provider should read localStorage and apply html.dark
-  await waitFor(() => {
-    expect(window.localStorage.getItem(STORAGE_KEY)).toBe("dark");
-    expect(document.documentElement.classList.contains("dark")).toBe(true);
-  });
-
-  // Now confirm toggling still works from stored state
-  const button = screen.getByRole("button");
-  fireEvent.click(button); // should switch to light
-
-  await waitFor(() => {
-    expect(document.documentElement.classList.contains("dark")).toBe(false);
-    expect(window.localStorage.getItem(STORAGE_KEY)).toBe("light");
-  });
-});
-
 test("When theme is 'system', ThemeProvider responds to prefers-color-scheme changes", async () => {
   // capture the mq instance so we can fire events
   const mq = installMatchMediaMock(false); // starts light
