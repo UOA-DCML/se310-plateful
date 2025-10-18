@@ -33,7 +33,7 @@ function installMatchMediaMock(initialMatches = false) {
         try {
           cb(ev);
         } catch (e) {
-          // swallow listener errors in test harness
+            console.error("Error in matchMedia listener:", e);
         }
       });
     },

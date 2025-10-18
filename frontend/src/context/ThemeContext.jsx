@@ -19,9 +19,13 @@ export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => readStored()); // "light"|"dark"|"system"
   const mediaRef = useRef(null);
 
-  const effective = useMemo(() => (theme === "system" ? getSystemPref() : theme), [theme]);
+  // Track the current system preference explicitly in state so we can react when it changes.
+  const [systemPref, setSystemPref] = useState(() => getSystemPref());
 
-  // apply class to documentElement
+  // effective now depends on both the theme selection and the live systemPref
+  const effective = useMemo(() => (theme === "system" ? systemPref : theme), [theme, systemPref]);
+
+  // apply class to documentElement whenever effective changes
   useEffect(() => {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
@@ -38,27 +42,46 @@ export function ThemeProvider({ children }) {
       window.localStorage.setItem(STORAGE_KEY, theme);
     }
 
-    if (theme !== "system") {
-      // remove any listener
-      if (mediaRef.current) {
-        mediaRef.current.removeEventListener("change", mediaRef.current._listener);
+    const isMatchMediaAvailable = typeof window !== "undefined" && typeof window.matchMedia === "function";
+    if (!isMatchMediaAvailable) return;
+
+    // always ensure we have the latest systemPref initially
+    setSystemPref(getSystemPref());
+
+    // when theme is system, attach listener; otherwise remove any existing listener
+    if (theme === "system") {
+      // remove old listener first if present
+      if (mediaRef.current && mediaRef.current._listener) {
+        const oldMq = mediaRef.current;
+        if (oldMq.removeEventListener) oldMq.removeEventListener("change", oldMq._listener);
+        else if (oldMq.removeListener) oldMq.removeListener(oldMq._listener);
         mediaRef.current = null;
       }
-      return;
-    }
 
-    if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
       const mq = window.matchMedia("(prefers-color-scheme: dark)");
-      const listener = () => {
-        // force update; small trick: set state to itself to trigger effective recalculation
-        setThemeState((t) => t);
+      const listener = (e) => {
+        // update our systemPref state so effective recalculates
+        setSystemPref(e && typeof e.matches === "boolean" ? (e.matches ? "dark" : "light") : getSystemPref());
       };
-      mq.addEventListener ? mq.addEventListener("change", listener) : mq.addListener(listener);
+
+      if (mq.addEventListener) mq.addEventListener("change", listener);
+      else if (mq.addListener) mq.addListener(listener);
+
       mq._listener = listener;
       mediaRef.current = mq;
+
       return () => {
-        mq.removeEventListener ? mq.removeEventListener("change", listener) : mq.removeListener(listener);
+        if (mq.removeEventListener) mq.removeEventListener("change", listener);
+        else if (mq.removeListener) mq.removeListener(listener);
       };
+    } else {
+      // if not in system mode, cleanup any attached listener
+      if (mediaRef.current && mediaRef.current._listener) {
+        const old = mediaRef.current;
+        if (old.removeEventListener) old.removeEventListener("change", old._listener);
+        else if (old.removeListener) old.removeListener(old._listener);
+        mediaRef.current = null;
+      }
     }
   }, [theme]);
 
