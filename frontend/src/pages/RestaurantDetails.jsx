@@ -9,10 +9,12 @@ import DirectionsButton from "../components/DirectionsButton";
 import ShareButton from "../components/ShareButton";
 import ShareModal from "../components/ShareModal";
 import { useAuth } from "../auth/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const { user } = useAuth();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -474,7 +476,7 @@ export default function RestaurantDetails() {
 
           {/* Description */}
           <div className="mb-6">
-            <p className="text-gray-700 leading-relaxed max-w-2xl mb-4">
+            <p className={`leading-relaxed max-w-2xl mb-4 ${isDark ? "text-white" : "text-gray-700"}`}>
               {restaurant.description}
             </p>
           </div>

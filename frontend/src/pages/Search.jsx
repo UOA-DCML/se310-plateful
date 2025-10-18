@@ -6,11 +6,13 @@ import MapContainer from "../components/MapContainer";
 import Dropdown from "../components/Dropdown";
 import RestaurantMarkers from "../components/RestaurantMarkers";
 import { buildApiUrl } from "../lib/config";
+import { useTheme } from "../context/ThemeContext"; // adjust path
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 
 export default function Search() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { isDark } = useTheme();
 
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -39,19 +41,17 @@ export default function Search() {
       .catch((err) => console.error("Failed to fetch cuisines:", err));
   }, []);
 
-  // Function to fetch restaurants based on search query and filters
   const fetchRestaurants = async () => {
     try {
       setLoading(true);
       setError("");
 
-      // Extract filters from URL
       const query = searchParams.get("query");
       const cuisine = searchParams.get("cuisine");
-      const priceMin = searchParams.get("priceMin");
-      const priceMax = searchParams.get("priceMax");
-      const reservation = searchParams.get("reservation");
-      const openNow = searchParams.get("openNow");
+      const priceMinParam = searchParams.get("priceMin");
+      const priceMaxParam = searchParams.get("priceMax");
+      const reservationParam = searchParams.get("reservation");
+      const openNowParam = searchParams.get("openNow");
       const city = searchParams.get("city");
 
       const params = new URLSearchParams();
@@ -60,17 +60,16 @@ export default function Search() {
         params.append("query", query);
       }
       if (cuisine) params.append("cuisine", cuisine);
-      if (priceMin) params.append("priceMin", priceMin);
-      if (priceMax) params.append("priceMax", priceMax);
-      if (reservation !== null) params.append("reservation", reservation);
-      if (openNow !== null) params.append("openNow", openNow);
+      if (priceMinParam) params.append("priceMin", priceMinParam);
+      if (priceMaxParam) params.append("priceMax", priceMaxParam);
+      if (reservationParam !== null) params.append("reservation", reservationParam);
+      if (openNowParam !== null) params.append("openNow", openNowParam);
       if (city) params.append("city", city);
 
       const response = await fetch(
         buildApiUrl(`/api/restaurants/filter?${params.toString()}`)
       );
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       const data = await response.json();
       setRestaurants(Array.isArray(data) ? data : []);
@@ -83,7 +82,6 @@ export default function Search() {
     }
   };
 
-  // Handle search from the search bar on this page
   const handleSearch = () => {
     const params = new URLSearchParams();
 
@@ -99,49 +97,52 @@ export default function Search() {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    if (e.key === "Enter") handleSearch();
   };
 
-  // Fetch restaurants when search params change
   useEffect(() => {
     fetchRestaurants();
   }, [searchParams]);
 
   return (
-    <div>
+    <div className={isDark ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"}>
       <section className="relative w-full min-h-[420px] md:h-[40vh]">
         <img
           src={backgroundImage}
           alt="Background"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <h1 className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold text-black md:text-4xl">
+        <h1 className={`absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold md:text-4xl ${isDark ? "text-white" : "text-black"}`}>
           Looking for something to eat?
         </h1>
-        <div
-          className="absolute top-[55%] left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4"
-        >
+        <div className="absolute top-[55%] left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4">
           {/* Search Bar */}
-          <div className="flex w-full flex-col gap-3 rounded-[12px] bg-white/85 p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2">
+          <div className={`flex w-full flex-col gap-3 rounded-[12px] p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2 ${
+            isDark ? "bg-gray-800/80" : "bg-white/85"
+          }`}>
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="w-full border-none p-3 text-base outline-none md:text-lg"
+              className={`w-full p-3 text-base outline-none md:text-lg ${
+                isDark ? "bg-gray-700 text-white placeholder-gray-400" : "bg-white text-black placeholder-gray-500"
+              }`}
             />
             <button
-              className="w-full rounded-[6px] bg-[#333] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#222] md:w-auto cursor-pointer"
+              className={`w-full rounded-[6px] px-4 py-3 text-base font-semibold transition md:w-auto ${
+                isDark
+                  ? "bg-gray-700 text-white hover:bg-gray-600"
+                  : "bg-gray-900 text-white hover:bg-gray-800"
+              }`}
               onClick={handleSearch}
             >
               Go
             </button>
           </div>
 
-          {/* Filters*/}
+          {/* Filters */}
           <div className="grid w-full gap-3 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap lg:justify-center">
             <Dropdown
               label="Cuisine"
@@ -149,6 +150,7 @@ export default function Search() {
               value={selectedCuisine}
               onChange={setSelectedCuisine}
               width="w-full sm:w-[150px]"
+              darkMode={isDark}
             />
             <Dropdown
               label="Price Range"
@@ -174,8 +176,8 @@ export default function Search() {
                 }
               }}
               width="w-full sm:w-[180px]"
+              darkMode={isDark}
             />
-
             <Dropdown
               label="Reservation"
               options={[
@@ -183,12 +185,10 @@ export default function Search() {
                 { value: "false", label: "No" },
               ]}
               value={reservation !== null ? reservation.toString() : ""}
-              onChange={(val) =>
-                setReservation(val === "" ? null : val === "true")
-              }
+              onChange={(val) => setReservation(val === "" ? null : val === "true")}
               width="w-full sm:w-[150px]"
+              darkMode={isDark}
             />
-
             <Dropdown
               label="Open Now"
               options={[
@@ -198,14 +198,15 @@ export default function Search() {
               value={openNow !== null ? openNow.toString() : ""}
               onChange={(val) => setOpenNow(val === "" ? null : val === "true")}
               width="w-full sm:w-[150px]"
+              darkMode={isDark}
             />
-
             <Dropdown
               label="City"
               options={["Auckland", "Wellington", "Christchurch"]}
               value={selectedCity}
               onChange={setSelectedCity}
               width="w-full sm:w-[150px]"
+              darkMode={isDark}
             />
           </div>
         </div>
@@ -214,18 +215,15 @@ export default function Search() {
       <section className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-8 lg:px-20">
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Restaurant List */}
-          <div className="flex-1 space-y-4">
+          <div className={`flex-1 space-y-4 ${isDark ? "text-white" : "text-black"}`}>
             {loading ? (
-              <div className="rounded-lg bg-white/60 p-5 text-center shadow-sm">
+              <div className={`rounded-lg p-5 text-center shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
                 Loading restaurants...
               </div>
             ) : restaurants.length > 0 ? (
-              <RestaurantList
-                restaurants={restaurants}
-                direction={"vertical"}
-              />
+              <RestaurantList restaurants={restaurants} direction={"vertical"} darkMode={isDark} />
             ) : (
-              <div className="rounded-lg bg-white/60 p-5 text-center shadow-sm">
+              <div className={`rounded-lg p-5 text-center shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
                 {searchQuery
                   ? "No restaurants found for your search."
                   : "No restaurants available."}
@@ -234,12 +232,10 @@ export default function Search() {
           </div>
 
           {/* Map */}
-          <div className="flex-1 overflow-hidden rounded-lg bg-white/60 p-4 shadow-sm">
+          <div className={`flex-1 overflow-hidden rounded-lg p-4 shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
             <div className="h-[260px] sm:h-[320px] lg:h-[520px] lg:sticky lg:top-28">
               <MapContainer>
-                {(map) => (
-                  <RestaurantMarkers map={map} restaurants={restaurants} />
-                )}
+                {(map) => <RestaurantMarkers map={map} restaurants={restaurants} />}
               </MapContainer>
             </div>
           </div>
