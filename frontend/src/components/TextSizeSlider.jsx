@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import { MdFormatSize } from "react-icons/md";
+
 import { useTextSize } from "../context/TextSizeContext";
 
 export default function TextSizeSlider({ className = "" }) {
