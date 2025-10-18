@@ -14,30 +14,34 @@ import { AuthProvider } from "./auth/AuthContext";
 import { TextSizeProvider } from "./context/TextSizeContext";
 import { ToasterProvider } from "./components/Toaster";
 import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "./context/ThemeContext";
+import "./index.css";
 
 function App() {
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <AuthProvider>
-        <TextSizeProvider>
-          <ToasterProvider>
-            <Toaster position="top-center" />
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/restaurant/:id" element={<RestaurantDetails />} />
-                <Route path="/profile" element={<UserProfile />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/history" element={<BrowseHistory />} />
-                <Route path="/favorites" element={<Favorites />} />
-                <Route path="/signin" element={<SigninPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-              </Routes>
-            </Layout>
-          </ToasterProvider>
-        </TextSizeProvider>
+        <ThemeProvider>
+          <TextSizeProvider>
+            <ToasterProvider>
+              <Toaster position="top-center" />
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/restaurant/:id" element={<RestaurantDetails />} />
+                  <Route path="/profile" element={<UserProfile />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/history" element={<BrowseHistory />} />
+                  <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/signin" element={<SigninPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
+                </Routes>
+              </Layout>
+            </ToasterProvider>
+          </TextSizeProvider>
+        </ThemeProvider>
       </AuthProvider>
     </Router>
   );
