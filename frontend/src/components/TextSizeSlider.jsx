@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MdFormatSize } from "react-icons/md";
 import { useTextSize } from "../context/TextSizeContext";
+import textSliderIcon from "../assets/textslidericon.png";
 
 export default function TextSizeSlider({ className = "" }) {
   const { scale, setScale } = useTextSize();
@@ -46,7 +46,12 @@ export default function TextSizeSlider({ className = "" }) {
         aria-label={`Adjust text size (current ${currentPercent}%)`}
       >
         <span className="sr-only">Adjust text size</span>
-        <MdFormatSize className="h-4 w-4 text-gray-600" aria-hidden="true" />
+        <img
+          src={textSliderIcon}
+          alt=""
+          className="h-4 w-4"
+          aria-hidden="true"
+        />
         <svg
           className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
