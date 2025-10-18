@@ -4,6 +4,7 @@ import navLogo from "../assets/navlogo.png";
 import UserSidebar from "./UserSidebar";
 import { useAuth } from "../auth/AuthContext";
 import TextSizeSlider from "./TextSizeSlider";
+import ThemeToggle from "./ThemeToggle";
 
 const NavBar = () => {
   const { user, isAuthed } = useAuth() ?? {};
@@ -72,6 +73,7 @@ const NavBar = () => {
           <div className="hidden items-center gap-4 md:flex">
             {navLinks}
             <TextSizeSlider />
+            <ThemeToggle />
           </div>
 
           <button
@@ -103,6 +105,7 @@ const NavBar = () => {
             <div className="flex flex-col gap-3">
               {navLinks}
               <TextSizeSlider className="mt-2" />
+              <div className="mt-2"><ThemeToggle /></div>
             </div>
           </div>
         )}
