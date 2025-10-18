@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTextSize } from "../context/TextSizeContext";
+import textSliderIcon from "../assets/textslidericon.png";
 
 export default function TextSizeSlider({ className = "" }) {
   const { scale, setScale } = useTextSize();
@@ -39,12 +40,18 @@ export default function TextSizeSlider({ className = "" }) {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 rounded-full border border-lime-100 bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm transition hover:border-lime-200 hover:text-lime-700 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1"
+        className="flex items-center justify-center rounded-full border border-lime-100 bg-white p-2 text-xs font-medium text-gray-700 shadow-sm transition hover:border-lime-200 hover:text-lime-700 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1"
         aria-expanded={isOpen}
         aria-haspopup="true"
+        aria-label={`Adjust text size (current ${currentPercent}%)`}
       >
-        <span className="hidden md:inline">Text size</span>
-        <span className="text-gray-500">{currentPercent}%</span>
+        <span className="sr-only">Adjust text size</span>
+        <img
+          src={textSliderIcon}
+          alt=""
+          className="h-4 w-4"
+          aria-hidden="true"
+        />
         <svg
           className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"

@@ -6,6 +6,7 @@ export default function DirectionsButton({
   destinationAddress,
   destinationLatLng,
   className = "",
+  stacked = false,
 }) {
   const [travelMode, setTravelMode] = useState("driving");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -118,7 +119,7 @@ export default function DirectionsButton({
   return (
     <>
       <div
-        className="relative inline-flex gap-2"
+        className={`relative flex w-full gap-2 ${stacked ? "flex-col" : "flex-wrap"}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Mode selector button */}
@@ -126,7 +127,7 @@ export default function DirectionsButton({
           ref={dropdownButtonRef}
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className={`group relative inline-flex items-center gap-2 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer ${className}`}
+          className={`group relative flex min-w-[200px] items-center gap-2 rounded-lg bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 shadow-md transition-all duration-200 hover:from-gray-200 hover:to-gray-300 hover:shadow-lg cursor-pointer ${stacked ? "w-full" : "w-full flex-1"} ${className}`}
           aria-label="Select travel mode"
         >
           {/* Icon for current travel mode */}
@@ -150,7 +151,7 @@ export default function DirectionsButton({
         <button
           type="button"
           onClick={handleClick}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer"
+          className={`flex min-w-[200px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-emerald-600 hover:to-teal-700 hover:shadow-lg cursor-pointer ${stacked ? "w-full" : "w-full flex-1"}`}
           aria-label="Get directions"
         >
           <FaMapMarkerAlt className="w-3.5 h-3.5" />
