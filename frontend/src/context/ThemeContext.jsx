@@ -4,19 +4,14 @@ const ThemeContext = createContext(null);
 const STORAGE_KEY = "plateful:theme"; // values: "light" | "dark" | "system"
 const DEFAULT = "system";
 
-const readStored = () => {
-  if (typeof window === "undefined") return DEFAULT;
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  return raw === "light" || raw === "dark" || raw === "system" ? raw : DEFAULT;
-};
-
 const getSystemPref = () => {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
 export function ThemeProvider({ children }) {
-  const [theme, setThemeState] = useState(() => readStored()); // "light"|"dark"|"system"
+  // Always start as "system" by default (user requested)
+  const [theme, setThemeState] = useState(DEFAULT); // "light" | "dark" | "system"
   const mediaRef = useRef(null);
 
   // Track the current system preference explicitly in state so we can react when it changes.
@@ -29,28 +24,30 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
-    if (effective === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    if (effective === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
   }, [effective]);
 
   // persist theme & listen for system changes when in system mode
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEY, theme);
+    // persist current theme selection to localStorage (so user's manual choice is saved)
+    if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, theme);
+      } catch {
+        // ignore storage errors (e.g. privacy/no-storage)
+      }
     }
 
     const isMatchMediaAvailable = typeof window !== "undefined" && typeof window.matchMedia === "function";
     if (!isMatchMediaAvailable) return;
 
-    // always ensure we have the latest systemPref initially
+    // set the initial system preference
     setSystemPref(getSystemPref());
 
-    // when theme is system, attach listener; otherwise remove any existing listener
+    // If theme is "system", attach a listener to update systemPref on changes
     if (theme === "system") {
-      // remove old listener first if present
+      // Clean up any old listener first
       if (mediaRef.current && mediaRef.current._listener) {
         const oldMq = mediaRef.current;
         if (oldMq.removeEventListener) oldMq.removeEventListener("change", oldMq._listener);
@@ -60,22 +57,29 @@ export function ThemeProvider({ children }) {
 
       const mq = window.matchMedia("(prefers-color-scheme: dark)");
       const listener = (e) => {
-        // update our systemPref state so effective recalculates
-        setSystemPref(e && typeof e.matches === "boolean" ? (e.matches ? "dark" : "light") : getSystemPref());
+        // e may be a MediaQueryListEvent or MediaQueryList depending on browser
+        if (e && typeof e.matches === "boolean") {
+          setSystemPref(e.matches ? "dark" : "light");
+        } else {
+          setSystemPref(getSystemPref());
+        }
       };
 
       if (mq.addEventListener) mq.addEventListener("change", listener);
       else if (mq.addListener) mq.addListener(listener);
 
+      // store reference for cleanup
       mq._listener = listener;
       mediaRef.current = mq;
 
+      // cleanup when this effect re-runs or component unmounts
       return () => {
         if (mq.removeEventListener) mq.removeEventListener("change", listener);
         else if (mq.removeListener) mq.removeListener(listener);
+        mediaRef.current = null;
       };
     } else {
-      // if not in system mode, cleanup any attached listener
+      // not in system mode: ensure any previously attached listener is removed
       if (mediaRef.current && mediaRef.current._listener) {
         const old = mediaRef.current;
         if (old.removeEventListener) old.removeEventListener("change", old._listener);
@@ -85,6 +89,7 @@ export function ThemeProvider({ children }) {
     }
   }, [theme]);
 
+  // setter that validates input
   const setTheme = (next) => {
     setThemeState((cur) => {
       const resolved = typeof next === "function" ? next(cur) : next;
@@ -93,6 +98,7 @@ export function ThemeProvider({ children }) {
     });
   };
 
+  // toggle only flips between light/dark (not system)
   const toggle = () => {
     setTheme((t) => (t === "dark" ? "light" : "dark"));
   };
