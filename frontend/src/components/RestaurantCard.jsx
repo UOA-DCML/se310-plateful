@@ -65,6 +65,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
           style={{
             backgroundColor: isDark ? '#1e293b' : 'white',
             cursor: 'pointer',
+            height: direction === "vertical" ? '280px' : 'auto',
             minHeight: direction === "vertical" ? '280px' : '420px'
           }}
           onClick={() => {
@@ -79,14 +80,19 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
             style={{
               width: direction === "vertical" ? '220px' : '100%',
               height: direction === "vertical" ? '100%' : '180px',
-              minWidth: direction === "vertical" ? '220px' : 'auto'
+              minWidth: direction === "vertical" ? '220px' : 'auto',
+              minHeight: direction === "vertical" ? '280px' : '180px'
             }}
           >
             <img
               src={imageUrl}
               alt={restaurant.name || "Restaurant"}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              style={{ objectFit: 'cover' }}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
               onError={(e) => {
                 e.target.src =
                   "https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=";

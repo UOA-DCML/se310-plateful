@@ -30,13 +30,7 @@ textarea {
   font-size: inherit;
 }
 
-/* Prevent layout breaks when text size increases */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* SVG icons and images should NOT scale with text size */
+/* SVG icons should NOT scale with text size */
 svg {
   flex-shrink: 0;
 }
