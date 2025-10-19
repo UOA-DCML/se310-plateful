@@ -15,10 +15,10 @@ export default function MapContainer({ children }) {
   useEffect(() => {
     console.log('🗺️ Initializing MapLibre map...');
 
-    // Using OpenStreetMap-based styles that work with MapLibre
+    // Using OpenStreetMap-based styles - Voyager for colorful light mode, Dark Matter for dark mode
     const mapStyle = isDark
       ? 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
-      : 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+      : 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
 
     const mapInstance = new maplibregl.Map({
       container: mapElement.current,

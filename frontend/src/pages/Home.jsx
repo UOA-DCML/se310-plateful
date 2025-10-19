@@ -116,7 +116,10 @@ export default function Home() {
           alt="Background"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <h1 className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold md:text-4xl">
+        <h1 
+          className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold md:text-4xl"
+          style={{ color: isDark ? '#0f172a' : '#000000' }}
+        >
           Looking for something to eat?
         </h1>
         <div className="absolute top-[55%] left-1/2 w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
