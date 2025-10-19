@@ -90,10 +90,10 @@ const NavBar = () => {
           }`}
         style={{
           backgroundColor: isDark
-            ? scrolled ? 'rgba(15, 23, 42, 0.95)' : 'rgba(15, 23, 42, 0.9)'
+            ? scrolled ? 'rgba(30, 41, 59, 0.95)' : 'rgba(30, 41, 59, 0.9)'
             : scrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.95)',
           borderBottom: isDark
-            ? `1px solid rgba(51, 65, 85, ${scrolled ? '0.8' : '0.5'})`
+            ? `1px solid rgba(71, 85, 105, ${scrolled ? '0.8' : '0.5'})`
             : `1px solid rgba(236, 252, 203, ${scrolled ? '1' : '0.5'})`
         }}
       >
@@ -107,7 +107,8 @@ const NavBar = () => {
             <motion.img
               src={navLogo}
               alt="Plateful Logo"
-              className="h-10 sm:h-11 transition-transform duration-200 group-hover:scale-105"
+              style={{ height: '44px' }}
+              className="transition-transform duration-200 group-hover:scale-105"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             />

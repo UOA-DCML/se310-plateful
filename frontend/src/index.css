@@ -36,7 +36,7 @@ img {
   height: auto;
 }
 
-/* SVG icons should maintain their size relative to text */
+/* SVG icons and images should NOT scale with text size */
 svg {
   flex-shrink: 0;
 }

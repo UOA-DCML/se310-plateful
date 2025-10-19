@@ -8,7 +8,7 @@ export default function Footer() {
 
   return (
     <footer
-      className="py-8 px-6 mt-12"
+      className="py-8 px-6"
       style={{
         backgroundColor: isDark ? '#0f172a' : '#fff',
         color: '#7C9749',
@@ -18,7 +18,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 items-center">
         {/* Logo + Branding */}
         <div className="flex flex-col items-center md:items-center md:w-full">
-          <img src={footerLogo} alt="Plateful Logo" className="h-40 mb-3" />
+          <img src={footerLogo} alt="Plateful Logo" style={{ height: '160px' }} className="mb-3" />
         </div>
 
         {/* Quick Links */}
