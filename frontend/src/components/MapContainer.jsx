@@ -14,12 +14,12 @@ export default function MapContainer({ children }) {
   // Initialize map once on mount
   useEffect(() => {
     console.log('🗺️ Initializing MapLibre map...');
-    
+
     // Using OpenStreetMap-based styles that work with MapLibre
-    const mapStyle = isDark 
+    const mapStyle = isDark
       ? 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
       : 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-    
+
     const mapInstance = new maplibregl.Map({
       container: mapElement.current,
       style: mapStyle,
@@ -35,7 +35,7 @@ export default function MapContainer({ children }) {
     mapInstance.on('error', (e) => {
       console.error('❌ Map error:', e);
       console.error('Attempted style URL:', mapStyle);
-    });    return () => {
+    }); return () => {
       console.log('🗑️ Removing map instance');
       mapInstance.remove();
     };
