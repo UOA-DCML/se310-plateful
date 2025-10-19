@@ -26,9 +26,9 @@ export default function About() {
     { name: "Richman Tan", role: "About Page & UX", github: "Richman-Tan", quote: "Deliberately choosing to be different." },
     { name: "Johnson Zhang", role: "UI Design & Backend Support", github: "ZingZing001", quote: "Def jamming some food after this project :_)" },
     { name: "Gibson Gao", role: "UX & Backend Support", github: "TrapezoidaI", quote: "I shid my pants." },
-    { name: "Ibrahim Warheed", role: "Login Page Support", github: "iwah144", quote: "..." },
+    { name: "Ibrahim Waheed", role: "Login Page Support", github: "iwah144", quote: "..." },
     { name: "Aolin Yang", role: "Backend Design & Voting System", github: "aolin12138", quote: "{...}" },
-    { name: "Joshua Zhang", role: "API Development & Integration", github: "joshua56789", quote: "bruh..." }
+    { name: "Joshua Feng", role: "API Development & Integration", github: "joshua56789", quote: "bruh..." }
 
   ];
 
