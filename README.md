@@ -276,9 +276,7 @@ In order for Sonar to work, a .env file containing the API key must be placed in
 
 - [x] A1 Feature
 - [x] A1 Feature
-- [ ] A2 Feature
-  - [ ] Feature
-  - [ ] Feature
+- [x] A2 Feature
 
 See the [open issues](https://github.com/UOA-DCML/se310-plateful/issues) for a full list of proposed features (and known issues).
 
