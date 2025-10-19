@@ -26,6 +26,8 @@ export default function Home() {
   const [reservation, setReservation] = useState(null);
   const [openNow, setOpenNow] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
+  const [popularRestaurants, setPopularRestaurants] = useState([]);
+
 
   // ✅ useRecommendations at top level (not inside effects)
   const {
@@ -48,6 +50,13 @@ export default function Home() {
         return res.json();
       })
       .then((data) => setRestaurantsRaw(Array.isArray(data) ? data : []));
+      const fetchPopular = fetch(buildApiUrl("/api/restaurants/popular"))
+  .then((res) => {
+    if (!res.ok) throw new Error(`Popular API ${res.status}`);
+    return res.json();
+  })
+  .then((data) => setPopularRestaurants(Array.isArray(data) ? data : []));
+
 
     const fetchCuisines = fetch(buildApiUrl("/api/restaurants/cuisines"))
       .then((res) => {
@@ -61,7 +70,7 @@ export default function Home() {
         setCuisines(cuisineObjects);
       });
 
-    Promise.all([fetchRestaurants, fetchCuisines])
+    Promise.all([fetchRestaurants, fetchCuisines,fetchPopular])
       .catch((e) => setErr(e.message || "Failed to load data"))
       .finally(() => setLoading(false));
   }, []);
@@ -106,13 +115,13 @@ export default function Home() {
 
   const handleKeyPress = (e) => e.key === "Enter" && handleSearch();
 
-  const popularDocs = restaurantsRaw.filter(
-    (r) => Array.isArray(r.tags) && r.tags.includes("popular")
-  );
+const popularCards = (popularRestaurants.length
+  ? popularRestaurants
+  : restaurantsRaw.slice(0, 6)
+).map(toCard);
   const localFavDocs = restaurantsRaw.slice(0, 5);
-  const popularCards = (popularDocs.length ? popularDocs : restaurantsRaw.slice(0, 6)).map(toCard);
   const localFavCards = localFavDocs.map(toCard);
-
+console.log("Popular Restaurants:", popularRestaurants);
   const handleCuisineClick = (cuisineName) => {
     navigate(`/search?query=${encodeURIComponent(cuisineName)}`);
   };

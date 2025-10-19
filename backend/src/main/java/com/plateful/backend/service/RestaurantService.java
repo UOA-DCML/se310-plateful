@@ -4,6 +4,7 @@ import com.plateful.backend.model.Restaurant;
 import com.plateful.backend.repository.RestaurantRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.Comparator;
 import org.springframework.stereotype.Service;
 
 /**
@@ -67,4 +68,13 @@ public class RestaurantService {
         .sorted()
         .toList();
   }
+public List<Restaurant> getPopularRestaurants() {
+  return repository.findAll()
+      .stream()
+      .sorted(Comparator.comparingInt(Restaurant::getUpvoteCount).reversed())
+      .limit(10)
+      .toList();
 }
+}
+
+

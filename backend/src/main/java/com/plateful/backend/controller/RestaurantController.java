@@ -137,4 +137,9 @@ public class RestaurantController {
     }
     return restaurantService.getAllRestaurants();
   }
+  @GetMapping("/popular")
+public List<Restaurant> getPopular() {
+  return restaurantService.getPopularRestaurants();
+}
+
 }

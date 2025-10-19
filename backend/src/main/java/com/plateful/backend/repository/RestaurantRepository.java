@@ -35,4 +35,8 @@ public interface RestaurantRepository extends MongoRepository<Restaurant, String
 
 @Query("{ 'tags': { $all: ?0 } }")
 List<Restaurant> findByTagsAll(List<String> tags); // ALL tags must be present
+
+ List<Restaurant> findAllByOrderByUpvoteUserIdsDesc();
+
+
 }
