@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import maplibregl from "maplibre-gl";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 export default function RestaurantMarkers({ map, restaurants }) {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (!map) return;
@@ -49,19 +51,24 @@ export default function RestaurantMarkers({ map, restaurants }) {
         const priceDisplay = "$".repeat(priceLevel);
         const id = r.id ?? r._id; // handle Mongo-style IDs too
 
+        // Dark mode styles
+        const popupBg = isDark ? '#1e293b' : '#ffffff';
+        const popupText = isDark ? '#f1f5f9' : '#000000';
+        const linkColor = isDark ? '#60a5fa' : '#007bff';
+
         const popupHTML = `
-          <div style="padding:5px;">
+          <div style="padding:5px; background-color:${popupBg}; color:${popupText};">
             <h3 class="popup-title" style="margin:0; border:none !important;">
                 <button 
                 data-restaurant-id="${id}" 
-                style="background:none;border:none;color:#007bff;cursor:pointer;font-size:16px;text-decoration:underline;padding:0;"
+                style="background:none;border:none;color:${linkColor};cursor:pointer;font-size:16px;text-decoration:underline;padding:0;"
                 >
                 ${r.name || "Restaurant"}
                 </button>
             </h3>
-            <p>${r.description || "No description"}</p>
-            <p><strong>Cuisine:</strong> ${r.cuisine || "N/A"}</p>
-            <p><strong>Price:</strong> ${priceDisplay}</p>
+            <p style="color:${popupText};">${r.description || "No description"}</p>
+            <p style="color:${popupText};"><strong>Cuisine:</strong> ${r.cuisine || "N/A"}</p>
+            <p style="color:${popupText};"><strong>Price:</strong> ${priceDisplay}</p>
           </div>
         `;
 
@@ -99,7 +106,7 @@ export default function RestaurantMarkers({ map, restaurants }) {
     return () => {
       createdMarkers.forEach((m) => m.remove());
     };
-  }, [map, restaurants]);
+  }, [map, restaurants, isDark, navigate]);
 
   return null;
 }
