@@ -197,8 +197,8 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
                     type="text"
                     value={shareUrl}
                     readOnly
-                    className={`flex-1 px-4 py-3 border rounded-lg text-sm ${isDark 
-                      ? 'bg-gray-700 border-gray-600 text-gray-200' 
+                    className={`flex-1 px-4 py-3 border rounded-lg text-sm ${isDark
+                      ? 'bg-gray-700 border-gray-600 text-gray-200'
                       : 'bg-gray-50 border-gray-300 text-gray-700'}`}
                   />
                   <button

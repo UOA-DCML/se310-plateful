@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/PlatefulBackgroundHome copy.png";
 import RestaurantList from "../components/RestaurantList";
@@ -15,9 +15,16 @@ export default function Search() {
   const { isDark } = useTheme();
 
   const [restaurants, setRestaurants] = useState([]);
+  const [displayedRestaurants, setDisplayedRestaurants] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  
+  const observerTarget = useRef(null);
+  const ITEMS_PER_PAGE = 10;
 
   const [cuisines, setCuisines] = useState([]);
   const [selectedCuisine, setSelectedCuisine] = useState(null);
@@ -45,6 +52,7 @@ export default function Search() {
     try {
       setLoading(true);
       setError("");
+      setPage(1);
 
       const query = searchParams.get("query");
       const cuisine = searchParams.get("cuisine");
@@ -72,15 +80,60 @@ export default function Search() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       const data = await response.json();
-      setRestaurants(Array.isArray(data) ? data : []);
+      const allRestaurants = Array.isArray(data) ? data : [];
+      setRestaurants(allRestaurants);
+      setDisplayedRestaurants(allRestaurants.slice(0, ITEMS_PER_PAGE));
+      setHasMore(allRestaurants.length > ITEMS_PER_PAGE);
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Failed to fetch restaurants: " + err.message);
       setRestaurants([]);
+      setDisplayedRestaurants([]);
     } finally {
       setLoading(false);
     }
   };
+
+  // Load more restaurants when scrolling
+  const loadMoreRestaurants = useCallback(() => {
+    if (loadingMore || !hasMore) return;
+
+    setLoadingMore(true);
+    setTimeout(() => {
+      const nextPage = page + 1;
+      const startIndex = 0;
+      const endIndex = nextPage * ITEMS_PER_PAGE;
+      const newDisplayed = restaurants.slice(startIndex, endIndex);
+      
+      setDisplayedRestaurants(newDisplayed);
+      setPage(nextPage);
+      setHasMore(endIndex < restaurants.length);
+      setLoadingMore(false);
+    }, 500); // Small delay to simulate loading
+  }, [page, restaurants, loadingMore, hasMore]);
+
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore) {
+          loadMoreRestaurants();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [hasMore, loadingMore, loadMoreRestaurants]);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -220,8 +273,33 @@ export default function Search() {
               <div className={`rounded-lg p-5 text-center shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
                 Loading restaurants...
               </div>
-            ) : restaurants.length > 0 ? (
-              <RestaurantList restaurants={restaurants} direction={"vertical"} darkMode={isDark} />
+            ) : displayedRestaurants.length > 0 ? (
+              <>
+                <RestaurantList restaurants={displayedRestaurants} direction={"vertical"} darkMode={isDark} />
+                
+                {/* Loading indicator for lazy loading */}
+                {loadingMore && (
+                  <div className={`rounded-lg p-5 text-center shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
+                    Loading more restaurants...
+                  </div>
+                )}
+                
+                {/* Observer target for infinite scroll */}
+                {hasMore && !loadingMore && (
+                  <div ref={observerTarget} className="h-10 flex items-center justify-center">
+                    <div className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                      Scroll for more...
+                    </div>
+                  </div>
+                )}
+                
+                {/* End of results message */}
+                {!hasMore && displayedRestaurants.length > 0 && (
+                  <div className={`rounded-lg p-4 text-center text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                    You've reached the end of the results
+                  </div>
+                )}
+              </>
             ) : (
               <div className={`rounded-lg p-5 text-center shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
                 {searchQuery
@@ -235,7 +313,7 @@ export default function Search() {
           <div className={`flex-1 overflow-hidden rounded-lg p-4 shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
             <div className="h-[260px] sm:h-[320px] lg:h-[520px] lg:sticky lg:top-28">
               <MapContainer>
-                {(map) => <RestaurantMarkers map={map} restaurants={restaurants} />}
+                {(map) => <RestaurantMarkers map={map} restaurants={displayedRestaurants} />}
               </MapContainer>
             </div>
           </div>
