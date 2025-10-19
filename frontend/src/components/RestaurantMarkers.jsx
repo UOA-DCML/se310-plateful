@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import tt from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import { useNavigate } from "react-router-dom";
 
 export default function RestaurantMarkers({ map, restaurants }) {
@@ -65,13 +65,13 @@ export default function RestaurantMarkers({ map, restaurants }) {
           </div>
         `;
 
-        const popup = new tt.Popup({ offset: 30 }).setHTML(popupHTML);
+        const popup = new maplibregl.Popup({ offset: 30 }).setHTML(popupHTML);
 
         // Add styling to the popup close button manually after popup creation
         popup.on("open", () => {
           const closeBtn = popup
             .getElement()
-            .querySelector(".mapboxgl-popup-close-button");
+            .querySelector(".maplibregl-popup-close-button");
           if (closeBtn) {
             closeBtn.style.width = "30px";
             closeBtn.style.height = "30px";
@@ -85,7 +85,7 @@ export default function RestaurantMarkers({ map, restaurants }) {
         });
 
         // Create the marker and add it to the map
-        const marker = new tt.Marker({ element: el })
+        const marker = new maplibregl.Marker({ element: el })
           .setLngLat([lng, lat])
           .setPopup(popup)
           .addTo(map);
