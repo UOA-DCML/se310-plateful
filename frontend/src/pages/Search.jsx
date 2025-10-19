@@ -159,19 +159,19 @@ export default function Search() {
 
   return (
     <div className={isDark ? "bg-slate-900 text-slate-100" : "bg-gray-50 text-gray-900"}>
-      <section className="relative w-full" style={{ minHeight: '520px', paddingBottom: '2rem' }}>
+      <section className="relative w-full min-h-[420px] md:h-[40vh]">
         <img
           src={backgroundImage}
           alt="Background"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <h1
-          className="absolute inset-x-0 px-4 text-center text-2xl font-semibold md:text-4xl"
-          style={{ color: isDark ? '#0f172a' : '#000000', top: '20px', paddingTop: '20px' }}
+          className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold md:text-4xl"
+          style={{ color: isDark ? '#0f172a' : '#000000' }}
         >
           Looking for something to eat?
         </h1>
-        <div className="absolute left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 flex-col items-center gap-4" style={{ top: '35%' }}>
+        <div className="absolute top-[55%] left-1/2 w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
           {/* Search Bar */}
           <div className={`flex w-full flex-col gap-3 rounded-[12px] p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2 ${isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white/85"
             }`}>
@@ -181,7 +181,7 @@ export default function Search() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className={`w-full p-3 text-base outline-none md:text-lg ${isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white text-black placeholder-gray-500"
+              className={`w-full border-none p-3 text-base outline-none md:text-lg ${isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white text-black placeholder-gray-500"
                 }`}
             />
             <button

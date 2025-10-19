@@ -510,10 +510,9 @@ export default function RestaurantDetails() {
                   />
                 </svg>
               </button>
-              {/* Share Button - force same text color in light/dark */}
+              {/* Share Button */}
               <ShareButton
                 onClick={handleShare}
-                className="text-slate-900 dark:text-slate-900"
               />
             </div>
           </div>
