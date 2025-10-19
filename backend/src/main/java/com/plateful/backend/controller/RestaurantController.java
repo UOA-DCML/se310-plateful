@@ -1,15 +1,19 @@
 package com.plateful.backend.controller;
 
 import com.plateful.backend.model.Restaurant;
+import com.plateful.backend.repository.RestaurantRepository;
 import com.plateful.backend.service.RestaurantSearchService;
 import com.plateful.backend.service.RestaurantService;
 import java.util.List;
+import java.util.Objects;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller handling all restaurant-related endpoints. Provides APIs for restaurant listing,
@@ -23,25 +27,29 @@ public class RestaurantController {
 
   private final RestaurantService restaurantService;
   private final RestaurantSearchService searchService;
+  private final RestaurantRepository restaurantRepository;
 
   public RestaurantController(
-      RestaurantService restaurantService, RestaurantSearchService searchService) {
+      RestaurantService restaurantService,
+      RestaurantSearchService searchService,
+      RestaurantRepository restaurantRepository) {
     this.restaurantService = restaurantService;
     this.searchService = searchService;
+    this.restaurantRepository = restaurantRepository;
   }
 
-  /** Get all restaurants (no filters) */
+  /** Get all restaurants (no filters). */
   @GetMapping
   public List<Restaurant> list() {
     return restaurantService.getAllRestaurants();
   }
 
-  /** Get a single restaurant by id */
+  /** Get a single restaurant by id. */
   @GetMapping("/{id}")
   public Restaurant get(@PathVariable String id) {
     return restaurantService
         .getRestaurantById(id)
-        .orElseThrow(() -> new RuntimeException("Not found: " + id));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found: " + id));
   }
 
   /**
@@ -52,8 +60,11 @@ public class RestaurantController {
    * @return List of restaurants matching the search criteria, or all restaurants if query is empty
    */
   @GetMapping("/search")
-  public List<Restaurant> search(@RequestParam String query) {
-    return restaurantService.searchRestaurants(query);
+  public List<Restaurant> search(@RequestParam(required = false) String query) {
+    if (query == null || query.trim().isEmpty()) {
+      return restaurantService.getAllRestaurants();
+    }
+    return restaurantService.searchRestaurants(query.trim());
   }
 
   /**
@@ -79,6 +90,13 @@ public class RestaurantController {
       @RequestParam(required = false) Boolean reservation,
       @RequestParam(required = false) Boolean openNow,
       @RequestParam(required = false) List<String> city) {
+
+    // Optional: quick guard for inverted price bounds (fail fast or swap; here we fail fast)
+    if (priceMin != null && priceMax != null && priceMin > priceMax) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "priceMin cannot be greater than priceMax");
+    }
+
     List<Restaurant> base =
         searchService.filter(cuisine, priceMin, priceMax, reservation, openNow, city);
 
@@ -94,5 +112,29 @@ public class RestaurantController {
   @GetMapping("/cuisines")
   public List<String> getCuisines() {
     return restaurantService.getAllCuisines();
+  }
+
+  /**
+   * Fetch restaurants by tags.
+   * - any: returns restaurants that match ANY of the provided tags
+   * - all: returns restaurants that match ALL of the provided tags
+   * If both are empty/missing, returns all restaurants.
+   */
+  @GetMapping("/by-tags")
+  public List<Restaurant> byTags(
+      @RequestParam(required = false, name = "any") List<String> any,
+      @RequestParam(required = false, name = "all") List<String> all) {
+
+    // Normalize empty lists to null for simpler checks
+    boolean hasAll = all != null && !all.isEmpty();
+    boolean hasAny = any != null && !any.isEmpty();
+
+    if (hasAll) {
+      return restaurantRepository.findByTagsAll(all);
+    }
+    if (hasAny) {
+      return restaurantRepository.findByTagsIn(any);
+    }
+    return restaurantService.getAllRestaurants();
   }
 }

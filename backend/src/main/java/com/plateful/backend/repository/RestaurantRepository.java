@@ -4,6 +4,9 @@ import com.plateful.backend.model.Restaurant;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  * MongoDB repository interface for Restaurant entities. Provides standard CRUD operations through
@@ -25,4 +28,11 @@ public interface RestaurantRepository extends MongoRepository<Restaurant, String
    */
   @Query(value = "{}", fields = "{ 'cuisine' : 1, '_id' : 0 }")
   List<Restaurant> findAllCuisines();
+
+    Page<Restaurant> findByUpvoteUserIdsContains(String userId, Pageable pageable);
+      Page<Restaurant> findByDownvoteUserIdsContains(String userId, Pageable pageable);
+      List<Restaurant> findByTagsIn(List<String> tags);  // ANY of the tags
+
+@Query("{ 'tags': { $all: ?0 } }")
+List<Restaurant> findByTagsAll(List<String> tags); // ALL tags must be present
 }
