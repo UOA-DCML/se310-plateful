@@ -153,7 +153,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
           <div className={`flex flex-col flex-grow ${direction === "vertical" ? "p-4" : "p-5"}`}>
             {/* Header Section */}
             <div className={`space-y-2.5 ${direction === "vertical" ? "mb-2" : "mb-4"}`}>
-              <h3 
+              <h3
                 className={`font-bold leading-tight ${direction === "vertical" ? "text-base line-clamp-1" : "text-lg line-clamp-2"}`}
                 style={{ color: isDark ? '#f1f5f9' : '#111827' }}
               >
@@ -167,7 +167,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
                     <span
                       key={idx}
                       className="text-xs px-2 py-1 rounded-md font-medium whitespace-nowrap"
-                      style={{ 
+                      style={{
                         backgroundColor: isDark ? '#334155' : '#f3f4f6',
                         color: isDark ? '#d1d5db' : '#4b5563'
                       }}
@@ -176,9 +176,9 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
                     </span>
                   ))}
                   {restaurant.tags.length > (direction === "vertical" ? 2 : 3) && (
-                    <span 
+                    <span
                       className="text-xs px-2 py-1 rounded-md font-medium whitespace-nowrap"
-                      style={{ 
+                      style={{
                         backgroundColor: isDark ? '#334155' : '#f3f4f6',
                         color: isDark ? '#9ca3af' : '#6b7280'
                       }}
@@ -201,7 +201,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Rating Badge */}
                 {restaurant.rating ? (
-                  <div 
+                  <div
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-semibold transition-all duration-200"
                     style={getRatingColor(restaurant.rating)}
                   >
@@ -211,7 +211,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
                     <span className="text-sm font-bold">{restaurant.rating.toFixed(1)}</span>
                   </div>
                 ) : (
-                  <div 
+                  <div
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border"
                     style={{
                       backgroundColor: isDark ? '#334155' : '#f9fafb',
@@ -226,7 +226,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
 
                 {/* Price Level Badge */}
                 {restaurant.priceLevel && (
-                  <div 
+                  <div
                     className="inline-flex items-center px-2.5 py-1.5 rounded-lg border"
                     style={{
                       backgroundColor: isDark ? '#334155' : '#f8fafc',
