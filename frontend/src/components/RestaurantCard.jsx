@@ -101,11 +101,10 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
             {/* Share Button Overlay */}
             <button
               onClick={handleShare}
-              className={`absolute top-2 right-2 p-2 backdrop-blur-sm rounded-full transition-all duration-200 shadow-md hover:shadow-lg z-10 cursor-pointer ${
-                isDark 
-                  ? 'bg-gray-800/90 hover:bg-gray-800' 
+              className={`absolute top-2 right-2 p-2 backdrop-blur-sm rounded-full transition-all duration-200 shadow-md hover:shadow-lg z-10 cursor-pointer ${isDark
+                  ? 'bg-gray-800/90 hover:bg-gray-800'
                   : 'bg-white/90 hover:bg-white'
-              }`}
+                }`}
               aria-label="Share restaurant"
             >
               <svg className={`w-4 h-4 ${isDark ? 'text-gray-100' : 'text-gray-700'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
