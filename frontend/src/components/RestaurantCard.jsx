@@ -65,9 +65,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
           style={{
             backgroundColor: isDark ? '#1e293b' : 'white',
             cursor: 'pointer',
-            height: direction === "vertical" ? '280px' : 'auto',
-            minHeight: direction === "vertical" ? '280px' : '420px',
-            maxHeight: direction === "vertical" ? '280px' : '450px'
+            minHeight: direction === "vertical" ? '280px' : '420px'
           }}
           onClick={() => {
             if (restaurant.id) {
@@ -115,7 +113,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
             }}
           >
             {/* Header Section */}
-            <div className="flex-shrink-0" style={{ minHeight: direction === "vertical" ? '60px' : '80px', maxHeight: direction === "vertical" ? '80px' : '100px' }}>
+            <div className="flex-shrink-0">
               <h3
                 className={`font-bold leading-tight mb-2 ${direction === "vertical" ? "text-base line-clamp-1" : "text-lg line-clamp-2"}`}
                 style={{ color: isDark ? '#f1f5f9' : '#111827' }}
@@ -155,11 +153,11 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
               )}
             </div>
 
-            {/* Reduced Spacer - Less space to push content up */}
-            <div className="flex-grow" style={{ minHeight: '4px', maxHeight: '12px' }} />
+            {/* Flexible Spacer */}
+            <div className="flex-grow" style={{ minHeight: '8px' }} />
 
             {/* Bottom Section - Fixed spacing */}
-            <div className="mt-auto flex-shrink-0 flex flex-col" style={{ gap: direction === "vertical" ? '8px' : '12px' }}>
+            <div className="mt-auto flex-shrink-0 flex flex-col" style={{ gap: direction === "vertical" ? '10px' : '12px' }}>
               {/* Votes and Price Section */}
               <div className="flex items-center justify-between gap-2">
                 {/* Vote Badge */}
@@ -219,7 +217,6 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
               <div
                 onClick={(e) => e.stopPropagation()}
                 className="flex-shrink-0"
-                style={{ marginBottom: direction === "vertical" ? '8px' : '10px' }}
               >
                 <DirectionsButton
                   destinationAddress={

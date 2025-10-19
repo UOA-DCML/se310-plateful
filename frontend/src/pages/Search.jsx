@@ -106,19 +106,19 @@ export default function Search() {
 
   return (
     <div className={isDark ? "bg-slate-900 text-slate-100" : "bg-gray-50 text-gray-900"}>
-      <section className="relative w-full min-h-[420px] md:h-[40vh]">
+      <section className="relative w-full" style={{ minHeight: '520px', paddingBottom: '2rem' }}>
         <img
           src={backgroundImage}
           alt="Background"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <h1
-          className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold md:text-4xl"
-          style={{ color: isDark ? '#0f172a' : '#000000' }}
+          className="absolute inset-x-0 px-4 text-center text-2xl font-semibold md:text-4xl"
+          style={{ color: isDark ? '#0f172a' : '#000000', top: '20px', paddingTop: '20px' }}
         >
           Looking for something to eat?
         </h1>
-        <div className="absolute top-[55%] left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4">
+        <div className="absolute left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 flex-col items-center gap-4" style={{ top: '35%' }}>
           {/* Search Bar */}
           <div className={`flex w-full flex-col gap-3 rounded-[12px] p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2 ${isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white/85"
             }`}>
@@ -133,8 +133,8 @@ export default function Search() {
             />
             <button
               className={`w-full rounded-[6px] px-4 py-3 text-base font-semibold text-white transition md:w-auto cursor-pointer ${isDark
-                  ? "bg-slate-600 hover:bg-slate-500"
-                  : "bg-[#333] hover:bg-[#222]"
+                ? "bg-slate-600 hover:bg-slate-500"
+                : "bg-[#333] hover:bg-[#222]"
                 }`}
               onClick={handleSearch}
             >
