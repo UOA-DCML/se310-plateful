@@ -8,10 +8,12 @@ import RestaurantMarkers from "../components/RestaurantMarkers";
 import { buildApiUrl } from "../lib/config";
 import { useTheme } from "../context/ThemeContext"; // adjust path
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
+import useRecommendations from "../services/useRecommendations";
 
 export default function Home() {
   const navigate = useNavigate();
   const { isDark } = useTheme();
+
   const [restaurantsRaw, setRestaurantsRaw] = useState([]);
   const [cuisines, setCuisines] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,17 @@ export default function Home() {
   const [reservation, setReservation] = useState(null);
   const [openNow, setOpenNow] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
+
+  // ✅ useRecommendations at top level (not inside effects)
+  const {
+    recommended,
+    loading: recLoading,
+    error: recErr,
+    diagnostics,
+  } = useRecommendations({
+    restaurants: restaurantsRaw,
+    enabled: true,
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -53,6 +66,22 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, []);
 
+  // 🔧 define toCard once
+  const toCard = (r) => ({
+    id: r.id,
+    name: r.name,
+    description: r.description,
+    priceLevel: r.priceLevel,
+    rating: 5,
+    image:
+      (Array.isArray(r.images) && r.images[0]) ||
+      "https://picsum.photos/seed/placeholder/600/400",
+    tags: r.tags,
+  });
+
+  // ✅ safe mapping in render scope
+  const recommendedCards = (recommended ?? []).map(toCard);
+
   const handleSearch = async () => {
     const params = new URLSearchParams();
     if (searchQuery.trim()) params.append("query", searchQuery.trim());
@@ -77,18 +106,6 @@ export default function Home() {
 
   const handleKeyPress = (e) => e.key === "Enter" && handleSearch();
 
-  const toCard = (r) => ({
-    id: r.id,
-    name: r.name,
-    description: r.description,
-    priceLevel: r.priceLevel,
-    rating: 5,
-    image:
-      (Array.isArray(r.images) && r.images[0]) ||
-      "https://picsum.photos/seed/placeholder/600/400",
-    tags: r.tags,
-  });
-
   const popularDocs = restaurantsRaw.filter(
     (r) => Array.isArray(r.tags) && r.tags.includes("popular")
   );
@@ -106,7 +123,12 @@ export default function Home() {
   const inputBg = isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white text-black placeholder-gray-500";
   const btnDark = isDark ? "bg-slate-600 hover:bg-slate-500" : "bg-[#333] hover:bg-[#222]";
   const textGray = isDark ? "text-gray-200" : "text-gray-900";
-
+useEffect(() => {
+  if (diagnostics?.topTags?.length || diagnostics?.topCuisines?.length) {
+    // The hook already logs, but this lets you add extra UI/alerts if needed.
+    // Example: console.log("Diagnostics:", diagnostics);
+  }
+}, [diagnostics]);
   return (
     <div className={`flex flex-col gap-12 pb-12 ${bgClass}`}>
       {/* Search Bar */}
@@ -197,6 +219,18 @@ export default function Home() {
           </div>
         </div>
       </section>
+{/* Recommended For You */}
+{recommendedCards.length > 0 && (
+  <section className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-20 py-8 z-0">
+    <div className="flex items-center justify-between gap-3">
+      <h3 className={`text-lg font-bold sm:text-xl ${textGray}`}>Recommended For You</h3>
+      <span className="text-sm opacity-70">
+        {recLoading ? "personalizing…" : `Top ${recommendedCards.length}`}
+      </span>
+    </div>
+    <RestaurantList restaurants={recommendedCards} direction="horizontal" />
+  </section>
+)}
 
       {/* Popular Restaurants */}
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-20 py-8 z-0">
