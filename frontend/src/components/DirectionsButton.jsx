@@ -151,7 +151,7 @@ export default function DirectionsButton({
         <button
           type="button"
           onClick={handleClick}
-          className={`flex min-w-[200px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-emerald-600 hover:to-teal-700 hover:shadow-lg cursor-pointer ${stacked ? "w-full" : "w-full flex-1"}`}
+          className={`flex min-w-[200px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-emerald-600 hover:to-teal-700 hover:shadow-lg cursor-pointer w-full ${stacked ? "" : "flex-1"}`}
           aria-label="Get directions"
         >
           <FaMapMarkerAlt className="w-3.5 h-3.5" />
