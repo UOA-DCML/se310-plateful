@@ -122,7 +122,7 @@ const BrowseHistory = () => {
           <div>
             <h1 className="text-3xl font-bold">Browse History</h1>
             <p className={`${textGray} mt-2`}>
-              {history.length > 0 
+              {history.length > 0
                 ? `Your ${history.length} most recently viewed restaurant${history.length !== 1 ? 's' : ''} (up to 20)`
                 : 'Restaurants you\'ve recently viewed and explored'}
             </p>
@@ -156,7 +156,7 @@ const BrowseHistory = () => {
                 <div className="text-right">
                   <div className="flex items-center mb-1">
                     <svg className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                     </svg>
                     <span className={`ml-1 text-sm ${textGray}`}>{item.restaurant?.rating || "N/A"}</span>
                     <span className={`ml-2 text-sm ${textGrayLight}`}>

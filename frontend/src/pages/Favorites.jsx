@@ -26,7 +26,7 @@ const Favorites = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       const response = await fetch(`http://localhost:8080/api/user/favorites?userId=${user.id}`);
       if (!response.ok) throw new Error('Failed to load favorites');
       const favoriteIds = await response.json();
@@ -95,7 +95,7 @@ const Favorites = () => {
             <p className="mt-2 text-gray-400">Your saved restaurants for quick access</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1,2,3].map(i => (
+            {[1, 2, 3].map(i => (
               <div key={i} className={`${cardBg} rounded-lg shadow-md overflow-hidden`}>
                 <div className={`h-48 ${placeholderBg} animate-pulse`}></div>
                 <div className="p-4 space-y-3">
@@ -130,11 +130,11 @@ const Favorites = () => {
             {favorites.map(r => (
               <div key={r.id} className={`${cardBg} rounded-lg shadow-md overflow-hidden hover:shadow-lg transition`}>
                 <div className="relative h-48">
-                  <img 
-                    src={(r.images && r.images[0]) || r.image || "/api/placeholder/300/200"} 
+                  <img
+                    src={(r.images && r.images[0]) || r.image || "/api/placeholder/300/200"}
                     alt={r.name}
                     className="w-full h-full object-cover"
-                    onError={(e) => e.target.src="/api/placeholder/300/200"}
+                    onError={(e) => e.target.src = "/api/placeholder/300/200"}
                   />
                   <button
                     onClick={() => handleRemoveFavorite(r.id)}
