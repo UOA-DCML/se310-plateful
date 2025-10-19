@@ -129,8 +129,8 @@ export default function DirectionsButton({
           ref={dropdownButtonRef}
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className={`group relative flex min-w-[200px] items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg cursor-pointer ${stacked ? "w-full" : "w-full flex-1"} ${isDark 
-            ? 'bg-gradient-to-r from-gray-700 to-gray-800 text-gray-100 hover:from-gray-600 hover:to-gray-700' 
+          className={`group relative flex min-w-[200px] items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg cursor-pointer ${stacked ? "w-full" : "w-full flex-1"} ${isDark
+            ? 'bg-gradient-to-r from-gray-700 to-gray-800 text-gray-100 hover:from-gray-600 hover:to-gray-700'
             : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-gray-200 hover:to-gray-300'} ${className}`}
           aria-label="Select travel mode"
         >
@@ -170,8 +170,8 @@ export default function DirectionsButton({
         createPortal(
           <div
             ref={menuRef}
-            className={`absolute rounded-xl shadow-2xl z-[9999] overflow-hidden ${isDark 
-              ? 'bg-gray-800 border border-gray-700' 
+            className={`absolute rounded-xl shadow-2xl z-[9999] overflow-hidden ${isDark
+              ? 'bg-gray-800 border border-gray-700'
               : 'bg-white border border-gray-200'}`}
             style={{
               position: "absolute",
@@ -181,8 +181,8 @@ export default function DirectionsButton({
             }}
           >
             {/* Dropdown header */}
-            <div className={`px-4 py-2.5 border-b ${isDark 
-              ? 'bg-gradient-to-r from-gray-700 to-gray-800 border-gray-700' 
+            <div className={`px-4 py-2.5 border-b ${isDark
+              ? 'bg-gradient-to-r from-gray-700 to-gray-800 border-gray-700'
               : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200'}`}>
               <p className={`text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                 Travel Mode
@@ -200,8 +200,8 @@ export default function DirectionsButton({
                     key={mode.id}
                     onClick={() => handleModeChange(mode.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all duration-150 cursor-pointer border-l-4 ${isSelected
-                      ? isDark 
-                        ? "bg-emerald-900/40 border-emerald-500" 
+                      ? isDark
+                        ? "bg-emerald-900/40 border-emerald-500"
                         : "bg-emerald-50 border-emerald-500"
                       : isDark
                         ? "hover:bg-gray-700 border-transparent"
@@ -218,7 +218,7 @@ export default function DirectionsButton({
                     </div>
 
                     {/* Mode label */}
-                    <span className={`flex-1 text-left font-medium ${isSelected 
+                    <span className={`flex-1 text-left font-medium ${isSelected
                       ? isDark ? "text-emerald-300" : "text-emerald-700"
                       : isDark ? "text-gray-200" : "text-gray-700"
                       }`}>

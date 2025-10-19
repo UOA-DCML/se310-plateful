@@ -22,7 +22,7 @@ export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  
+
   const observerTarget = useRef(null);
   const ITEMS_PER_PAGE = 10;
 
@@ -104,7 +104,7 @@ export default function Search() {
       const startIndex = 0;
       const endIndex = nextPage * ITEMS_PER_PAGE;
       const newDisplayed = restaurants.slice(startIndex, endIndex);
-      
+
       setDisplayedRestaurants(newDisplayed);
       setPage(nextPage);
       setHasMore(endIndex < restaurants.length);
@@ -276,14 +276,14 @@ export default function Search() {
             ) : displayedRestaurants.length > 0 ? (
               <>
                 <RestaurantList restaurants={displayedRestaurants} direction={"vertical"} darkMode={isDark} />
-                
+
                 {/* Loading indicator for lazy loading */}
                 {loadingMore && (
                   <div className={`rounded-lg p-5 text-center shadow-sm ${isDark ? "bg-gray-800/60" : "bg-white/60"}`}>
                     Loading more restaurants...
                   </div>
                 )}
-                
+
                 {/* Observer target for infinite scroll */}
                 {hasMore && !loadingMore && (
                   <div ref={observerTarget} className="h-10 flex items-center justify-center">
@@ -292,7 +292,7 @@ export default function Search() {
                     </div>
                   </div>
                 )}
-                
+
                 {/* End of results message */}
                 {!hasMore && displayedRestaurants.length > 0 && (
                   <div className={`rounded-lg p-4 text-center text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
