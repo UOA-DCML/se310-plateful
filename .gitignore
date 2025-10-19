@@ -7,7 +7,7 @@ dist/
 build/
 
 # Environment variables - DO NOT COMMIT
-
+.env
 # macOS
 .DS_Store
 
