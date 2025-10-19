@@ -40,6 +40,17 @@ export default function Home() {
     enabled: true,
   });
 
+  // ✅ useRecommendations at top level (not inside effects)
+  const {
+    recommended,
+    loading: recLoading,
+    error: recErr,
+    diagnostics,
+  } = useRecommendations({
+    restaurants: restaurantsRaw,
+    enabled: true,
+  });
+
   useEffect(() => {
     setLoading(true);
     setErr("");
@@ -116,10 +127,12 @@ export default function Home() {
 
   const handleKeyPress = (e) => e.key === "Enter" && handleSearch();
 
+
 const popularCards = (popularRestaurants.length
   ? popularRestaurants
   : restaurantsRaw.slice(0, 6)
 ).map(toCard);
+
 
 
   const localFavDocs = restaurantsRaw.slice(0, 5);
