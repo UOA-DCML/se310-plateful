@@ -112,7 +112,7 @@ export default function Search() {
           alt="Background"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <h1 
+        <h1
           className="absolute inset-x-0 top-[30%] -translate-y-1/2 px-4 text-center text-2xl font-semibold md:text-4xl"
           style={{ color: isDark ? '#0f172a' : '#000000' }}
         >
@@ -120,25 +120,22 @@ export default function Search() {
         </h1>
         <div className="absolute top-[55%] left-1/2 flex w-[90%] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4">
           {/* Search Bar */}
-          <div className={`flex w-full flex-col gap-3 rounded-[12px] p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2 ${
-            isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white/85"
-          }`}>
+          <div className={`flex w-full flex-col gap-3 rounded-[12px] p-4 shadow-md backdrop-blur-sm md:flex-row md:items-center md:gap-2 ${isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white/85"
+            }`}>
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className={`w-full p-3 text-base outline-none md:text-lg ${
-                isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white text-black placeholder-gray-500"
-              }`}
+              className={`w-full p-3 text-base outline-none md:text-lg ${isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white text-black placeholder-gray-500"
+                }`}
             />
             <button
-              className={`w-full rounded-[6px] px-4 py-3 text-base font-semibold text-white transition md:w-auto cursor-pointer ${
-                isDark
+              className={`w-full rounded-[6px] px-4 py-3 text-base font-semibold text-white transition md:w-auto cursor-pointer ${isDark
                   ? "bg-slate-600 hover:bg-slate-500"
                   : "bg-[#333] hover:bg-[#222]"
-              }`}
+                }`}
               onClick={handleSearch}
             >
               Go

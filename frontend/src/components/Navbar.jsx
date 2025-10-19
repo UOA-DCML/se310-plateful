@@ -28,22 +28,20 @@ const NavBar = () => {
     <>
       <Link
         to="/about"
-        className={`rounded-full px-3 py-2 text-sm font-medium transition sm:text-base ${
-          isDark 
-            ? "text-slate-100 hover:bg-slate-700 hover:text-slate-50" 
+        className={`rounded-full px-3 py-2 text-sm font-medium transition sm:text-base ${isDark
+            ? "text-slate-100 hover:bg-slate-700 hover:text-slate-50"
             : "text-gray-800 hover:bg-lime-50 hover:text-lime-700"
-        }`}
+          }`}
         onClick={closeMenu}
       >
         About
       </Link>
       <Link
         to="/search"
-        className={`rounded-full px-3 py-2 text-sm font-medium transition sm:text-base ${
-          isDark 
-            ? "text-slate-100 hover:bg-slate-700 hover:text-slate-50" 
+        className={`rounded-full px-3 py-2 text-sm font-medium transition sm:text-base ${isDark
+            ? "text-slate-100 hover:bg-slate-700 hover:text-slate-50"
             : "text-gray-800 hover:bg-lime-50 hover:text-lime-700"
-        }`}
+          }`}
         onClick={closeMenu}
       >
         Search
@@ -51,11 +49,10 @@ const NavBar = () => {
       {isAuthed ? (
         <button
           onClick={toggleUserSidebar}
-          className={`relative p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-            isDark 
-              ? "hover:bg-slate-700 focus:ring-slate-500" 
+          className={`relative p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${isDark
+              ? "hover:bg-slate-700 focus:ring-slate-500"
               : "hover:bg-lime-50 focus:ring-lime-500"
-          }`}
+            }`}
           aria-label="Open user menu"
         >
           <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -67,11 +64,10 @@ const NavBar = () => {
       ) : (
         <Link
           to="/signin"
-          className={`rounded-full px-3 py-2 text-sm font-medium transition sm:text-base ${
-            isDark 
-              ? "text-slate-100 hover:bg-slate-700 hover:text-slate-50" 
+          className={`rounded-full px-3 py-2 text-sm font-medium transition sm:text-base ${isDark
+              ? "text-slate-100 hover:bg-slate-700 hover:text-slate-50"
               : "text-gray-800 hover:bg-lime-50 hover:text-lime-700"
-          }`}
+            }`}
           onClick={closeMenu}
         >
           Sign In
@@ -82,7 +78,7 @@ const NavBar = () => {
 
   return (
     <>
-      <nav 
+      <nav
         className="sticky top-0 z-[1000] w-full backdrop-blur"
         style={{
           backgroundColor: isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
@@ -102,11 +98,10 @@ const NavBar = () => {
 
           <button
             type="button"
-            className={`inline-flex items-center justify-center rounded-full p-2 transition md:hidden ${
-              isDark 
-                ? "text-slate-100 hover:bg-slate-700" 
+            className={`inline-flex items-center justify-center rounded-full p-2 transition md:hidden ${isDark
+                ? "text-slate-100 hover:bg-slate-700"
                 : "text-gray-700 hover:bg-lime-50"
-            }`}
+              }`}
             onClick={toggleMenu}
             aria-expanded={isMenuOpen}
             aria-label="Toggle navigation menu"
@@ -129,7 +124,7 @@ const NavBar = () => {
         </div>
 
         {isMenuOpen && (
-          <div 
+          <div
             className="px-4 py-4 shadow-inner md:hidden"
             style={{
               backgroundColor: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
