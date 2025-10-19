@@ -73,9 +73,8 @@ const NavBar = () => {
         {active && !mobile && (
           <motion.div
             layoutId="activeTab"
-            className={`absolute bottom-0 left-0 right-0 h-0.5 ${
-              isDark ? 'bg-lime-400' : 'bg-lime-600'
-            }`}
+            className={`absolute bottom-0 left-0 right-0 h-0.5 ${isDark ? 'bg-lime-400' : 'bg-lime-600'
+              }`}
             initial={false}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
@@ -87,28 +86,27 @@ const NavBar = () => {
   return (
     <>
       <nav
-        className={`sticky top-0 z-[1000] w-full backdrop-blur-md transition-all duration-300 ${
-          scrolled ? 'shadow-lg' : 'shadow-sm'
-        }`}
+        className={`sticky top-0 z-[1000] w-full backdrop-blur-md transition-all duration-300 ${scrolled ? 'shadow-lg' : 'shadow-sm'
+          }`}
         style={{
-          backgroundColor: isDark 
+          backgroundColor: isDark
             ? scrolled ? 'rgba(15, 23, 42, 0.95)' : 'rgba(15, 23, 42, 0.9)'
             : scrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.95)',
-          borderBottom: isDark 
-            ? `1px solid rgba(51, 65, 85, ${scrolled ? '0.8' : '0.5'})` 
+          borderBottom: isDark
+            ? `1px solid rgba(51, 65, 85, ${scrolled ? '0.8' : '0.5'})`
             : `1px solid rgba(236, 252, 203, ${scrolled ? '1' : '0.5'})`
         }}
       >
         <div className="mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-10">
           {/* Logo Section */}
-          <Link 
-            to="/" 
-            className="flex items-center gap-2 group" 
+          <Link
+            to="/"
+            className="flex items-center gap-2 group"
             onClick={closeMenu}
           >
-            <motion.img 
-              src={navLogo} 
-              alt="Plateful Logo" 
+            <motion.img
+              src={navLogo}
+              alt="Plateful Logo"
               className="h-10 sm:h-11 transition-transform duration-200 group-hover:scale-105"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -125,7 +123,7 @@ const NavBar = () => {
             </div>
 
             {/* Divider */}
-            <div 
+            <div
               className="h-8 w-px mx-2"
               style={{
                 backgroundColor: isDark ? 'rgba(148, 163, 184, 0.3)' : 'rgba(0, 0, 0, 0.1)'
@@ -139,7 +137,7 @@ const NavBar = () => {
             </div>
 
             {/* Divider */}
-            <div 
+            <div
               className="h-8 w-px mx-2"
               style={{
                 backgroundColor: isDark ? 'rgba(148, 163, 184, 0.3)' : 'rgba(0, 0, 0, 0.1)'
@@ -150,11 +148,10 @@ const NavBar = () => {
             {isAuthed ? (
               <motion.button
                 onClick={toggleUserSidebar}
-                className={`relative p-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  isDark
+                className={`relative p-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isDark
                     ? "hover:bg-slate-700 focus:ring-slate-500"
                     : "hover:bg-lime-50 focus:ring-lime-500"
-                }`}
+                  }`}
                 aria-label="Open user menu"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -194,11 +191,10 @@ const NavBar = () => {
           {/* Mobile Menu Button */}
           <motion.button
             type="button"
-            className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-colors md:hidden ${
-              isDark
+            className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-colors md:hidden ${isDark
                 ? "text-slate-100 hover:bg-slate-700"
                 : "text-gray-700 hover:bg-lime-50"
-            }`}
+              }`}
             onClick={toggleMenu}
             aria-expanded={isMenuOpen}
             aria-label="Toggle navigation menu"
@@ -272,7 +268,7 @@ const NavBar = () => {
                 </div>
 
                 {/* Divider */}
-                <div 
+                <div
                   className="h-px w-full"
                   style={{
                     backgroundColor: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)'
@@ -339,7 +335,7 @@ const NavBar = () => {
                 )}
 
                 {/* Divider */}
-                <div 
+                <div
                   className="h-px w-full"
                   style={{
                     backgroundColor: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)'
@@ -353,9 +349,8 @@ const NavBar = () => {
                   transition={{ delay: 0.4 }}
                   className="space-y-3"
                 >
-                  <p className={`text-xs font-semibold uppercase tracking-wider ${
-                    isDark ? 'text-slate-400' : 'text-gray-500'
-                  }`}>
+                  <p className={`text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}>
                     Settings
                   </p>
                   <TextSizeSlider className="w-full" />
