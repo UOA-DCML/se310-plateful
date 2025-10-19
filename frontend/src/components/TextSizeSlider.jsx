@@ -123,8 +123,8 @@ export default function TextSizeSlider({ className = "" }) {
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className={`flex items-center justify-center rounded-full border p-2 text-xs font-medium shadow-sm transition focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1 ${isDark
-            ? 'border-gray-600 bg-gray-800 text-gray-100 hover:border-gray-500 hover:text-lime-400'
-            : 'border-lime-100 bg-white text-gray-700 hover:border-lime-200 hover:text-lime-700'
+          ? 'border-gray-600 bg-gray-800 text-gray-100 hover:border-gray-500 hover:text-lime-400'
+          : 'border-lime-100 bg-white text-gray-700 hover:border-lime-200 hover:text-lime-700'
           }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -154,8 +154,8 @@ export default function TextSizeSlider({ className = "" }) {
 
       {isOpen && (
         <div className={`absolute right-0 z-[1100] mt-2 w-64 rounded-xl border p-4 shadow-xl ${isDark
-            ? 'border-gray-600 bg-gray-800'
-            : 'border-lime-100 bg-white'
+          ? 'border-gray-600 bg-gray-800'
+          : 'border-lime-100 bg-white'
           }`}>
           <div className={`flex flex-col gap-4 text-xs ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
             <div className="flex items-center justify-between">
@@ -200,8 +200,8 @@ export default function TextSizeSlider({ className = "" }) {
                 {/* Draggable thumb */}
                 <div
                   className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full shadow-lg cursor-grab active:cursor-grabbing transition-all duration-150 ${isDark
-                      ? 'bg-lime-400 border-2 border-lime-300'
-                      : 'bg-white border-2 border-lime-600'
+                    ? 'bg-lime-400 border-2 border-lime-300'
+                    : 'bg-white border-2 border-lime-600'
                     } ${isDragging ? 'scale-110' : 'hover:scale-110'}`}
                   style={{
                     left: `calc(${scaleToPercent(pendingScale || scale)}% - 0.625rem)`
@@ -230,12 +230,12 @@ export default function TextSizeSlider({ className = "" }) {
                 }
               }}
               className={`mt-1 rounded-lg border px-3 py-2 text-center text-[12px] font-medium transition focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1 ${currentPercent === 100
-                  ? isDark
-                    ? "border-lime-500 bg-lime-900/30 text-lime-400 shadow-sm"
-                    : "border-lime-500 bg-lime-50 text-lime-700 shadow-sm"
-                  : isDark
-                    ? "border-gray-600 text-gray-400 hover:border-lime-500 hover:text-lime-400"
-                    : "border-gray-200 text-gray-500 hover:border-lime-200 hover:text-lime-700"
+                ? isDark
+                  ? "border-lime-500 bg-lime-900/30 text-lime-400 shadow-sm"
+                  : "border-lime-500 bg-lime-50 text-lime-700 shadow-sm"
+                : isDark
+                  ? "border-gray-600 text-gray-400 hover:border-lime-500 hover:text-lime-400"
+                  : "border-gray-200 text-gray-500 hover:border-lime-200 hover:text-lime-700"
                 }`}
             >
               Reset to Default (100%)

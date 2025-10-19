@@ -143,7 +143,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
               {/* Votes and Price Section */}
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Vote Badge */}
-                <div 
+                <div
                   className="flex gap-1 rounded-lg p-1"
                   style={{
                     backgroundColor: isDark ? '#1e293b' : '#f3f4f6'

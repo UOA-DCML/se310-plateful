@@ -155,7 +155,7 @@ const BrowseHistory = () => {
                 </div>
                 <div className="text-right">
                   <div className="flex items-center gap-2 mb-1">
-                    <span 
+                    <span
                       className="inline-flex items-center gap-1 text-sm"
                       style={{
                         color: isDark ? '#6ee7b7' : '#16a34a'
@@ -166,7 +166,7 @@ const BrowseHistory = () => {
                       </svg>
                       {item.restaurant?.upvoteCount || 0}
                     </span>
-                    <span 
+                    <span
                       className="inline-flex items-center gap-1 text-sm"
                       style={{
                         color: isDark ? '#fca5a5' : '#dc2626'

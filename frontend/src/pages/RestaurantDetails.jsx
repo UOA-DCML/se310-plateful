@@ -397,7 +397,7 @@ export default function RestaurantDetails() {
             {/* Action Buttons */}
             <div className="flex gap-2">
               {/* Voting Buttons with Counts */}
-              <div 
+              <div
                 className="flex gap-1 rounded-full p-1"
                 style={{
                   backgroundColor: isDark ? '#1e293b' : '#f3f4f6'
@@ -408,10 +408,10 @@ export default function RestaurantDetails() {
                   disabled={voteLoading}
                   className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed`}
                   style={{
-                    backgroundColor: voteStatus.hasUpvoted 
+                    backgroundColor: voteStatus.hasUpvoted
                       ? '#16a34a'
                       : isDark ? '#334155' : '#ffffff',
-                    color: voteStatus.hasUpvoted 
+                    color: voteStatus.hasUpvoted
                       ? '#ffffff'
                       : isDark ? '#94a3b8' : '#6b7280'
                   }}
@@ -439,10 +439,10 @@ export default function RestaurantDetails() {
                   disabled={voteLoading}
                   className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed`}
                   style={{
-                    backgroundColor: voteStatus.hasDownvoted 
+                    backgroundColor: voteStatus.hasDownvoted
                       ? '#dc2626'
                       : isDark ? '#334155' : '#ffffff',
-                    color: voteStatus.hasDownvoted 
+                    color: voteStatus.hasDownvoted
                       ? '#ffffff'
                       : isDark ? '#94a3b8' : '#6b7280'
                   }}
@@ -472,10 +472,10 @@ export default function RestaurantDetails() {
                 disabled={favoriteLoading}
                 className={`p-3 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
                 style={{
-                  backgroundColor: isFavorite 
+                  backgroundColor: isFavorite
                     ? isDark ? '#991b1b' : '#fee2e2'
                     : isDark ? '#334155' : '#f3f4f6',
-                  color: isFavorite 
+                  color: isFavorite
                     ? isDark ? '#fca5a5' : '#dc2626'
                     : isDark ? '#94a3b8' : '#6b7280'
                 }}
@@ -489,7 +489,7 @@ export default function RestaurantDetails() {
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = isFavorite 
+                  e.currentTarget.style.backgroundColor = isFavorite
                     ? isDark ? '#991b1b' : '#fee2e2'
                     : isDark ? '#334155' : '#f3f4f6';
                 }}
