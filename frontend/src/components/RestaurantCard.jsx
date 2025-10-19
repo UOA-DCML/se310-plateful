@@ -107,7 +107,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
           </div>
 
           {/* Content section with improved spacing */}
-          <div 
+          <div
             className="flex flex-col flex-grow overflow-hidden"
             style={{
               padding: direction === "vertical" ? '16px 16px 16px 16px' : '20px 20px 20px 20px',
@@ -216,8 +216,8 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
               </div>
 
               {/* Directions Button - Always at bottom with spacing */}
-              <div 
-                onClick={(e) => e.stopPropagation()} 
+              <div
+                onClick={(e) => e.stopPropagation()}
                 className="flex-shrink-0"
                 style={{ marginBottom: direction === "vertical" ? '8px' : '10px' }}
               >
