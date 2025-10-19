@@ -26,9 +26,10 @@ const ShareModal = ({ isOpen, onClose, restaurant, shareUrl }) => {
     };
   }, [isOpen]);
 
-  const shareText = `Check out ${restaurant.name} 🍽️ - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • ⭐ ${restaurant.rating || 'N/A'}/5`;
+  const upvoteCount = restaurant.upvoteCount || 0;
+  const shareText = `Check out ${restaurant.name} 🍽️ - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • 👍 ${upvoteCount} upvotes`;
   const emailSubject = `Check out ${restaurant.name} on Plateful`;
-  const emailBody = `I found this amazing restaurant on Plateful!\n\n${restaurant.name}\n${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • ${restaurant.rating || 'N/A'}/5 stars\n\nCheck it out: ${shareUrl}`;
+  const emailBody = `I found this amazing restaurant on Plateful!\n\n${restaurant.name}\n${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • 👍 ${upvoteCount} upvotes\n\nCheck it out: ${shareUrl}`;
 
   const handleCopy = async () => {
     // Prevent multiple calls while copying is in progress

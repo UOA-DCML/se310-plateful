@@ -151,7 +151,7 @@ export default function RestaurantDetails() {
       try {
         await navigator.share({
           title: restaurant.name,
-          text: `Check out ${restaurant.name} - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • ⭐ ${restaurant.rating || 'N/A'}/5`,
+          text: `Check out ${restaurant.name} - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • 👍 ${voteStatus.upvoteCount} upvotes`,
           url: shareUrl,
         });
       } catch (err) {

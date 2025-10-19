@@ -3,7 +3,7 @@ import DirectionsButton from "./DirectionsButton";
 import { useState } from "react";
 import ShareButton from "./ShareButton";
 import ShareModal from "./ShareModal";
-import { FaStar, FaStarHalfAlt, FaRegStar, FaDollarSign } from "react-icons/fa";
+import { FaDollarSign } from "react-icons/fa";
 import { buildFrontendUrl } from "../lib/config";
 import { useTheme } from "../context/ThemeContext";
 
@@ -21,67 +21,10 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
   // Share URL for this restaurant - use canonical frontend URL
   const shareUrl = buildFrontendUrl(`/restaurant/${restaurant.id}`);
 
-  // Helper function to render star rating
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-
-    for (let i = 0; i < 5; i++) {
-      if (i < fullStars) {
-        stars.push(<FaStar key={i} className="w-3 h-3 text-yellow-400" />);
-      } else if (i === fullStars && hasHalfStar) {
-        stars.push(<FaStarHalfAlt key={i} className="w-3 h-3 text-yellow-400" />);
-      } else {
-        stars.push(<FaRegStar key={i} className="w-3 h-3 text-gray-300" />);
-      }
-    }
-    return stars;
-  };
-
-  // Helper function to get rating badge color
-  const getRatingColor = (rating) => {
-    if (!rating) {
-      return {
-        backgroundColor: isDark ? '#334155' : '#f3f4f6',
-        color: isDark ? '#d1d5db' : '#4b5563',
-        borderColor: isDark ? '#475569' : '#d1d5db'
-      };
-    }
-    if (rating >= 4.5) {
-      return {
-        backgroundColor: isDark ? '#064e3b' : '#ecfdf5',
-        color: isDark ? '#6ee7b7' : '#047857',
-        borderColor: isDark ? '#065f46' : '#a7f3d0'
-      };
-    }
-    if (rating >= 4.0) {
-      return {
-        backgroundColor: isDark ? '#14532d' : '#f0fdf4',
-        color: isDark ? '#86efac' : '#15803d',
-        borderColor: isDark ? '#166534' : '#bbf7d0'
-      };
-    }
-    if (rating >= 3.5) {
-      return {
-        backgroundColor: isDark ? '#713f12' : '#fefce8',
-        color: isDark ? '#fde047' : '#a16207',
-        borderColor: isDark ? '#854d0e' : '#fef08a'
-      };
-    }
-    if (rating >= 3.0) {
-      return {
-        backgroundColor: isDark ? '#7c2d12' : '#fff7ed',
-        color: isDark ? '#fdba74' : '#c2410c',
-        borderColor: isDark ? '#9a3412' : '#fed7aa'
-      };
-    }
-    return {
-      backgroundColor: isDark ? '#7f1d1d' : '#fef2f2',
-      color: isDark ? '#fca5a5' : '#b91c1c',
-      borderColor: isDark ? '#991b1b' : '#fecaca'
-    };
-  };
+  // Get upvote and downvote counts
+  const upvoteCount = restaurant.upvoteCount || 0;
+  const downvoteCount = restaurant.downvoteCount || 0;
+  const netVotes = upvoteCount - downvoteCount;
 
   // Handle share button click
   const handleShare = async (e) => {
@@ -95,7 +38,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
       try {
         await navigator.share({
           title: restaurant.name,
-          text: `Check out ${restaurant.name} - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • ⭐ ${restaurant.rating || 'N/A'}/5`,
+          text: `Check out ${restaurant.name} - ${restaurant.cuisine || restaurant.tags?.[0] || 'Restaurant'} • 👍 ${upvoteCount} upvotes`,
           url: shareUrl,
         });
       } catch (err) {
@@ -197,32 +140,35 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
 
             {/* Bottom Section - Fixed spacing */}
             <div className={`mt-auto flex flex-col ${direction === "vertical" ? "gap-2" : "gap-3.5"}`}>
-              {/* Rating and Price Section */}
+              {/* Votes and Price Section */}
               <div className="flex items-center gap-2 flex-wrap">
-                {/* Rating Badge */}
-                {restaurant.rating ? (
+                {/* Vote Badge */}
+                <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
                   <div
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-semibold transition-all duration-200"
-                    style={getRatingColor(restaurant.rating)}
-                  >
-                    <div className="flex items-center gap-0.5">
-                      {renderStars(restaurant.rating)}
-                    </div>
-                    <span className="text-sm font-bold">{restaurant.rating.toFixed(1)}</span>
-                  </div>
-                ) : (
-                  <div
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border"
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md"
                     style={{
-                      backgroundColor: isDark ? '#334155' : '#f9fafb',
-                      color: isDark ? '#9ca3af' : '#6b7280',
-                      borderColor: isDark ? '#475569' : '#e5e7eb'
+                      backgroundColor: isDark ? '#064e3b' : '#ecfdf5',
+                      color: isDark ? '#6ee7b7' : '#047857'
                     }}
                   >
-                    <FaRegStar className="w-3 h-3" />
-                    <span className="text-xs font-medium">New</span>
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                    </svg>
+                    <span className="text-xs font-semibold">{upvoteCount}</span>
                   </div>
-                )}
+                  <div
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md"
+                    style={{
+                      backgroundColor: isDark ? '#7f1d1d' : '#fef2f2',
+                      color: isDark ? '#fca5a5' : '#b91c1c'
+                    }}
+                  >
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
+                    </svg>
+                    <span className="text-xs font-semibold">{downvoteCount}</span>
+                  </div>
+                </div>
 
                 {/* Price Level Badge */}
                 {restaurant.priceLevel && (

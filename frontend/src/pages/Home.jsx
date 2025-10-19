@@ -82,7 +82,8 @@ export default function Home() {
     name: r.name,
     description: r.description,
     priceLevel: r.priceLevel,
-    rating: 5,
+    upvoteCount: r.upvoteCount || 0,
+    downvoteCount: r.downvoteCount || 0,
     image:
       (Array.isArray(r.images) && r.images[0]) ||
       "https://picsum.photos/seed/placeholder/600/400",
