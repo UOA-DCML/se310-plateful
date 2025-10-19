@@ -10,6 +10,10 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+// Restaurant.java (add these)
+import org.springframework.data.mongodb.core.index.Indexed;
+
+
 
 /**
  * Represents a restaurant entity in the Plateful application. This class maps to documents in the
@@ -22,6 +26,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 @Document(collection = "restaurants")
 public class Restaurant {
+  
   @Id private String id;
 
   @TextIndexed private String name;
@@ -35,9 +40,11 @@ public class Restaurant {
   private String phone;
   private String website;
 
+  
   @GeoSpatialIndexed private GeoJsonPoint location;
 
   private List<String> images;
+  @Indexed(name = "ix_tags") 
   private List<String> tags;
   private Map<String, String> hours;
 
@@ -46,9 +53,11 @@ public class Restaurant {
 
   // Voting system - stores user IDs who have upvoted/downvoted
   @Field("upvote_user_ids")
+  @Indexed(name = "ix_upvote_user_ids")  
   private Set<String> upvoteUserIds = new HashSet<>();
 
   @Field("downvote_user_ids")
+  @Indexed(name = "ix_downvote_user_ids") 
   private Set<String> downvoteUserIds = new HashSet<>();
 
   public static class Address {
