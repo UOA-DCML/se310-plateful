@@ -150,8 +150,8 @@ const NavBar = () => {
               <motion.button
                 onClick={toggleUserSidebar}
                 className={`relative p-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isDark
-                    ? "hover:bg-slate-700 focus:ring-slate-500"
-                    : "hover:bg-lime-50 focus:ring-lime-500"
+                  ? "hover:bg-slate-700 focus:ring-slate-500"
+                  : "hover:bg-lime-50 focus:ring-lime-500"
                   }`}
                 aria-label="Open user menu"
                 whileHover={{ scale: 1.05 }}
@@ -193,8 +193,8 @@ const NavBar = () => {
           <motion.button
             type="button"
             className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-colors md:hidden ${isDark
-                ? "text-slate-100 hover:bg-slate-700"
-                : "text-gray-700 hover:bg-lime-50"
+              ? "text-slate-100 hover:bg-slate-700"
+              : "text-gray-700 hover:bg-lime-50"
               }`}
             onClick={toggleMenu}
             aria-expanded={isMenuOpen}
