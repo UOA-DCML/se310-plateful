@@ -116,8 +116,8 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
       <div className="relative">
         <div
           className={`restaurant-card group transition-all duration-300 ${direction === "vertical"
-            ? "max-w-full h-[160px] flex flex-row rounded-xl shadow-md hover:shadow-xl overflow-hidden"
-            : "w-[300px] min-h-[440px] flex flex-col rounded-xl shadow-md hover:shadow-xl overflow-hidden"
+            ? "max-w-full min-h-[260px] flex flex-row items-stretch rounded-xl shadow-md hover:shadow-xl bg-white overflow-hidden"
+            : "w-[300px] flex flex-col rounded-xl shadow-md hover:shadow-xl bg-white overflow-hidden"
             }`}
           style={{ backgroundColor: isDark ? '#1e293b' : 'white', cursor: 'pointer' }}
           onClick={() => {
@@ -127,11 +127,11 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
           }}
         >
           {/* Image Section */}
-          <div className={direction === "vertical" ? "w-[200px] flex-shrink-0 relative" : "w-full h-[180px] flex-shrink-0 relative"}>
+          <div className={direction === "vertical" ? "w-[210px] max-w-[210px] flex-shrink-0 relative overflow-hidden" : "w-full h-[200px] flex-shrink-0 relative overflow-hidden"}>
             <img
               src={imageUrl}
               alt={restaurant.name || "Restaurant"}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${direction === "vertical" ? "min-h-[260px]" : ""}`}
               onError={(e) => {
                 e.target.src =
                   "https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=";
@@ -150,7 +150,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
           </div>
 
           {/* Content section with improved spacing */}
-          <div className={`flex flex-col flex-grow ${direction === "vertical" ? "p-4" : "p-5"}`}>
+          <div className={`flex flex-col flex-grow ${direction === "vertical" ? "gap-3 p-4" : "gap-4 p-5 pb-6"}`}>
             {/* Header Section */}
             <div className={`space-y-2.5 ${direction === "vertical" ? "mb-2" : "mb-4"}`}>
               <h3
@@ -196,7 +196,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
             {direction !== "vertical" && <div className="flex-grow min-h-[24px]" />}
 
             {/* Bottom Section - Fixed spacing */}
-            <div className={direction === "vertical" ? "space-y-2" : "space-y-3.5"}>
+            <div className={`mt-auto flex flex-col ${direction === "vertical" ? "gap-2" : "gap-3.5"}`}>
               {/* Rating and Price Section */}
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Rating Badge */}
@@ -250,6 +250,7 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
                       : restaurant.name
                   }
                   className="w-full text-sm"
+                  stacked={direction === "vertical"}
                 />
               </div>
             </div>
