@@ -1,10 +1,17 @@
 @import "tailwindcss";
 
+/* Base font size - will be modified by TextSizeContext */
+html {
+  font-size: 100%;
+  transition: font-size 0.2s ease-out;
+}
+
 /* Light mode default */
 body {
   background-color: white;
   color: black;
   transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden;
 }
 
 /* Dark mode — improved slate palette for reduced eye strain */
@@ -13,4 +20,58 @@ html.dark body {
   /* slate-900 instead of pure black */
   color: #f1f5f9;
   /* slate-100 - softer white */
+}
+
+/* Make buttons, inputs, and other controls scale properly */
+button,
+input,
+select,
+textarea {
+  font-size: inherit;
+}
+
+/* Prevent layout breaks when text size increases */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* SVG icons should maintain their size relative to text */
+svg {
+  flex-shrink: 0;
+}
+
+/* Ensure card images maintain aspect ratio */
+.aspect-ratio-box {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Better flex handling for scaled text */
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Prevent text overflow in cards and containers */
+.text-container {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Ensure proper spacing scales with text */
+.dynamic-spacing {
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
+}
+
+/* Make sure modals and popovers stay properly positioned */
+.modal-content,
+.popover-content {
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
 }

@@ -143,11 +143,16 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
               {/* Votes and Price Section */}
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Vote Badge */}
-                <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+                <div 
+                  className="flex gap-1 rounded-lg p-1"
+                  style={{
+                    backgroundColor: isDark ? '#1e293b' : '#f3f4f6'
+                  }}
+                >
                   <div
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md"
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md transition-colors"
                     style={{
-                      backgroundColor: isDark ? '#064e3b' : '#ecfdf5',
+                      backgroundColor: isDark ? '#065f46' : '#d1fae5',
                       color: isDark ? '#6ee7b7' : '#047857'
                     }}
                   >
@@ -157,10 +162,10 @@ const RestaurantCard = ({ restaurant, direction = "vertical" }) => {
                     <span className="text-xs font-semibold">{upvoteCount}</span>
                   </div>
                   <div
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md"
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md transition-colors"
                     style={{
-                      backgroundColor: isDark ? '#7f1d1d' : '#fef2f2',
-                      color: isDark ? '#fca5a5' : '#b91c1c'
+                      backgroundColor: isDark ? '#991b1b' : '#fee2e2',
+                      color: isDark ? '#fca5a5' : '#dc2626'
                     }}
                   >
                     <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">

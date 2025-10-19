@@ -397,14 +397,36 @@ export default function RestaurantDetails() {
             {/* Action Buttons */}
             <div className="flex gap-2">
               {/* Voting Buttons with Counts */}
-              <div className="flex gap-1 bg-gray-100 rounded-full p-1">
+              <div 
+                className="flex gap-1 rounded-full p-1"
+                style={{
+                  backgroundColor: isDark ? '#1e293b' : '#f3f4f6'
+                }}
+              >
                 <button
                   onClick={() => voteStatus.hasUpvoted ? handleRemoveVote() : handleUpvote()}
                   disabled={voteLoading}
-                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${voteStatus.hasUpvoted
-                      ? 'bg-green-600 text-white'
-                      : 'bg-white text-gray-600 hover:bg-green-50 hover:text-green-600'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed`}
+                  style={{
+                    backgroundColor: voteStatus.hasUpvoted 
+                      ? '#16a34a'
+                      : isDark ? '#334155' : '#ffffff',
+                    color: voteStatus.hasUpvoted 
+                      ? '#ffffff'
+                      : isDark ? '#94a3b8' : '#6b7280'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!voteStatus.hasUpvoted && !voteLoading) {
+                      e.currentTarget.style.backgroundColor = isDark ? '#475569' : '#dcfce7';
+                      e.currentTarget.style.color = isDark ? '#a7f3d0' : '#16a34a';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!voteStatus.hasUpvoted) {
+                      e.currentTarget.style.backgroundColor = isDark ? '#334155' : '#ffffff';
+                      e.currentTarget.style.color = isDark ? '#94a3b8' : '#6b7280';
+                    }
+                  }}
                   title={voteStatus.hasUpvoted ? 'Remove upvote' : 'Upvote'}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -415,10 +437,27 @@ export default function RestaurantDetails() {
                 <button
                   onClick={() => voteStatus.hasDownvoted ? handleRemoveVote() : handleDownvote()}
                   disabled={voteLoading}
-                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${voteStatus.hasDownvoted
-                      ? 'bg-red-600 text-white'
-                      : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-600'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed`}
+                  style={{
+                    backgroundColor: voteStatus.hasDownvoted 
+                      ? '#dc2626'
+                      : isDark ? '#334155' : '#ffffff',
+                    color: voteStatus.hasDownvoted 
+                      ? '#ffffff'
+                      : isDark ? '#94a3b8' : '#6b7280'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!voteStatus.hasDownvoted && !voteLoading) {
+                      e.currentTarget.style.backgroundColor = isDark ? '#475569' : '#fee2e2';
+                      e.currentTarget.style.color = isDark ? '#fca5a5' : '#dc2626';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!voteStatus.hasDownvoted) {
+                      e.currentTarget.style.backgroundColor = isDark ? '#334155' : '#ffffff';
+                      e.currentTarget.style.color = isDark ? '#94a3b8' : '#6b7280';
+                    }
+                  }}
                   title={voteStatus.hasDownvoted ? 'Remove downvote' : 'Downvote'}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -431,10 +470,29 @@ export default function RestaurantDetails() {
               <button
                 onClick={handleFavoriteToggle}
                 disabled={favoriteLoading}
-                className={`p-3 rounded-full transition-all duration-200 ${isFavorite
-                    ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                className={`p-3 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
+                style={{
+                  backgroundColor: isFavorite 
+                    ? isDark ? '#991b1b' : '#fee2e2'
+                    : isDark ? '#334155' : '#f3f4f6',
+                  color: isFavorite 
+                    ? isDark ? '#fca5a5' : '#dc2626'
+                    : isDark ? '#94a3b8' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (!favoriteLoading) {
+                    if (isFavorite) {
+                      e.currentTarget.style.backgroundColor = isDark ? '#7f1d1d' : '#fecaca';
+                    } else {
+                      e.currentTarget.style.backgroundColor = isDark ? '#475569' : '#e5e7eb';
+                    }
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = isFavorite 
+                    ? isDark ? '#991b1b' : '#fee2e2'
+                    : isDark ? '#334155' : '#f3f4f6';
+                }}
                 title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               >
                 <svg

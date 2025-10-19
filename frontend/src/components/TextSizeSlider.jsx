@@ -1,14 +1,96 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTextSize } from "../context/TextSizeContext";
+import { useTheme } from "../context/ThemeContext";
 import textSliderIcon from "../assets/textslidericon.png";
 
 export default function TextSizeSlider({ className = "" }) {
-  const { scale, setScale } = useTextSize();
+  const { scale, setScale, min, max } = useTextSize();
+  const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [pendingScale, setPendingScale] = useState(null);
   const popoverRef = useRef(null);
+  const sliderRef = useRef(null);
+  const delayTimerRef = useRef(null);
 
-  const currentPercent = useMemo(() => Math.round(scale * 100), [scale]);
-  const options = useMemo(() => [85, 95, 105, 115, 125, 135], []);
+  // Define scale steps: 80%, 90%, 100%, 110%, 120%, 130%
+  const scaleSteps = useMemo(() => [0.80, 0.90, 1.00, 1.10, 1.20, 1.30], []);
+
+  const currentPercent = useMemo(() => Math.round((pendingScale || scale) * 100), [scale, pendingScale]);
+
+  // Convert scale to percentage position (0-100)
+  const scaleToPercent = (s) => ((s - min) / (max - min)) * 100;
+
+  // Find nearest scale step based on slider position
+  const findNearestStep = (percent) => {
+    const targetScale = (percent / 100) * (max - min) + min;
+    return scaleSteps.reduce((prev, curr) =>
+      Math.abs(curr - targetScale) < Math.abs(prev - targetScale) ? curr : prev
+    );
+  };
+
+  const handleSliderChange = (clientX) => {
+    if (!sliderRef.current) return;
+
+    const rect = sliderRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const percent = (x / rect.width) * 100;
+
+    // Find nearest step and store as pending
+    const nearestStep = findNearestStep(percent);
+    setPendingScale(nearestStep);
+
+    // Clear existing timer
+    if (delayTimerRef.current) {
+      clearTimeout(delayTimerRef.current);
+    }
+  };
+
+  const applyPendingScale = () => {
+    if (pendingScale !== null) {
+      setScale(pendingScale);
+      setPendingScale(null);
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    handleSliderChange(e.clientX);
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e) => {
+      handleSliderChange(e.clientX);
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+
+      // Apply scale after 0.7 second delay
+      delayTimerRef.current = setTimeout(() => {
+        applyPendingScale();
+      }, 700);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, min, max, scaleSteps, pendingScale]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (delayTimerRef.current) {
+        clearTimeout(delayTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!isOpen) {
@@ -40,7 +122,10 @@ export default function TextSizeSlider({ className = "" }) {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center justify-center rounded-full border border-lime-100 bg-white p-2 text-xs font-medium text-gray-700 shadow-sm transition hover:border-lime-200 hover:text-lime-700 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1"
+        className={`flex items-center justify-center rounded-full border p-2 text-xs font-medium shadow-sm transition focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1 ${isDark
+            ? 'border-gray-600 bg-gray-800 text-gray-100 hover:border-gray-500 hover:text-lime-400'
+            : 'border-lime-100 bg-white text-gray-700 hover:border-lime-200 hover:text-lime-700'
+          }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-label={`Adjust text size (current ${currentPercent}%)`}
@@ -68,40 +153,92 @@ export default function TextSizeSlider({ className = "" }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 z-[1100] mt-2 w-56 rounded-xl border border-lime-100 bg-white p-4 shadow-xl">
-          <div className="flex flex-col gap-3 text-xs text-gray-600">
-            <span className="text-[11px] uppercase tracking-wide text-gray-500">
-              Choose text size
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              {options.map((option) => {
-                const isActive = currentPercent === option;
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => setScale(option / 100)}
-                    className={`rounded-lg border px-2 py-1 text-center text-[12px] font-medium transition focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1 ${
-                      isActive
-                        ? "border-lime-500 bg-lime-50 text-lime-700 shadow-sm"
-                        : "border-gray-200 text-gray-600 hover:border-lime-200 hover:text-lime-700"
-                    }`}
-                  >
-                    {option}%
-                  </button>
-                );
-              })}
+        <div className={`absolute right-0 z-[1100] mt-2 w-64 rounded-xl border p-4 shadow-xl ${isDark
+            ? 'border-gray-600 bg-gray-800'
+            : 'border-lime-100 bg-white'
+          }`}>
+          <div className={`flex flex-col gap-4 text-xs ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            <div className="flex items-center justify-between">
+              <span className={`text-[11px] uppercase tracking-wide ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                Text size
+              </span>
+              <span className={`text-sm font-semibold ${isDark ? 'text-lime-400' : 'text-lime-700'}`}>
+                {currentPercent}%
+              </span>
             </div>
+
+            {/* Slider */}
+            <div className="flex flex-col gap-2">
+              <div
+                ref={sliderRef}
+                className={`relative h-2 rounded-full cursor-pointer ${isDark ? 'bg-gray-700' : 'bg-gray-200'
+                  }`}
+                onMouseDown={handleMouseDown}
+              >
+                {/* Scale notches */}
+                {scaleSteps.map((step) => {
+                  const stepPercent = scaleToPercent(step);
+                  return (
+                    <div
+                      key={step}
+                      className={`absolute top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'
+                        }`}
+                      style={{ left: `${stepPercent}%` }}
+                    />
+                  );
+                })}
+
+                {/* Progress bar */}
+                <div
+                  className={`absolute h-full rounded-full transition-all duration-150 ${isDark ? 'bg-lime-500' : 'bg-lime-600'
+                    }`}
+                  style={{
+                    width: `${scaleToPercent(pendingScale || scale)}%`
+                  }}
+                />
+
+                {/* Draggable thumb */}
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full shadow-lg cursor-grab active:cursor-grabbing transition-all duration-150 ${isDark
+                      ? 'bg-lime-400 border-2 border-lime-300'
+                      : 'bg-white border-2 border-lime-600'
+                    } ${isDragging ? 'scale-110' : 'hover:scale-110'}`}
+                  style={{
+                    left: `calc(${scaleToPercent(pendingScale || scale)}% - 0.625rem)`
+                  }}
+                />
+              </div>
+
+              {/* Scale labels */}
+              <div className={`flex justify-between text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                {scaleSteps.map((step) => (
+                  <span key={step} className="flex-1 text-center">
+                    {Math.round(step * 100)}%
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Reset button */}
             <button
               type="button"
-              onClick={() => setScale(1)}
-              className={`rounded-lg border px-2 py-1 text-center text-[12px] font-medium transition focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1 ${
-                currentPercent === 100
-                  ? "border-lime-500 bg-lime-50 text-lime-700 shadow-sm"
-                  : "border-gray-200 text-gray-500 hover:border-lime-200 hover:text-lime-700"
-              }`}
+              onClick={() => {
+                setScale(1);
+                setPendingScale(null);
+                if (delayTimerRef.current) {
+                  clearTimeout(delayTimerRef.current);
+                }
+              }}
+              className={`mt-1 rounded-lg border px-3 py-2 text-center text-[12px] font-medium transition focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-1 ${currentPercent === 100
+                  ? isDark
+                    ? "border-lime-500 bg-lime-900/30 text-lime-400 shadow-sm"
+                    : "border-lime-500 bg-lime-50 text-lime-700 shadow-sm"
+                  : isDark
+                    ? "border-gray-600 text-gray-400 hover:border-lime-500 hover:text-lime-400"
+                    : "border-gray-200 text-gray-500 hover:border-lime-200 hover:text-lime-700"
+                }`}
             >
-              Default 100%
+              Reset to Default (100%)
             </button>
           </div>
         </div>

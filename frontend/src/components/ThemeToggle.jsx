@@ -32,18 +32,6 @@ export default function ThemeToggle({ className = "" }) {
           </svg>
         )}
       </button>
-
-      {/* optional: a small three-state chooser */}
-      <select
-        value={theme}
-        onChange={(e) => setTheme(e.target.value)}
-        aria-label="Theme preference"
-        className="ml-2 hidden rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 md:inline focus:outline-none focus:ring-2 focus:ring-lime-500"
-      >
-        <option value="system">System</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
     </div>
   );
 }

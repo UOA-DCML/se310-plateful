@@ -4,8 +4,8 @@ const TextSizeContext = createContext(null);
 
 const STORAGE_KEY = "plateful:text-scale";
 const DEFAULT_SCALE = 1;
-const MIN_SCALE = 0.85;
-const MAX_SCALE = 1.35;
+const MIN_SCALE = 0.80;
+const MAX_SCALE = 1.30;
 
 const clamp = (value) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, value));
 
