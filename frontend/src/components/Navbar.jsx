@@ -13,7 +13,7 @@ const NavBar = () => {
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
   const closeMenu = () => setIsMenuOpen(false);
-  
+
   const toggleUserSidebar = () => {
     setIsUserSidebarOpen((prev) => !prev);
   };

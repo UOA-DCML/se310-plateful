@@ -2,16 +2,28 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 
 const ThemeContext = createContext(null);
 const STORAGE_KEY = "plateful:theme"; // values: "light" | "dark" | "system"
-const DEFAULT = "system";
+const DEFAULT = "light"; // Default to light mode
 
 const getSystemPref = () => {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
+// Get initial theme from localStorage or use default
+const getInitialTheme = () => {
+  if (typeof window === "undefined" || typeof window.localStorage === "undefined") return DEFAULT;
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored === "light" || stored === "dark" || stored === "system") return stored;
+  } catch {
+    // ignore storage errors
+  }
+  return DEFAULT;
+};
+
 export function ThemeProvider({ children }) {
-  // Always start as "system" by default (user requested)
-  const [theme, setThemeState] = useState(DEFAULT); // "light" | "dark" | "system"
+  // Initialize from localStorage or default to light mode
+  const [theme, setThemeState] = useState(() => getInitialTheme());
   const mediaRef = useRef(null);
 
   // Track the current system preference explicitly in state so we can react when it changes.
@@ -20,13 +32,26 @@ export function ThemeProvider({ children }) {
   // effective now depends on both the theme selection and the live systemPref
   const effective = useMemo(() => (theme === "system" ? systemPref : theme), [theme, systemPref]);
 
+  // Force remove dark class on mount to ensure clean slate
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.classList.remove("dark");
+      console.log("🔄 Initial cleanup: removed dark class");
+    }
+  }, []);
+
   // apply class to documentElement whenever effective changes
   useEffect(() => {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
-    if (effective === "dark") root.classList.add("dark");
-    else root.classList.remove("dark");
-  }, [effective]);
+    if (effective === "dark") {
+      root.classList.add("dark");
+      console.log("🌙 Dark mode activated - theme:", theme, "effective:", effective);
+    } else {
+      root.classList.remove("dark");
+      console.log("☀️ Light mode activated - theme:", theme, "effective:", effective);
+    }
+  }, [effective, theme]);
 
   // persist theme & listen for system changes when in system mode
   useEffect(() => {

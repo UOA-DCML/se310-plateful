@@ -6,8 +6,9 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* Dark mode — only change bg + text color */
+/* Dark mode — improved slate palette for reduced eye strain */
 html.dark body {
-  background-color: black;
-  color: white;
+  background-color: #0f172a; /* slate-900 instead of pure black */
+  color: #f1f5f9; /* slate-100 - softer white */
 }
+

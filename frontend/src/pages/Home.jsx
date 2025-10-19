@@ -100,12 +100,12 @@ export default function Home() {
     navigate(`/search?query=${encodeURIComponent(cuisineName)}`);
   };
 
-  // Dark mode classes
-  const bgClass = isDark ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900";
-  const cardBg = isDark ? "bg-gray-800" : "bg-white";
-  const inputBg = isDark ? "bg-gray-700 text-gray-100 placeholder-gray-300" : "bg-white text-black placeholder-gray-500";
-  const btnDark = isDark ? "bg-gray-600 hover:bg-gray-500" : "bg-[#333] hover:bg-[#222]";
-  const textGray = isDark ? "text-gray-300" : "text-gray-900";
+  // Dark mode classes - improved slate palette
+  const bgClass = isDark ? "bg-slate-900 text-gray-100" : "bg-gray-50 text-gray-900";
+  const cardBg = isDark ? "bg-slate-800" : "bg-white";
+  const inputBg = isDark ? "bg-slate-700 text-gray-100 placeholder-gray-400" : "bg-white text-black placeholder-gray-500";
+  const btnDark = isDark ? "bg-slate-600 hover:bg-slate-500" : "bg-[#333] hover:bg-[#222]";
+  const textGray = isDark ? "text-gray-200" : "text-gray-900";
 
   return (
     <div className={`flex flex-col gap-12 pb-12 ${bgClass}`}>
