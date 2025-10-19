@@ -1,4 +1,5 @@
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import footerLogo from "../assets/footer-logo.png"; // New footer logo
 import { useTheme } from "../context/ThemeContext";
 
@@ -24,10 +25,9 @@ export default function Footer() {
         <div className="flex flex-col items-center md:items-center md:w-full">
           <h4 className="font-semibold mb-2 py-2 px-4" style={{ color: '#7C9749' }}>Quick Links</h4>
           <ul className="flex flex-row justify-center gap-8">
-            <li><a href="/" style={{ color: '#7C9749' }}>Home</a></li>
-            <li><a href="/location" style={{ color: '#7C9749' }}>Location</a></li>
-            <li><a href="/about" style={{ color: '#7C9749' }}>About</a></li>
-            <li><a href="/search" style={{ color: '#7C9749' }}>Search</a></li>
+            <li><Link to="/" style={{ color: '#7C9749' }}>Home</Link></li>
+            <li><Link to="/about" style={{ color: '#7C9749' }}>About</Link></li>
+            <li><Link to="/search" style={{ color: '#7C9749' }}>Search</Link></li>
           </ul>
         </div>
 

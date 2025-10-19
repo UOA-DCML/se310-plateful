@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Utensils, Star, Users, Compass, Sparkles, Github, ArrowRight } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
@@ -104,8 +105,8 @@ export default function About() {
                 A community-powered way to explore restaurants, read honest reviews, and find your next favourite bite—fast.
               </p>
               <div className="mt-5 sm:mt-6 flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-3">
-                <a
-                  href="/"
+                <Link
+                  to="/"
                   onClick={() => track("about_explore_click")}
                   className="inline-flex justify-center items-center gap-2 rounded-xl px-4 py-2.5 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl w-full xs:w-auto"
                   style={{
@@ -115,7 +116,7 @@ export default function About() {
                   }}
                 >
                   Explore restaurants <ArrowRight className="h-4 w-4" />
-                </a>
+                </Link>
                 <a
                   href="https://github.com/UOA-DCML/se310-plateful"
                   target="_blank" rel="noreferrer noopener"
