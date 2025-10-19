@@ -23,7 +23,27 @@ export const buildApiUrl = (path = "") => {
 };
 
 // Frontend base URL for sharing and redirects
-export const FRONTEND_BASE_URL = "https://uoa-dcml.github.io/se310-plateful";
+// Use window.location.origin in production to get the actual deployed URL
+const resolveFrontendBaseUrl = () => {
+  // Check if we have a specific env variable set
+  const fromEnv = trimTrailingSlash(import.meta.env?.VITE_FRONTEND_BASE_URL);
+  if (fromEnv) return fromEnv;
+
+  // In browser, use the actual origin with base path
+  if (typeof window !== "undefined") {
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    // For GitHub Pages deployment, construct the full URL
+    if (window.location.origin.includes('github.io')) {
+      return `${window.location.origin}${baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '')}`;
+    }
+    return window.location.origin;
+  }
+
+  // Fallback for SSR/build time
+  return "https://uoa-dcml.github.io/se310-plateful";
+};
+
+export const FRONTEND_BASE_URL = resolveFrontendBaseUrl();
 
 export const buildFrontendUrl = (path = "") => {
   const normalisedPath = path.startsWith("/") ? path : `/${path}`;

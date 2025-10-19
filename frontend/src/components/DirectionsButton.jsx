@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { FaCar, FaWalking, FaBicycle, FaBus, FaMapMarkerAlt } from "react-icons/fa";
+import { useTheme } from "../context/ThemeContext";
 
 export default function DirectionsButton({
   destinationAddress,
@@ -13,6 +14,7 @@ export default function DirectionsButton({
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const dropdownButtonRef = useRef(null);
   const menuRef = useRef(null);
+  const { isDark } = useTheme();
 
   // Close dropdown when clicking outside (while allowing clicks inside the menu)
   useEffect(() => {
@@ -127,7 +129,9 @@ export default function DirectionsButton({
           ref={dropdownButtonRef}
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className={`group relative flex min-w-[200px] items-center gap-2 rounded-lg bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 shadow-md transition-all duration-200 hover:from-gray-200 hover:to-gray-300 hover:shadow-lg cursor-pointer ${stacked ? "w-full" : "w-full flex-1"} ${className}`}
+          className={`group relative flex min-w-[200px] items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg cursor-pointer ${stacked ? "w-full" : "w-full flex-1"} ${isDark
+            ? 'bg-gradient-to-r from-gray-700 to-gray-800 text-gray-100 hover:from-gray-600 hover:to-gray-700'
+            : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-gray-200 hover:to-gray-300'} ${className}`}
           aria-label="Select travel mode"
         >
           {/* Icon for current travel mode */}
@@ -151,7 +155,9 @@ export default function DirectionsButton({
         <button
           type="button"
           onClick={handleClick}
-          className={`flex min-w-[200px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-emerald-600 hover:to-teal-700 hover:shadow-lg cursor-pointer w-full ${stacked ? "" : "flex-1"}`}
+          className={`flex min-w-[200px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:shadow-lg cursor-pointer w-full ${stacked ? "" : "flex-1"} ${isDark
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800'
+            : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'}`}
           aria-label="Get directions"
         >
           <FaMapMarkerAlt className="w-3.5 h-3.5" />
@@ -164,7 +170,9 @@ export default function DirectionsButton({
         createPortal(
           <div
             ref={menuRef}
-            className="absolute bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] overflow-hidden"
+            className={`absolute rounded-xl shadow-2xl z-[9999] overflow-hidden ${isDark
+              ? 'bg-gray-800 border border-gray-700'
+              : 'bg-white border border-gray-200'}`}
             style={{
               position: "absolute",
               top: menuPosition.top,
@@ -173,8 +181,10 @@ export default function DirectionsButton({
             }}
           >
             {/* Dropdown header */}
-            <div className="px-4 py-2.5 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <div className={`px-4 py-2.5 border-b ${isDark
+              ? 'bg-gradient-to-r from-gray-700 to-gray-800 border-gray-700'
+              : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200'}`}>
+              <p className={`text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                 Travel Mode
               </p>
             </div>
@@ -189,29 +199,35 @@ export default function DirectionsButton({
                   <button
                     key={mode.id}
                     onClick={() => handleModeChange(mode.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all duration-150 cursor-pointer ${isSelected
-                      ? "bg-emerald-50 border-l-4 border-emerald-500"
-                      : "hover:bg-gray-50 border-l-4 border-transparent"
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all duration-150 cursor-pointer border-l-4 ${isSelected
+                      ? isDark
+                        ? "bg-emerald-900/40 border-emerald-500"
+                        : "bg-emerald-50 border-emerald-500"
+                      : isDark
+                        ? "hover:bg-gray-700 border-transparent"
+                        : "hover:bg-gray-50 border-transparent"
                       }`}
                     type="button"
                   >
                     {/* Mode icon */}
                     <div className={`w-8 h-8 flex items-center justify-center rounded-lg ${isSelected
-                      ? "bg-emerald-100"
-                      : "bg-gray-100 group-hover:bg-gray-200"
+                      ? isDark ? "bg-emerald-800/50" : "bg-emerald-100"
+                      : isDark ? "bg-gray-700" : "bg-gray-100 group-hover:bg-gray-200"
                       }`}>
-                      <ModeIcon className={`w-4 h-4 ${isSelected ? "text-emerald-600" : mode.color}`} />
+                      <ModeIcon className={`w-4 h-4 ${isSelected ? isDark ? "text-emerald-400" : "text-emerald-600" : mode.color}`} />
                     </div>
 
                     {/* Mode label */}
-                    <span className={`flex-1 text-left font-medium ${isSelected ? "text-emerald-700" : "text-gray-700"
+                    <span className={`flex-1 text-left font-medium ${isSelected
+                      ? isDark ? "text-emerald-300" : "text-emerald-700"
+                      : isDark ? "text-gray-200" : "text-gray-700"
                       }`}>
                       {mode.label}
                     </span>
 
                     {/* Check mark for selected mode */}
                     {isSelected && (
-                      <svg className="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
