@@ -41,7 +41,7 @@ export default function RestaurantDetails() {
       .then((data) => {
         setRestaurant(data);
         setLoading(false);
-        
+
         // Add to browse history
         if (user?.id) {
           fetch(buildApiUrl(`/api/user/history`), {
@@ -79,7 +79,7 @@ export default function RestaurantDetails() {
     if (id) {
       const token = localStorage.getItem('accessToken');
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-      
+
       fetch(buildApiUrl(`/api/restaurants/${id}/vote-status`), { headers })
         .then(res => res.json())
         .then(data => {
@@ -401,11 +401,10 @@ export default function RestaurantDetails() {
                 <button
                   onClick={() => voteStatus.hasUpvoted ? handleRemoveVote() : handleUpvote()}
                   disabled={voteLoading}
-                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${
-                    voteStatus.hasUpvoted
+                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${voteStatus.hasUpvoted
                       ? 'bg-green-600 text-white'
                       : 'bg-white text-gray-600 hover:bg-green-50 hover:text-green-600'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                   title={voteStatus.hasUpvoted ? 'Remove upvote' : 'Upvote'}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -416,11 +415,10 @@ export default function RestaurantDetails() {
                 <button
                   onClick={() => voteStatus.hasDownvoted ? handleRemoveVote() : handleDownvote()}
                   disabled={voteLoading}
-                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${
-                    voteStatus.hasDownvoted
+                  className={`px-3 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 ${voteStatus.hasDownvoted
                       ? 'bg-red-600 text-white'
                       : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-600'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                   title={voteStatus.hasDownvoted ? 'Remove downvote' : 'Downvote'}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -433,11 +431,10 @@ export default function RestaurantDetails() {
               <button
                 onClick={handleFavoriteToggle}
                 disabled={favoriteLoading}
-                className={`p-3 rounded-full transition-all duration-200 ${
-                  isFavorite
+                className={`p-3 rounded-full transition-all duration-200 ${isFavorite
                     ? 'bg-red-100 text-red-600 hover:bg-red-200'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
                 title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               >
                 <svg
