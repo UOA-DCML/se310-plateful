@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import toast from 'react-hot-toast';
 import { useTheme } from '../context/ThemeContext'; // adjust path
@@ -26,7 +26,7 @@ const Favorites = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       const response = await fetch(`http://localhost:8080/api/user/favorites?userId=${user.id}`);
       if (!response.ok) throw new Error('Failed to load favorites');
       const favoriteIds = await response.json();
@@ -95,7 +95,7 @@ const Favorites = () => {
             <p className="mt-2 text-gray-400">Your saved restaurants for quick access</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1,2,3].map(i => (
+            {[1, 2, 3].map(i => (
               <div key={i} className={`${cardBg} rounded-lg shadow-md overflow-hidden`}>
                 <div className={`h-48 ${placeholderBg} animate-pulse`}></div>
                 <div className="p-4 space-y-3">
@@ -130,11 +130,11 @@ const Favorites = () => {
             {favorites.map(r => (
               <div key={r.id} className={`${cardBg} rounded-lg shadow-md overflow-hidden hover:shadow-lg transition`}>
                 <div className="relative h-48">
-                  <img 
-                    src={(r.images && r.images[0]) || r.image || "/api/placeholder/300/200"} 
+                  <img
+                    src={(r.images && r.images[0]) || r.image || "/api/placeholder/300/200"}
                     alt={r.name}
                     className="w-full h-full object-cover"
-                    onError={(e) => e.target.src="/api/placeholder/300/200"}
+                    onError={(e) => e.target.src = "/api/placeholder/300/200"}
                   />
                   <button
                     onClick={() => handleRemoveFavorite(r.id)}
@@ -170,12 +170,12 @@ const Favorites = () => {
             <h3 className="mt-2 text-lg font-medium">No favorites yet</h3>
             <p className="mt-1 text-gray-400">Start exploring restaurants and save your favorites!</p>
             <div className="mt-6">
-              <a href="/search" className={`inline-flex items-center px-4 py-2 rounded-md text-white ${btnBlue}`}>
+              <Link to="/search" className={`inline-flex items-center px-4 py-2 rounded-md text-white ${btnBlue}`}>
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 Search Restaurants
-              </a>
+              </Link>
             </div>
           </div>
         )}

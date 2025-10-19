@@ -106,6 +106,19 @@ export default function Home() {
 
   const handleKeyPress = (e) => e.key === "Enter" && handleSearch();
 
+  const toCard = (r) => ({
+    id: r.id,
+    name: r.name,
+    description: r.description,
+    priceLevel: r.priceLevel,
+    upvoteCount: r.upvoteCount || 0,
+    downvoteCount: r.downvoteCount || 0,
+    image:
+      (Array.isArray(r.images) && r.images[0]) ||
+      "https://picsum.photos/seed/placeholder/600/400",
+    tags: r.tags,
+  });
+
   const popularDocs = restaurantsRaw.filter(
     (r) => Array.isArray(r.tags) && r.tags.includes("popular")
   );
