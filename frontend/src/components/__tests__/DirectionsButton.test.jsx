@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import DirectionsButton from "../DirectionsButton";
+import { ThemeProvider } from "../../context/ThemeContext";
+
+const renderWithTheme = (ui) => render(<ThemeProvider>{ui}</ThemeProvider>);
 
 describe("DirectionsButton", () => {
   const originalOpen = window.open;
@@ -32,7 +35,7 @@ describe("DirectionsButton", () => {
   });
 
   it("renders the Get directions button", () => {
-    render(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
+    renderWithTheme(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
     expect(
       screen.getByRole("button", { name: /get directions/i })
     ).toBeInTheDocument();
@@ -46,7 +49,7 @@ describe("DirectionsButton", () => {
     // eslint-disable-next-line no-delete-var
     delete navigator.geolocation;
 
-    render(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
+    renderWithTheme(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
     const button = screen.getByRole("button", { name: /get directions/i });
 
     await user.click(button);
@@ -76,7 +79,7 @@ describe("DirectionsButton", () => {
       success(mockPosition)
     );
 
-    render(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
+    renderWithTheme(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
     const button = screen.getByRole("button", { name: /get directions/i });
 
     await user.click(button);
@@ -99,7 +102,7 @@ describe("DirectionsButton", () => {
       (_, errorCb) => errorCb({ code: 1 })
     );
 
-    render(<DirectionsButton destinationAddress="Auckland" />);
+    renderWithTheme(<DirectionsButton destinationAddress="Auckland" />);
     const button = screen.getByRole("button", { name: /get directions/i });
 
     await user.click(button);
@@ -118,7 +121,7 @@ describe("DirectionsButton", () => {
   it("dropdown selection updates displayed mode and is used in the opened URL", async () => {
     const user = userEvent.setup();
 
-    render(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
+    renderWithTheme(<DirectionsButton destinationAddress="66-68 Tyler St, Auckland" />);
 
     // Open the dropdown: use the aria-label on the blue button
     const modeButton = screen.getByRole("button", { name: /select travel mode/i });
