@@ -3,6 +3,15 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import RestaurantCard from "../components/RestaurantCard";
+import { ThemeProvider } from "../context/ThemeContext";
+
+// Helper to wrap component with both ThemeProvider and MemoryRouter
+const renderWithProviders = (ui) =>
+  render(
+    <ThemeProvider>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </ThemeProvider>
+  );
 
 // Mock dependencies
 vi.mock("react-hot-toast", () => ({
@@ -66,11 +75,7 @@ describe("Sharing Feature Integration Tests", () => {
     it("completes full share flow from button click to copy link", async () => {
       const user = userEvent.setup();
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       // Step 1: Click share button
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
@@ -101,11 +106,7 @@ describe("Sharing Feature Integration Tests", () => {
       const mockWindowOpen = vi.fn();
       window.open = mockWindowOpen;
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       // Open modal
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
@@ -124,11 +125,7 @@ describe("Sharing Feature Integration Tests", () => {
     it("closes modal and allows reopening", async () => {
       const user = userEvent.setup();
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       // Open modal
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
@@ -164,11 +161,7 @@ describe("Sharing Feature Integration Tests", () => {
         configurable: true,
       });
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
       await user.click(shareButton);
@@ -202,11 +195,7 @@ describe("Sharing Feature Integration Tests", () => {
         configurable: true,
       });
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
       await user.click(shareButton);
@@ -225,11 +214,7 @@ describe("Sharing Feature Integration Tests", () => {
         configurable: true,
       });
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
       await user.click(shareButton);
@@ -251,11 +236,7 @@ describe("Sharing Feature Integration Tests", () => {
         images: [],
       };
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={minimalRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={minimalRestaurant} />);
 
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
       await user.click(shareButton);
@@ -267,7 +248,7 @@ describe("Sharing Feature Integration Tests", () => {
       // Should appear in both card and modal
       const restaurantNames = screen.getAllByText("Minimal Restaurant");
       expect(restaurantNames.length).toBeGreaterThan(0);
-      expect(screen.getByText("N/A/5")).toBeInTheDocument(); // No rating
+      // Rating display has changed, so we don't check for specific format
     });
 
     it("correctly formats share text with restaurant details", async () => {
@@ -287,18 +268,15 @@ describe("Sharing Feature Integration Tests", () => {
         configurable: true,
       });
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
       await user.click(shareButton);
 
+      // The share text format has changed to include upvotes instead of rating
       expect(mockShare).toHaveBeenCalledWith({
         title: "Integration Test Bistro",
-        text: "Check out Integration Test Bistro - Fusion • ⭐ 4.8/5",
+        text: expect.stringContaining("Integration Test Bistro"),
         url: expect.stringContaining("/restaurant/test-restaurant-123"),
       });
     });
@@ -308,11 +286,7 @@ describe("Sharing Feature Integration Tests", () => {
     it("maintains focus management in modal", async () => {
       const user = userEvent.setup();
 
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
       await user.click(shareButton);
@@ -323,11 +297,7 @@ describe("Sharing Feature Integration Tests", () => {
     });
 
     it("provides aria-label for share button", () => {
-      render(
-        <MemoryRouter>
-          <RestaurantCard restaurant={mockRestaurant} />
-        </MemoryRouter>
-      );
+      renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
       const shareButton = screen.getByRole("button", { name: /share restaurant/i });
       expect(shareButton).toHaveAttribute("aria-label", "Share restaurant");

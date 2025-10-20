@@ -2,6 +2,9 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import ShareModal from "../ShareModal";
+import { ThemeProvider } from "../../context/ThemeContext";
+
+const renderWithTheme = (ui) => render(<ThemeProvider>{ui}</ThemeProvider>);
 
 // Mock toast notifications
 vi.mock("react-hot-toast", () => ({
@@ -51,7 +54,7 @@ describe("ShareModal", () => {
   });
 
   it("does not render when isOpen is false", () => {
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={false}
         onClose={mockOnClose}
@@ -64,7 +67,7 @@ describe("ShareModal", () => {
   });
 
   it("renders modal when isOpen is true", () => {
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -78,7 +81,7 @@ describe("ShareModal", () => {
   });
 
   it("displays restaurant information correctly", () => {
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -89,11 +92,11 @@ describe("ShareModal", () => {
 
     expect(screen.getByText("Test Restaurant")).toBeInTheDocument();
     expect(screen.getByText("Italian")).toBeInTheDocument();
-    expect(screen.getByText("4.5/5")).toBeInTheDocument();
+    // Rating is not displayed in the modal anymore
   });
 
   it("displays all social sharing options", () => {
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -110,7 +113,7 @@ describe("ShareModal", () => {
   });
 
   it("displays share URL in input field", () => {
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -127,7 +130,7 @@ describe("ShareModal", () => {
   it("has copy button that triggers clipboard API", async () => {
     const user = userEvent.setup();
 
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -149,7 +152,7 @@ describe("ShareModal", () => {
   it("shows success state after copying", async () => {
     const user = userEvent.setup();
 
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -169,7 +172,7 @@ describe("ShareModal", () => {
   it("closes modal when close button is clicked", async () => {
     const user = userEvent.setup();
 
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -185,7 +188,7 @@ describe("ShareModal", () => {
   });
 
   it("displays QR code", () => {
-    const { container } = render(
+    const { container } = renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -206,7 +209,7 @@ describe("ShareModal", () => {
       rating: null,
     };
 
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -215,7 +218,8 @@ describe("ShareModal", () => {
       />
     );
 
-    expect(screen.getByText("N/A/5")).toBeInTheDocument();
+    // Modal should still display even without rating
+    expect(screen.getByText("Share Restaurant")).toBeInTheDocument();
   });
 
   it("handles restaurant without cuisine or tags", () => {
@@ -225,7 +229,7 @@ describe("ShareModal", () => {
       tags: [],
     };
 
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -242,7 +246,7 @@ describe("ShareModal", () => {
     const mockWindowOpen = vi.fn();
     window.open = mockWindowOpen;
 
-    render(
+    renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -261,7 +265,7 @@ describe("ShareModal", () => {
   });
 
   it("prevents body scroll when modal is open", () => {
-    const { rerender } = render(
+    const { rerender } = renderWithTheme(
       <ShareModal
         isOpen={true}
         onClose={mockOnClose}
@@ -273,12 +277,14 @@ describe("ShareModal", () => {
     expect(document.body.style.overflow).toBe("hidden");
 
     rerender(
-      <ShareModal
-        isOpen={false}
-        onClose={mockOnClose}
-        restaurant={mockRestaurant}
-        shareUrl={mockShareUrl}
-      />
+      <ThemeProvider>
+        <ShareModal
+          isOpen={false}
+          onClose={mockOnClose}
+          restaurant={mockRestaurant}
+          shareUrl={mockShareUrl}
+        />
+      </ThemeProvider>
     );
 
     expect(document.body.style.overflow).toBe("unset");

@@ -3,8 +3,17 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import RestaurantCard from "../RestaurantCard";
+import { ThemeProvider } from "../../context/ThemeContext";
 
 const mockNavigate = vi.fn();
+
+// Helper to wrap component with both ThemeProvider and MemoryRouter
+const renderWithProviders = (ui) =>
+  render(
+    <ThemeProvider>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </ThemeProvider>
+  );
 
 // Mock react-hot-toast
 vi.mock("react-hot-toast", () => ({
@@ -51,9 +60,7 @@ describe("RestaurantCard", () => {
 
   it("renders the restaurant name and tags", () => {
     // MemoryRouter provides just enough routing context for the card without booting the entire app shell.
-    render(<RestaurantCard restaurant={restaurant} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurant} />);
 
     expect(screen.getByText("Test Bistro")).toBeInTheDocument();
     expect(screen.getByText("Fusion")).toBeInTheDocument();
@@ -63,9 +70,7 @@ describe("RestaurantCard", () => {
   it("navigates to the restaurant details when clicked", async () => {
     const user = userEvent.setup();
 
-    render(<RestaurantCard restaurant={restaurant} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurant} />);
 
     // Querying via the card's class keeps the interaction stable even if inner markup shifts.
     const card = document.querySelector(".restaurant-card");
@@ -76,9 +81,7 @@ describe("RestaurantCard", () => {
   });
 
   it("renders share button", () => {
-    render(<RestaurantCard restaurant={restaurant} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurant} />);
 
     const shareButton = screen.getByRole("button", { name: /share restaurant/i });
     expect(shareButton).toBeInTheDocument();
@@ -90,9 +93,7 @@ describe("RestaurantCard", () => {
     // Ensure no native share API
     delete navigator.share;
 
-    render(<RestaurantCard restaurant={restaurant} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurant} />);
 
     const shareButton = screen.getByRole("button", { name: /share restaurant/i });
     await user.click(shareButton);
@@ -106,9 +107,7 @@ describe("RestaurantCard", () => {
   it("does not navigate when share button is clicked", async () => {
     const user = userEvent.setup();
 
-    render(<RestaurantCard restaurant={restaurant} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurant} />);
 
     const shareButton = screen.getByRole("button", { name: /share restaurant/i });
     await user.click(shareButton);
@@ -135,9 +134,7 @@ describe("RestaurantCard", () => {
       configurable: true,
     });
 
-    render(<RestaurantCard restaurant={restaurant} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurant} />);
 
     const shareButton = screen.getByRole("button", { name: /share restaurant/i });
     await user.click(shareButton);
@@ -150,9 +147,7 @@ describe("RestaurantCard", () => {
   });
 
   it("displays restaurant image with fallback", () => {
-    render(<RestaurantCard restaurant={restaurant} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurant} />);
 
     const image = screen.getByAltText("Test Bistro");
     expect(image).toHaveAttribute("src", "https://example.com/image.jpg");
@@ -164,9 +159,7 @@ describe("RestaurantCard", () => {
       tags: [],
     };
 
-    render(<RestaurantCard restaurant={restaurantWithoutTags} />, {
-      wrapper: MemoryRouter,
-    });
+    renderWithProviders(<RestaurantCard restaurant={restaurantWithoutTags} />);
 
     expect(screen.getByText("No tags available")).toBeInTheDocument();
   });
