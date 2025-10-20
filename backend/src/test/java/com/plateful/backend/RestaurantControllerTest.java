@@ -39,6 +39,8 @@ class RestaurantControllerTest {
 
   @MockBean private RestaurantSearchService searchService;
 
+  @MockBean private com.plateful.backend.repository.RestaurantRepository restaurantRepository; // Mocked repository dependency
+
   // Helper method for quickly creating Restaurant objects
   /**
    * Helper method to create a Restaurant instance for testing.
