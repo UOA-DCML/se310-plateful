@@ -32,7 +32,34 @@
   </scm>
   <properties>
     <java.version>17</java.version>
+    <sonar.projectKey>UOA-DCML_se310-plateful</sonar.projectKey>
     <sonar.organization>uoa-dcml</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    
+    <!-- Exclude DTOs, configs, models, controllers, auth, and specific services from coverage -->
+    <sonar.coverage.exclusions>
+      **/dto/**/*.java,
+      **/config/**/*.java,
+      **/model/**/*.java,
+      **/controller/**/*.java,
+      **/auth/**/*.java,
+      **/ServletInitializer.java,
+      **/BackendApplication.java,
+      **/exception/**/*.java,
+      **/service/RestaurantSearchService.java,
+      **/service/VotingQueryService.java,
+      **/service/VotingService.java
+    </sonar.coverage.exclusions>
+    
+    <!-- Also exclude from duplication analysis -->
+    <sonar.cpd.exclusions>
+      **/dto/**/*.java,
+      **/model/**/*.java
+    </sonar.cpd.exclusions>
+    
+    <!-- Set minimum coverage thresholds -->
+    <sonar.coverage.minimum>25.0</sonar.coverage.minimum>
   </properties>
 
   <dependencies>
@@ -115,6 +142,26 @@
         <groupId>org.sonarsource.scanner.maven</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
         <version>5.1.0.4751</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.12</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
