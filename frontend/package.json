@@ -20,7 +20,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@tomtom-international/web-sdk-maps": "^6.25.0",
     "concurrently": "^9.1.2",
-    "framer-motion": "^12.23.12",
+    "framer-motion": "^12.23.22",
     "lucide-react": "^0.540.0",
     "maplibre-gl": "^5.9.0",
     "react": "^19.1.0",
